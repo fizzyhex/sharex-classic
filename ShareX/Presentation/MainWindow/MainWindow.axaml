@@ -580,6 +580,8 @@
                     </ItemsControl>
                 </ScrollViewer>
 
+                <!-- Backdrop art of the Aero themes (AeroTheme.axaml); empty in the other themes. -->
+                <ContentControl Classes="aero-backdrop-art" IsVisible="{Binding IsEmpty}"/>
                 <Grid IsVisible="{Binding IsEmpty}" Margin="28">
                     <Border Classes="hotkey-panel"
                             MaxWidth="530"

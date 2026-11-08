@@ -251,7 +251,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnThemeToggleClick(object? sender, RoutedEventArgs e)
     {
         string theme = ThemeManager.IsAeroTheme
-            ? ThemeManager.IsAeroBasicTheme ? "Aero" : "AeroBasic"
+            ? ThemeManager.IsAeroDarkTheme ? "Aero" : "AeroDark"
             : ThemeManager.IsClassicTheme
             ? ThemeManager.IsDarkTheme ? "ClassicLight" : "ClassicDark"
             : ThemeManager.IsDarkTheme ? "Light" : "Dark";

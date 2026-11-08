@@ -117,6 +117,8 @@
                     </StackPanel>
                 </Border>
 
+                <!-- Gloss of the Aero themes (AeroTheme.axaml); empty in the other themes. -->
+                <ContentControl Classes="aero-toast-gloss"/>
                 <Border x:Name="ActionsPanel"
                         Padding="6"
                         VerticalAlignment="Bottom"

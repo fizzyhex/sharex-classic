@@ -53,6 +53,9 @@ namespace ShareX.AvaloniaUI.Theming
         // without desktop composition. Aero Basic inherits every resource of Aero.
         public static readonly ThemeVariant ShareXAero = new ThemeVariant("ShareXAero", ThemeVariant.Light);
         public static readonly ThemeVariant ShareXAeroBasic = new ThemeVariant("ShareXAeroBasic", ShareXAero);
+        // Aero Dark is the smoky dark glass of the same look. It has a full dictionary of its own and inherits the dark
+        // Fluent resources.
+        public static readonly ThemeVariant ShareXAeroDark = new ThemeVariant("ShareXAeroDark", ThemeVariant.Dark);
 
         /// <summary>"Sky", the default Windows 7 window color. The Aero themes use the accent color as the glass color.</summary>
         public static readonly Color AeroSkyColor = Color.Parse("#74B8FC");
@@ -60,6 +63,10 @@ namespace ShareX.AvaloniaUI.Theming
         private static readonly Color AeroHighlightColor = Color.Parse("#3399FF");
         private const double AeroReferenceHue = 205;
         private static readonly Color AeroLinkColor = Color.Parse("#0066CC");
+        private static readonly Color AeroDarkLinkColor = Color.Parse("#7CC4FF");
+        // The smoke Aero Dark mixes into the glass color, and the grey of its inactive glass.
+        private static readonly Color AeroDarkSmokeColor = Color.Parse("#05080C");
+        private static readonly Color AeroDarkInactiveColor = Color.Parse("#2A2E34");
         /// <summary>The part of an Aero window taken by the frame drawn around its client area (AeroTheme.axaml).</summary>
         public static readonly Thickness AeroFrameInset = new(7, 30, 7, 7);
         private static readonly ThemeFamily[] StyledThemeFamilies = [ThemeFamily.Classic, ThemeFamily.Aero];
@@ -152,13 +159,16 @@ namespace ShareX.AvaloniaUI.Theming
             return _currentTheme;
         }
 
-        public static bool IsDarkTheme => Equals(_currentTheme, ShareXDark) || Equals(_currentTheme, ShareXClassicDark);
+        public static bool IsDarkTheme => Equals(_currentTheme, ShareXDark) || Equals(_currentTheme, ShareXClassicDark) ||
+            Equals(_currentTheme, ShareXAeroDark);
 
         public static bool IsClassicTheme => IsClassicVariant(_currentTheme);
 
         public static bool IsAeroTheme => GetThemeFamily(_currentTheme) == ThemeFamily.Aero;
 
         public static bool IsAeroBasicTheme => Equals(_currentTheme, ShareXAeroBasic);
+
+        public static bool IsAeroDarkTheme => Equals(_currentTheme, ShareXAeroDark);
 
         /// <summary>The classic and Aero themes recreate Windows looks and use the window frame Windows draws (or, for
         /// Aero, the Windows 7 frame) instead of the custom title bar of the main window.</summary>
@@ -174,7 +184,7 @@ namespace ShareX.AvaloniaUI.Theming
         private static ThemeFamily GetThemeFamily(ThemeVariant theme)
         {
             return IsClassicVariant(theme) ? ThemeFamily.Classic
-                : Equals(theme, ShareXAero) || Equals(theme, ShareXAeroBasic) ? ThemeFamily.Aero
+                : Equals(theme, ShareXAero) || Equals(theme, ShareXAeroBasic) || Equals(theme, ShareXAeroDark) ? ThemeFamily.Aero
                 : ThemeFamily.Modern;
         }
 
@@ -503,7 +513,16 @@ namespace ShareX.AvaloniaUI.Theming
         {
             if (colorValues != null)
             {
-                return IsLightTheme(colorValues.ThemeVariant.ToString()) ? ShareXLight : ShareXDark;
+                bool light = IsLightTheme(colorValues.ThemeVariant.ToString());
+
+                // The Aero themes follow the system with their own light and dark looks (Aero Basic stays the light one).
+                if (IsAeroThemeName(configuredTheme))
+                {
+                    return !light ? ShareXAeroDark
+                        : configuredTheme.Contains("Basic", StringComparison.OrdinalIgnoreCase) ? ShareXAeroBasic : ShareXAero;
+                }
+
+                return light ? ShareXLight : ShareXDark;
             }
 
             return MapConfiguredTheme(configuredTheme);
@@ -513,7 +532,9 @@ namespace ShareX.AvaloniaUI.Theming
         {
             if (IsAeroThemeName(theme))
             {
-                return theme!.Contains("Basic", StringComparison.OrdinalIgnoreCase) ? ShareXAeroBasic : ShareXAero;
+                return theme!.Contains("Basic", StringComparison.OrdinalIgnoreCase) ? ShareXAeroBasic
+                    : theme.Contains("Dark", StringComparison.OrdinalIgnoreCase) ? ShareXAeroDark
+                    : ShareXAero;
             }
 
             if (IsClassicThemeName(theme))
@@ -602,15 +623,24 @@ namespace ShareX.AvaloniaUI.Theming
 
             ApplyClassicTint(application, theme, tinted ? glass : null);
 
+            bool dark = Equals(theme, ShareXAeroDark);
             Color highlight = tinted ? TintAeroColor(AeroHighlightColor, glassHsl) : AeroHighlightColor;
             Color highlightText = GetClassicHighlightTextColor(highlight);
 
             // The glass frames are drawn by the Aero theme; DWM only draws the thin outer border, dark like the Windows
             // 7 frame outline, and the caption of windows that keep a native frame.
-            Color basicCaption = tinted ? TintAeroColor(Color.Parse("#B9D1EA"), glassHsl) : Color.Parse("#B9D1EA");
-            Color basicInactive = tinted ? TintAeroColor(Color.Parse("#D7E4F2"), glassHsl) : Color.Parse("#D7E4F2");
-            _activeFrame = new WindowFrameColorSet(basicCaption, Colors.Black, BlendColor(glass, Colors.Black, 0.55));
-            _inactiveFrame = new WindowFrameColorSet(basicInactive, Color.Parse("#404040"), BlendColor(glass, Color.Parse("#808890"), 0.6));
+            Color Frame(string color) => tinted ? TintAeroColor(Color.Parse(color), glassHsl) : Color.Parse(color);
+            if (dark)
+            {
+                _activeFrame = new WindowFrameColorSet(Frame("#1B2836"), Colors.White, BlendColor(glass, Colors.Black, 0.7));
+                _inactiveFrame = new WindowFrameColorSet(Color.Parse("#26292E"), Color.Parse("#A0A0A0"), Color.Parse("#101214"));
+            }
+            else
+            {
+                _activeFrame = new WindowFrameColorSet(Frame("#B9D1EA"), Colors.Black, BlendColor(glass, Colors.Black, 0.55));
+                _inactiveFrame = new WindowFrameColorSet(Frame("#D7E4F2"), Color.Parse("#404040"), BlendColor(glass, Color.Parse("#808890"), 0.6));
+            }
+
             RefreshWindowFrames(application);
 
             IBrush selection = application.TryGetResource("Aero.List.Selected.Background", theme, out object? background) && background is IBrush brush
@@ -620,21 +650,22 @@ namespace ShareX.AvaloniaUI.Theming
                 ? borderBrush
                 : new SolidColorBrush(highlight);
 
-            // Accent surfaces (such as the start screen banner) get a soft Windows 7 sky gradient of the highlight.
+            // Accent surfaces (such as the start screen banner) get a soft Windows 7 sky gradient of the highlight, or on
+            // dark glass a deep one.
             LinearGradientBrush accentSurface = new()
             {
                 StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
                 EndPoint = new RelativePoint(0.35, 1, RelativeUnit.Relative),
                 GradientStops =
                 {
-                    new GradientStop(BlendColor(highlight, Colors.White, 0.22), 0),
-                    new GradientStop(highlight, 0.45),
-                    new GradientStop(DarkenColor(highlight, 0.28), 1)
+                    new GradientStop(dark ? DarkenColor(highlight, 0.25) : BlendColor(highlight, Colors.White, 0.22), 0),
+                    new GradientStop(dark ? DarkenColor(highlight, 0.5) : highlight, 0.45),
+                    new GradientStop(DarkenColor(highlight, dark ? 0.75 : 0.28), 1)
                 }
             };
 
-            SetAccentResources(application, highlight, highlight, highlightText, AeroLinkColor,
-                selection, selectionBorder, new SolidColorBrush(Colors.Black), accentSurface);
+            SetAccentResources(application, highlight, highlight, highlightText, dark ? AeroDarkLinkColor : AeroLinkColor,
+                selection, selectionBorder, new SolidColorBrush(dark ? Colors.White : Colors.Black), accentSurface);
         }
 
         private static void SetAccentResources(Application application, Color startColor, Color endColor, Color foregroundColor,
@@ -698,9 +729,9 @@ namespace ShareX.AvaloniaUI.Theming
             // they are computed from. Dropping them restores it.
             ClassicTintResources.Clear();
 
-            // Aero Basic has no dictionary of its own; it inherits the Aero resources.
+            // Aero Basic has no dictionary of its own; it inherits the Aero resources. Aero Dark has its own.
             bool aero = GetThemeFamily(theme) == ThemeFamily.Aero;
-            ThemeVariant sourceTheme = aero ? ShareXAero : theme;
+            ThemeVariant sourceTheme = Equals(theme, ShareXAeroBasic) ? ShareXAero : theme;
 
             if (accent is not Color accentColor || !TryGetThemeDictionary(application, sourceTheme, out ResourceDictionary? source))
             {
@@ -785,7 +816,17 @@ namespace ShareX.AvaloniaUI.Theming
             }
 
             // The accent color is the glass color: translucent while the window is active, thinner and greyer while it
-            // is inactive. The Windows 7 glass mixes the color with the blurred desktop the same way.
+            // is inactive. The Windows 7 glass mixes the color with the blurred desktop the same way. Aero Dark smokes
+            // the color, so the glass stays dark whatever the accent.
+            if (Equals(theme, ShareXAeroDark))
+            {
+                Color smoke = BlendColor(glass, AeroDarkSmokeColor, 0.62);
+                Color smokeInactive = BlendColor(glass, AeroDarkInactiveColor, 0.85);
+                values["Aero.Glass.Active"] = CreateVerticalGradient(Color.FromArgb(0xD8, smoke.R, smoke.G, smoke.B), Color.FromArgb(0xC4, smoke.R, smoke.G, smoke.B));
+                values["Aero.Glass.Inactive"] = CreateVerticalGradient(Color.FromArgb(0xC8, smokeInactive.R, smokeInactive.G, smokeInactive.B), Color.FromArgb(0xB8, smokeInactive.R, smokeInactive.G, smokeInactive.B));
+                return;
+            }
+
             Color inactive = BlendColor(glass, Color.Parse("#C4CCD6"), 0.55);
             values["Aero.Glass.Active"] = CreateVerticalGradient(Color.FromArgb(0x9C, glass.R, glass.G, glass.B), Color.FromArgb(0x84, glass.R, glass.G, glass.B));
             values["Aero.Glass.Inactive"] = CreateVerticalGradient(Color.FromArgb(0x5A, inactive.R, inactive.G, inactive.B), Color.FromArgb(0x46, inactive.R, inactive.G, inactive.B));

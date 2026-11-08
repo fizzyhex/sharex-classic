@@ -2177,6 +2177,11 @@ namespace ShareX.Localization {
                 return ResourceManager.GetString("ApplicationSettingsWindow_AeroBasic", resourceCulture);
             }
         }
+        public static string ApplicationSettingsWindow_AeroDark {
+            get {
+                return ResourceManager.GetString("ApplicationSettingsWindow_AeroDark", resourceCulture);
+            }
+        }
         public static string ApplicationSettingsWindow_AeroAccentColorNote {
             get {
                 return ResourceManager.GetString("ApplicationSettingsWindow_AeroAccentColorNote", resourceCulture);

@@ -108,7 +108,8 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
         new("ClassicLight", Strings.ApplicationSettingsWindow_ClassicLight),
         new("ClassicDark", Strings.ApplicationSettingsWindow_ClassicDark),
         new("Aero", Strings.ApplicationSettingsWindow_Aero),
-        new("AeroBasic", Strings.ApplicationSettingsWindow_AeroBasic)
+        new("AeroBasic", Strings.ApplicationSettingsWindow_AeroBasic),
+        new("AeroDark", Strings.ApplicationSettingsWindow_AeroDark)
     ];
     public IReadOnlyList<EnumOption<IconPack>> IconPackOptions { get; } =
     [
@@ -1057,7 +1058,9 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
     {
         if (ThemeManager.IsAeroThemeName(theme))
         {
-            return theme!.Contains("Basic", StringComparison.OrdinalIgnoreCase) ? "AeroBasic" : "Aero";
+            return theme!.Contains("Basic", StringComparison.OrdinalIgnoreCase) ? "AeroBasic"
+                : theme.Contains("Dark", StringComparison.OrdinalIgnoreCase) ? "AeroDark"
+                : "Aero";
         }
 
         if (ThemeManager.IsClassicThemeName(theme))

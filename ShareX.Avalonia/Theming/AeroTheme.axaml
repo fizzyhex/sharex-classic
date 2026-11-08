@@ -63,11 +63,6 @@
             <GradientStop Color="#18FFFFFF" Offset="0.6"/>
             <GradientStop Color="#00FFFFFF" Offset="1"/>
         </LinearGradientBrush>
-        <RadialGradientBrush x:Key="AeroTitleGlow" Center="50%,50%" GradientOrigin="50%,50%" RadiusX="50%" RadiusY="50%">
-            <GradientStop Color="#E0FFFFFF" Offset="0"/>
-            <GradientStop Color="#B0FFFFFF" Offset="0.55"/>
-            <GradientStop Color="#00FFFFFF" Offset="1"/>
-        </RadialGradientBrush>
         <LinearGradientBrush x:Key="AeroCaptionGloss" StartPoint="0%,0%" EndPoint="0%,100%">
             <GradientStop Color="#A0FFFFFF" Offset="0"/>
             <GradientStop Color="#40FFFFFF" Offset="0.45"/>
@@ -75,11 +70,11 @@
             <GradientStop Color="#00FFFFFF" Offset="0.75"/>
             <GradientStop Color="#28FFFFFF" Offset="1"/>
         </LinearGradientBrush>
-        <LinearGradientBrush x:Key="AeroCaptionBasicFace" StartPoint="0%,0%" EndPoint="0%,100%">
-            <GradientStop Color="#F4F8FC" Offset="0"/>
-            <GradientStop Color="#DCE6F2" Offset="0.45"/>
-            <GradientStop Color="#C9D7E9" Offset="0.46"/>
-            <GradientStop Color="#D6E3F2" Offset="1"/>
+        <!-- The light that sweeps once across a glossy surface after the pointer has rested on it for two seconds. -->
+        <LinearGradientBrush x:Key="AeroSheen" StartPoint="0%,0%" EndPoint="100%,0%">
+            <GradientStop Color="#00FFFFFF" Offset="0"/>
+            <GradientStop Color="#58FFFFFF" Offset="0.5"/>
+            <GradientStop Color="#00FFFFFF" Offset="1"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="AeroProgressGlint" StartPoint="0%,0%" EndPoint="100%,0%">
             <GradientStop Color="#00FFFFFF" Offset="0"/>
@@ -320,13 +315,13 @@
                                 </Panel>
                                 <!-- The bright inner edge of the frame and the dark edge around the client area. -->
                                 <Border x:Name="AeroFrameHighlight"
-                                        BorderBrush="#70FFFFFF"
+                                        BorderBrush="{DynamicResource Aero.Glass.Highlight}"
                                         BorderThickness="1"
                                         CornerRadius="4,4,0,0"
                                         IsHitTestVisible="False"/>
                                 <Border x:Name="AeroClientEdge"
                                         Margin="6,29,6,6"
-                                        BorderBrush="#A0384A5C"
+                                        BorderBrush="{DynamicResource Aero.ClientEdge}"
                                         BorderThickness="1"
                                         IsHitTestVisible="False"/>
                                 <!-- The red glow around the hot close button spills over the glass. -->
@@ -381,13 +376,13 @@
                                     <Panel VerticalAlignment="Center">
                                         <Border x:Name="AeroTitleGlow"
                                                 Margin="-14,-8"
-                                                Background="{StaticResource AeroTitleGlow}"/>
+                                                Background="{DynamicResource Aero.Caption.TextGlow}"/>
                                         <TextBlock x:Name="AeroTitleText"
                                                    Text="{TemplateBinding Title}"
                                                    FontFamily="Segoe UI"
                                                    FontSize="12"
                                                    FontWeight="Normal"
-                                                   Foreground="#000000"
+                                                   Foreground="{DynamicResource Aero.Caption.Text}"
                                                    TextTrimming="CharacterEllipsis"/>
                                     </Panel>
                                 </StackPanel>
@@ -405,6 +400,7 @@
                                             Background="#18FFFFFF"
                                             BorderBrush="#90202A38"
                                             CornerRadius="0,0,0,4"
+                                            Tag="{DynamicResource Aero.Caption.Button.Glow}"
                                             WindowDecorationProperties.ElementRole="MinimizeButton">
                                         <Path Margin="0,6,0,0"
                                               Data="M 0.5,0.5 H 9.5 V 3.5 H 0.5 Z"
@@ -421,6 +417,7 @@
                                             Background="#18FFFFFF"
                                             BorderBrush="#90202A38"
                                             CornerRadius="0"
+                                            Tag="{DynamicResource Aero.Caption.Button.Glow}"
                                             WindowDecorationProperties.ElementRole="MaximizeButton">
                                         <Path x:Name="AeroMaximizeGlyph"
                                               Data="M 0.5,0.5 H 10.5 V 8.5 H 0.5 Z M 2.5,3.5 V 6.5 H 8.5 V 3.5 Z"
@@ -535,7 +532,7 @@
                 <Setter Property="Opacity" Value="0.8"/>
             </Style>
             <Style Selector="^.inactive /template/ TextBlock#AeroTitleText">
-                <Setter Property="Foreground" Value="#404040"/>
+                <Setter Property="Foreground" Value="{DynamicResource Aero.Caption.Text.Inactive}"/>
             </Style>
 
             <!-- Aero Basic, or glass that is not available: an opaque light blue frame without reflections. -->
@@ -552,15 +549,15 @@
                 <Setter Property="IsVisible" Value="False"/>
             </Style>
             <Style Selector="^.opaque /template/ Border#AeroClientEdge">
-                <Setter Property="BorderBrush" Value="#8396AC"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Aero.Glass.Basic.Edge}"/>
             </Style>
             <Style Selector="^.opaque /template/ theming|AeroCaptionButton#PART_MinimizeButton, ^.opaque /template/ theming|AeroCaptionButton#PART_MaximizeButton">
-                <Setter Property="Background" Value="{StaticResource AeroCaptionBasicFace}"/>
-                <Setter Property="BorderBrush" Value="#8396AC"/>
+                <Setter Property="Background" Value="{DynamicResource Aero.Caption.Basic.Face}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Aero.Glass.Basic.Edge}"/>
             </Style>
             <Style Selector="^.opaque.inactive /template/ theming|AeroCaptionButton#PART_CloseButton">
-                <Setter Property="Background" Value="{StaticResource AeroCaptionBasicFace}"/>
-                <Setter Property="BorderBrush" Value="#A0AFC3"/>
+                <Setter Property="Background" Value="{DynamicResource Aero.Caption.Basic.Face}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Aero.Glass.Basic.Edge.Inactive}"/>
             </Style>
         </ControlTheme>
 
@@ -578,6 +575,19 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <Panel>
+                        <!-- A soft glow around default and primary buttons, outside their edges. -->
+                        <Border Name="AeroChromeHalo"
+                                Margin="-7"
+                                CornerRadius="9"
+                                Background="{DynamicResource Aero.Button.Halo}"
+                                Opacity="0"
+                                IsHitTestVisible="False">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
                         <Border Name="AeroChrome"
                                 Background="{DynamicResource Aero.Button.Face}"
                                 BorderBrush="{DynamicResource Aero.Button.Border}"
@@ -593,6 +603,19 @@
                             <Border.Transitions>
                                 <Transitions>
                                     <DoubleTransition Property="Opacity" Duration="0:0:0.25"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+                        <!-- Light blooming up from the bottom edge while the button is hot. -->
+                        <Border Name="AeroChromeBloom"
+                                Margin="1"
+                                CornerRadius="2"
+                                Background="{DynamicResource Aero.Button.Bloom}"
+                                Opacity="0"
+                                IsHitTestVisible="False">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
                                 </Transitions>
                             </Border.Transitions>
                         </Border>
@@ -632,6 +655,9 @@
                                 </Transitions>
                             </Border.Transitions>
                         </Border>
+                        <Border Name="AeroSheenClip" Margin="1" CornerRadius="2" ClipToBounds="True" IsHitTestVisible="False">
+                            <Rectangle Name="AeroSheen" Width="46" HorizontalAlignment="Left" Fill="{StaticResource AeroSheen}" Opacity="0"/>
+                        </Border>
                         <ContentPresenter Name="PART_ContentPresenter"
                                           Background="Transparent"
                                           BorderThickness="0"
@@ -653,6 +679,27 @@
             </Setter>
             <Style Selector="^:pointerover /template/ Border#AeroChromeHot">
                 <Setter Property="Opacity" Value="1"/>
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#AeroChromeBloom">
+                <Setter Property="Opacity" Value="1"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#AeroChromeBloom">
+                <Setter Property="Opacity" Value="0.5"/>
+            </Style>
+            <!-- A single sweep of light across the face once the pointer has rested on it for two seconds. -->
+            <Style Selector="^:pointerover /template/ Rectangle#AeroSheen">
+                <Style.Animations>
+                    <Animation Duration="0:0:0.8" Delay="0:0:2" Easing="CubicEaseOut">
+                        <KeyFrame Cue="0%">
+                            <Setter Property="Opacity" Value="1"/>
+                            <Setter Property="TranslateTransform.X" Value="-50"/>
+                        </KeyFrame>
+                        <KeyFrame Cue="100%">
+                            <Setter Property="Opacity" Value="1"/>
+                            <Setter Property="TranslateTransform.X" Value="{Binding $parent[Button].Bounds.Width}"/>
+                        </KeyFrame>
+                    </Animation>
+                </Style.Animations>
             </Style>
             <Style Selector="^:pressed /template/ Border#AeroChromePressed, ^:checked /template/ Border#AeroChromePressed">
                 <Setter Property="Opacity" Value="1"/>
@@ -747,6 +794,108 @@
         </ControlTheme>
 
         <ControlTheme x:Key="AeroToolToggleButton" TargetType="ToggleButton" BasedOn="{StaticResource AeroToolButton}"/>
+
+        <!--
+            Navigation item (the main window sidebar): flat until hot, then it lights up like the Windows 7 Start menu,
+            a glossy glass highlight with a glow rising from its bottom edge and a sweep of light. The glow comes in
+            quickly and fades out slowly.
+        -->
+        <ControlTheme x:Key="AeroNavButton" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource Aero.Text}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel Background="Transparent">
+                        <Border Name="AeroChromeChecked"
+                                Background="{DynamicResource Aero.List.Selected.Background}"
+                                BorderBrush="{DynamicResource Aero.List.Selected.Border}"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                Opacity="0"
+                                IsHitTestVisible="False"/>
+                        <Border Name="AeroNavHot"
+                                Background="{DynamicResource Aero.Nav.Hot}"
+                                BorderBrush="{DynamicResource Aero.Nav.Hot.Border}"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                Opacity="0"
+                                IsHitTestVisible="False">
+                            <Panel>
+                                <Border CornerRadius="2" Background="{DynamicResource Aero.Nav.Hot.Bloom}"/>
+                                <Border CornerRadius="2" BorderThickness="1" BorderBrush="{DynamicResource Aero.Nav.Hot.Inner}"/>
+                                <Border CornerRadius="2" ClipToBounds="True">
+                                    <Rectangle Name="AeroSheen" Width="60" HorizontalAlignment="Left" Fill="{StaticResource AeroSheen}" Opacity="0"/>
+                                </Border>
+                            </Panel>
+                        </Border>
+                        <Border Name="AeroNavPressed"
+                                Background="{DynamicResource Aero.Nav.Pressed}"
+                                BorderBrush="{DynamicResource Aero.Nav.Pressed.Border}"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                Opacity="0"
+                                IsHitTestVisible="False">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.1"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          Padding="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          RecognizesAccessKey="True"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^ /template/ Border#AeroNavHot">
+                <Setter Property="Transitions">
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.45" Easing="SineEaseOut"/>
+                    </Transitions>
+                </Setter>
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#AeroNavHot">
+                <Setter Property="Opacity" Value="1"/>
+                <Setter Property="Transitions">
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.1"/>
+                    </Transitions>
+                </Setter>
+            </Style>
+            <Style Selector="^:pointerover /template/ Rectangle#AeroSheen">
+                <Style.Animations>
+                    <Animation Duration="0:0:0.9" Delay="0:0:2" Easing="CubicEaseOut">
+                        <KeyFrame Cue="0%">
+                            <Setter Property="Opacity" Value="1"/>
+                            <Setter Property="TranslateTransform.X" Value="-60"/>
+                        </KeyFrame>
+                        <KeyFrame Cue="100%">
+                            <Setter Property="Opacity" Value="1"/>
+                            <Setter Property="TranslateTransform.X" Value="{Binding $parent[Button].Bounds.Width}"/>
+                        </KeyFrame>
+                    </Animation>
+                </Style.Animations>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#AeroNavPressed">
+                <Setter Property="Opacity" Value="1"/>
+            </Style>
+            <Style Selector="^.active /template/ Border#AeroChromeChecked">
+                <Setter Property="Opacity" Value="1"/>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Opacity" Value="0.5"/>
+            </Style>
+        </ControlTheme>
 
         <!-- ============================================================================================== -->
         <!-- Check box, radio button, toggle switch (BulletChrome).                                         -->
@@ -1294,7 +1443,8 @@
                                    PlacementTarget="{TemplateBinding}"
                                    Placement="BottomEdgeAlignedLeft"
                                    InheritsTransform="True">
-                                <Border Background="{DynamicResource Aero.DropDown.Background}"
+                                <Border Name="AeroMenuSurface"
+                                        Background="{DynamicResource Aero.DropDown.Background}"
                                         BorderBrush="{DynamicResource Aero.DropDown.Border}"
                                         BorderThickness="1">
                                     <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
@@ -1552,6 +1702,23 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Background="{TemplateBinding Background}">
+                        <Panel>
+                            <!-- Shown for the settings navigation only (see the art styles). -->
+                            <Canvas Name="AeroSprig"
+                                    Width="130"
+                                    Height="120"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    IsHitTestVisible="False">
+                                <Path Data="M 134,122 C 100,112 80,92 78,66 C 76,50 88,40 102,46 L 102.63,46.31 L 103.21,46.7 L 103.73,47.14 L 104.2,47.63 L 104.6,48.17 L 104.93,48.75 L 105.18,49.35 L 105.36,49.97 L 105.46,50.6 L 105.49,51.23 L 105.45,51.85 L 105.33,52.46 L 105.15,53.03 L 104.91,53.58 L 104.6,54.08 L 104.24,54.54 L 103.84,54.95 L 103.4,55.31 L 102.93,55.6 L 102.43,55.84 L 101.91,56.01 L 101.39,56.11 L 100.87,56.16 L 100.35,56.14 L 99.85,56.07 L 99.36,55.93 L 98.9,55.75 L 98.48,55.52 L 98.09,55.24 L 97.74,54.92 L 97.44,54.57 L 97.19,54.2 L 96.98,53.8 L 96.83,53.39 L 96.72,52.98 L 96.67,52.56 L 96.67,52.15 L 96.71,51.74 L 96.8,51.36 L 96.94,50.99 L 97.11,50.65 L 97.31,50.34 L 97.55,50.06 L 97.81,49.82 L 98.09,49.61 L 98.38,49.44 L 98.69,49.31 L 99,49.22 L 99.31,49.17 L 99.62,49.15 L 99.92,49.18 L 100.21,49.23 L 100.48,49.32 L 100.73,49.43 L 100.96,49.57 L 101.16,49.73 L 101.34,49.91 L 101.5,50.1 L 101.62,50.3 L 101.72,50.5 L 101.79,50.71 L 101.83,50.92 L 101.85,51.12 L 101.84,51.32 L 101.81,51.5 L 101.77,51.68 L 101.7,51.83 L 101.62,51.98 L 101.53,52.1 L 101.43,52.21 L 101.33,52.3 L 101.22,52.38" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="1.2" StrokeLineCap="Round" StrokeJoin="Round"/>
+                                <Path Data="M 111.19,112.69 C 108.15,120.73 98.94,124.38 90.69,120.73 C 95.76,113.85 104.34,110.4 111.19,112.69 Z" Fill="{DynamicResource Aero.Art.Backdrop.Leaf}" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="0.8"/>
+                                <Path Data="M 84.55,87.67 C 80.87,81.69 83.1,73.89 89.6,70.38 C 91.52,77.1 89.45,84.38 84.55,87.67 Z" Fill="{DynamicResource Aero.Art.Backdrop.Leaf}" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="0.8"/>
+                                <Path Data="M 77.81,61.39 C 71.59,61.99 66.24,57.16 65.98,50.6 C 72.09,51.7 77.1,56.19 77.81,61.39 Z" Fill="{DynamicResource Aero.Art.Backdrop.Leaf}" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="0.8"/>
+                                <Path Data="M 112,88 C 109.17,83.47 110.92,76.94 115.36,75.44 C 118.46,78.96 116.71,85.49 112,88 Z M 112,88 C 115.43,83.91 122.18,83.56 124.98,87.32 C 122.59,91.35 115.84,91.7 112,88 Z M 112,88 C 116.95,90 119.37,96.31 116.66,100.14 C 112.09,99.11 109.66,92.8 112,88 Z M 112,88 C 111.63,93.32 106.37,97.58 101.9,96.18 C 101.46,91.51 106.72,87.26 112,88 Z M 112,88 C 106.82,89.29 101.15,85.61 101.1,80.92 C 105.4,79.06 111.07,82.75 112,88 Z" Fill="{DynamicResource Aero.Art.Backdrop.Petal}" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="0.8"/>
+                                <Path Data="M 112,88 C 110.25,85.19 111.33,81.15 114.09,80.21 C 116,82.4 114.92,86.45 112,88 Z M 112,88 C 114.13,85.47 118.31,85.25 120.05,87.58 C 118.57,90.08 114.38,90.3 112,88 Z M 112,88 C 115.07,89.24 116.57,93.15 114.89,95.52 C 112.05,94.89 110.55,90.97 112,88 Z M 112,88 C 111.77,91.3 108.51,93.94 105.74,93.07 C 105.47,90.18 108.72,87.54 112,88 Z M 112,88 C 108.79,88.8 105.28,86.52 105.24,83.61 C 107.91,82.46 111.42,84.74 112,88 Z" Fill="{DynamicResource Aero.Art.Petal.Gloss}"/>
+                                <Ellipse Canvas.Left="109.4" Canvas.Top="85.4" Width="5.2" Height="5.2" Fill="{DynamicResource Aero.Art.Backdrop.Petal}"/>
+                                <Path Data="M 115.03,85.55 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 115.27,90.12 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 110.99,91.77 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 108.11,88.2 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 110.6,84.36 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0" Fill="{DynamicResource Aero.Art.Sparkle}"/>
+                            </Canvas>
                         <ScrollViewer AllowAutoHide="False"
                                       BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
                                       HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
@@ -1562,9 +1729,13 @@
                                             Margin="{TemplateBinding Padding}"
                                             ItemsPanel="{TemplateBinding ItemsPanel}"/>
                         </ScrollViewer>
+                        </Panel>
                     </Border>
                 </ControlTemplate>
             </Setter>
+            <Style Selector="^ /template/ Canvas#AeroSprig">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
         </ControlTheme>
 
         <ControlTheme x:Key="AeroTreeViewItem" TargetType="TreeViewItem">
@@ -1723,14 +1894,14 @@
                                 BorderThickness="1"
                                 CornerRadius="2"
                                 Opacity="0"/>
-                        <Border Margin="1" BorderBrush="#FFFFFF" BorderThickness="1" CornerRadius="1"/>
+                        <Border Margin="1" BorderBrush="{DynamicResource Aero.ScrollBar.Thumb.Inner}" BorderThickness="1" CornerRadius="1"/>
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="1">
                             <Rectangle Classes="aero-grip" Width="7" Height="1"/>
-                            <Rectangle Width="7" Height="1" Fill="#FFFFFF"/>
+                            <Rectangle Width="7" Height="1" Fill="{DynamicResource Aero.ScrollBar.Grip.Light}"/>
                             <Rectangle Classes="aero-grip" Width="7" Height="1"/>
-                            <Rectangle Width="7" Height="1" Fill="#FFFFFF"/>
+                            <Rectangle Width="7" Height="1" Fill="{DynamicResource Aero.ScrollBar.Grip.Light}"/>
                             <Rectangle Classes="aero-grip" Width="7" Height="1"/>
-                            <Rectangle Width="7" Height="1" Fill="#FFFFFF"/>
+                            <Rectangle Width="7" Height="1" Fill="{DynamicResource Aero.ScrollBar.Grip.Light}"/>
                         </StackPanel>
                     </Panel>
                 </ControlTemplate>
@@ -1776,14 +1947,14 @@
                                 BorderThickness="1"
                                 CornerRadius="2"
                                 Opacity="0"/>
-                        <Border Margin="1" BorderBrush="#FFFFFF" BorderThickness="1" CornerRadius="1"/>
+                        <Border Margin="1" BorderBrush="{DynamicResource Aero.ScrollBar.Thumb.Inner}" BorderThickness="1" CornerRadius="1"/>
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal" Spacing="1">
                             <Rectangle Classes="aero-grip" Width="1" Height="7"/>
-                            <Rectangle Width="1" Height="7" Fill="#FFFFFF"/>
+                            <Rectangle Width="1" Height="7" Fill="{DynamicResource Aero.ScrollBar.Grip.Light}"/>
                             <Rectangle Classes="aero-grip" Width="1" Height="7"/>
-                            <Rectangle Width="1" Height="7" Fill="#FFFFFF"/>
+                            <Rectangle Width="1" Height="7" Fill="{DynamicResource Aero.ScrollBar.Grip.Light}"/>
                             <Rectangle Classes="aero-grip" Width="1" Height="7"/>
-                            <Rectangle Width="1" Height="7" Fill="#FFFFFF"/>
+                            <Rectangle Width="1" Height="7" Fill="{DynamicResource Aero.ScrollBar.Grip.Light}"/>
                         </StackPanel>
                     </Panel>
                 </ControlTemplate>
@@ -2406,7 +2577,8 @@
             <Setter Property="TextBlock.FontWeight" Value="Normal"/>
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Border Background="{DynamicResource Aero.Menu.Background}"
+                    <Border Name="AeroMenuSurface"
+                            Background="{DynamicResource Aero.Menu.Background}"
                             BorderBrush="{DynamicResource Aero.Menu.Border}"
                             BorderThickness="1"
                             Padding="2">
@@ -2433,7 +2605,8 @@
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Border Background="{DynamicResource Aero.Menu.Background}"
+                    <Border Name="AeroMenuSurface"
+                            Background="{DynamicResource Aero.Menu.Background}"
                             BorderBrush="{DynamicResource Aero.Menu.Border}"
                             BorderThickness="1"
                             Padding="2">
@@ -2527,7 +2700,8 @@
                                    Placement="RightEdgeAlignedTop"
                                    HorizontalOffset="-2"
                                    VerticalOffset="-3">
-                                <Border Background="{DynamicResource Aero.Menu.Background}"
+                                <Border Name="AeroMenuSurface"
+                                        Background="{DynamicResource Aero.Menu.Background}"
                                         BorderBrush="{DynamicResource Aero.Menu.Border}"
                                         BorderThickness="1"
                                         Padding="2">
@@ -2620,11 +2794,13 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <ContentPresenter Name="PART_ContentPresenter"
+                                      Margin="0,0,3,3"
                                       Padding="{TemplateBinding Padding}"
                                       Background="{DynamicResource Aero.ToolTip.Background}"
                                       BorderBrush="{DynamicResource Aero.ToolTip.Border}"
                                       BorderThickness="1"
-                                      CornerRadius="2"
+                                      CornerRadius="3"
+                                      BoxShadow="1 1 3 0 #38000000"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"/>
                 </ControlTemplate>
@@ -2716,6 +2892,9 @@
                      Button.caption-button, Button.player-button, Button.tool-grid-button, Button.tool-grid-edit-button,
                      Button.effect-item, Button.icon-button">
         <Setter Property="Theme" Value="{StaticResource AeroToolButton}"/>
+    </Style>
+    <Style Selector="Button.nav-button">
+        <Setter Property="Theme" Value="{StaticResource AeroNavButton}"/>
     </Style>
     <Style Selector="ToggleButton.side-panel-toggle-row, ToggleButton.tool-grid-visibility-button">
         <Setter Property="Theme" Value="{StaticResource AeroToolToggleButton}"/>
@@ -2884,9 +3063,30 @@
     <Style Selector="Button:focus-visible /template/ Rectangle#AeroFocusCue, ToggleButton:focus-visible /template/ Rectangle#AeroFocusCue">
         <Setter Property="IsVisible" Value="True"/>
     </Style>
+    <Style Selector=":is(Window).aero-active Button[IsDefault=True]:not(:pointerover):not(:pressed):not(:disabled) /template/ Border#AeroChromeHalo">
+        <Style.Animations>
+            <Animation Duration="0:0:2" IterationCount="Infinite">
+                <Animation.Easing>
+                    <theming:AeroStepEasing Steps="16"/>
+                </Animation.Easing>
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0"/>
+                </KeyFrame>
+                <KeyFrame Cue="30%">
+                    <Setter Property="Opacity" Value="0.75"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
     <Style Selector=":is(Window).aero-active Button[IsDefault=True]:not(:pointerover):not(:pressed):not(:disabled) /template/ Border#AeroChromeHot">
         <Style.Animations>
             <Animation Duration="0:0:2" IterationCount="Infinite">
+                <Animation.Easing>
+                    <theming:AeroStepEasing Steps="16"/>
+                </Animation.Easing>
                 <KeyFrame Cue="0%">
                     <Setter Property="Opacity" Value="0"/>
                 </KeyFrame>
@@ -3071,11 +3271,10 @@
 
     <!-- Group boxes: the setting cards become etched, rounded Windows 7 group boxes. -->
     <Style Selector="Border.section-card">
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="{DynamicResource Aero.GroupBox.Background}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Aero.GroupBox.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="4"/>
-        <Setter Property="BoxShadow" Value="inset 1 1 0 0 #FFFFFF"/>
         <Setter Property="Padding" Value="9,8,9,9"/>
         <Setter Property="Margin" Value="0,10,0,4"/>
     </Style>
@@ -3140,5 +3339,393 @@
     </Style>
     <Style Selector="controls|IconPresenter.page-title-icon">
         <Setter Property="Foreground" Value="{DynamicResource Aero.MainInstruction.Text}"/>
+    </Style>
+
+    <!-- ================================================================================================== -->
+    <!-- Motion: menus, drop-downs and tool tips fade in and settle; settings pages slide in.               -->
+    <!-- Only Opacity and render transforms animate, once, when they open.                                  -->
+    <!-- ================================================================================================== -->
+    <Style Selector="ContextMenu:open /template/ Border#AeroMenuSurface">
+        <Style.Animations>
+            <Animation Duration="0:0:0.18" Easing="CubicEaseOut">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="TranslateTransform.Y" Value="-5"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="TranslateTransform.Y" Value="0"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    <Style Selector="MenuFlyoutPresenter /template/ Border#AeroMenuSurface">
+        <Style.Animations>
+            <Animation Duration="0:0:0.18" Easing="CubicEaseOut">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="TranslateTransform.Y" Value="-5"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="TranslateTransform.Y" Value="0"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    <!--
+        Submenus fade in with transitions rather than an animation. While the pointer moves over a parent item, Avalonia
+        can turn its submenu's open state off and on again; an animation would restart from transparent each time, but a
+        transition carries on from the current value, so only a real opening fades in.
+    -->
+    <Style Selector="MenuItem /template/ Border#AeroMenuSurface">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="RenderTransform" Value="translateY(-5px)"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.18" Easing="CubicEaseOut"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="MenuItem:open /template/ Border#AeroMenuSurface">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="RenderTransform" Value="none"/>
+    </Style>
+    <Style Selector="ComboBox:dropdownopen /template/ Border#AeroMenuSurface">
+        <Style.Animations>
+            <Animation Duration="0:0:0.18" Easing="CubicEaseOut">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="TranslateTransform.Y" Value="-5"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="TranslateTransform.Y" Value="0"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    <Style Selector="ToolTip:open /template/ ContentPresenter#PART_ContentPresenter">
+        <Style.Animations>
+            <Animation Duration="0:0:0.15" Easing="SineEaseOut">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    <Style Selector="ScrollViewer[IsVisible=True] StackPanel.settings-page">
+        <Style.Animations>
+            <Animation Duration="0:0:0.26" Easing="CubicEaseOut">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="TranslateTransform.X" Value="16"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="TranslateTransform.X" Value="0"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <!-- ================================================================================================== -->
+    <!-- Light and glass                                                                                    -->
+    <!-- ================================================================================================== -->
+    <!-- Primary buttons are aqua glass, and glow while hot. -->
+    <Style Selector="Button.primary /template/ Border#AeroChrome">
+        <Setter Property="Background" Value="{DynamicResource Aero.Primary.Face}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Aero.Primary.Border}"/>
+    </Style>
+    <Style Selector="Button.primary /template/ Border#AeroChromeHot">
+        <Setter Property="Background" Value="{DynamicResource Aero.Primary.Face.Hot}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Aero.Primary.Border}"/>
+    </Style>
+    <Style Selector="Button.primary:disabled /template/ Border#AeroChrome">
+        <Setter Property="Background" Value="{DynamicResource Aero.Button.Face.Disabled}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Aero.Button.Border.Disabled}"/>
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ Border#AeroChromeHalo, Button[IsDefault=True]:pointerover /template/ Border#AeroChromeHalo">
+        <Setter Property="Opacity" Value="1"/>
+    </Style>
+
+    <!-- Page headings sit on a soft streak of light. -->
+    <Style Selector="Grid.page-title">
+        <Setter Property="Background" Value="{DynamicResource Aero.PageTitle.Glow}"/>
+    </Style>
+
+    <!-- The empty main window: a gadget on a small Frutiger Aero desktop. -->
+    <Style Selector="Border.hotkey-panel">
+        <Setter Property="Background" Value="{DynamicResource Aero.Gadget.Background}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Aero.Gadget.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="7"/>
+        <Setter Property="BoxShadow" Value="0 8 26 0 #3A002448, 0 1 3 0 #30000000"/>
+    </Style>
+
+    <!-- Start screen: glossy cards with glass icon tiles. -->
+    <Style Selector="Border.setting-card">
+        <Setter Property="Background" Value="{DynamicResource Aero.Card.Background}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Aero.GroupBox.Border}"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="BoxShadow" Value="0 1 3 0 #14000000"/>
+    </Style>
+    <Style Selector="Border.setting-icon">
+        <Setter Property="Background" Value="{DynamicResource Aero.Tile.Background}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Aero.Tile.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="7"/>
+        <Setter Property="BoxShadow" Value="inset 0 1 0 0 #60FFFFFF"/>
+    </Style>
+    <Style Selector="Canvas.banner-bubbles">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+
+    <!-- Toasts get a glossy upper half and a bright rim over whatever colors they are set to. -->
+    <Style Selector="ContentControl.aero-toast-gloss">
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border CornerRadius="3" Background="{DynamicResource Aero.Toast.Gloss}"/>
+                    <Border CornerRadius="3" BorderThickness="1" BorderBrush="#40FFFFFF"/>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- ================================================================================================== -->
+    <!-- Art                                                                                                -->
+    <!-- Original vector art in the Frutiger Aero style: sky, light rays, aurora ribbons, bubbles and       -->
+    <!-- bokeh. The brushes come from the theme dictionaries, so the art follows the accent color and the   -->
+    <!-- light or dark theme.                                                                               -->
+    <!-- ================================================================================================== -->
+    <Style Selector="ContentControl.aero-banner-art">
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Background="{DynamicResource Aero.Art.Sky}"/>
+                    <Border Background="{DynamicResource Aero.Art.Horizon}"/>
+                    <!-- Sun, rays and gloss in the top right. -->
+                    <Canvas Width="340" Height="340" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <Ellipse Canvas.Left="150" Canvas.Top="-170" Width="340" Height="340" Fill="{DynamicResource Aero.Art.Sun}"/>
+                        <Canvas Name="AeroBannerRays" Opacity="0.85">
+                            <Path Data="M 330,-20 L -40,250 L 20,300 Z" Fill="{DynamicResource Aero.Art.Ray}"/>
+                            <Path Data="M 330,-20 L 60,330 L 92,340 Z" Fill="{DynamicResource Aero.Art.Ray}"/>
+                            <Path Data="M 330,-20 L 170,340 L 230,340 Z" Fill="{DynamicResource Aero.Art.Ray}" Opacity="0.8"/>
+                            <Path Data="M 330,-20 L -40,120 L -40,165 Z" Fill="{DynamicResource Aero.Art.Ray}" Opacity="0.7"/>
+                        </Canvas>
+                        <Path Data="M 0,0 H 340 V 150 C 250,185 130,205 0,222 Z" Fill="{DynamicResource Aero.Art.Gloss}"/>
+                        <!-- A flowering sprig hanging from the top left corner. -->
+                        <Canvas Name="AeroBannerSprig">
+                        <Path Data="M -6,18 C 40,10 78,30 82,66 C 86,100 64,120 50,136 L 49.26,136.75 L 48.45,137.4 L 47.57,137.95 L 46.65,138.38 L 45.7,138.7 L 44.72,138.9 L 43.75,138.98 L 42.78,138.95 L 41.83,138.81 L 40.92,138.56 L 40.05,138.21 L 39.24,137.77 L 38.51,137.24 L 37.84,136.63 L 37.26,135.97 L 36.77,135.24 L 36.37,134.48 L 36.07,133.69 L 35.87,132.87 L 35.77,132.05 L 35.76,131.24 L 35.85,130.45 L 36.03,129.68 L 36.29,128.95 L 36.63,128.26 L 37.05,127.63 L 37.52,127.07 L 38.06,126.57 L 38.63,126.14 L 39.24,125.8 L 39.88,125.53 L 40.53,125.34 L 41.19,125.23 L 41.85,125.2 L 42.49,125.24 L 43.11,125.36 L 43.7,125.55 L 44.25,125.8 L 44.76,126.1 L 45.22,126.46 L 45.63,126.86 L 45.98,127.3 L 46.27,127.76 L 46.5,128.25 L 46.66,128.74 L 46.77,129.24 L 46.81,129.74 L 46.79,130.23 L 46.72,130.7 L 46.6,131.14 L 46.43,131.56 L 46.22,131.94 L 45.97,132.29 L 45.69,132.6 L 45.39,132.86 L 45.07,133.08 L 44.73,133.25 L 44.39,133.38 L 44.05,133.47 L 43.71,133.51 L 43.38,133.51 L 43.06,133.48 L 42.76,133.41 L 42.49,133.31 L 42.24,133.19 L 42.01,133.04 L 41.81,132.87 L 41.65,132.69 L 41.51,132.51 L 41.4,132.31 L 41.32,132.12 L 41.26,131.93" Stroke="{DynamicResource Aero.Art.Vine}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round"/>
+                        <Path Data="M 34.85,18.53 C 30,36 24,60 10,76 L 9.58,76.53 L 9.23,77.1 L 8.96,77.7 L 8.75,78.32 L 8.62,78.96 L 8.56,79.59 L 8.57,80.22 L 8.65,80.84 L 8.8,81.43 L 9.01,82 L 9.28,82.54 L 9.61,83.03 L 9.99,83.48 L 10.41,83.87 L 10.86,84.21 L 11.34,84.5 L 11.85,84.72 L 12.37,84.89 L 12.9,84.99 L 13.42,85.03 L 13.95,85.01 L 14.45,84.93 L 14.94,84.8 L 15.41,84.62 L 15.84,84.39 L 16.24,84.11 L 16.59,83.8 L 16.91,83.46 L 17.18,83.08 L 17.4,82.69 L 17.58,82.28 L 17.7,81.86 L 17.77,81.44 L 17.8,81.02 L 17.78,80.61 L 17.71,80.21 L 17.6,79.83 L 17.45,79.47 L 17.26,79.13 L 17.05,78.83 L 16.8,78.55 L 16.53,78.32 L 16.24,78.12 L 15.94,77.95 L 15.63,77.83 L 15.31,77.74 L 15,77.69 L 14.68,77.68 L 14.38,77.7 L 14.09,77.75 L 13.81,77.84 L 13.55,77.95 L 13.32,78.09 L 13.1,78.25 L 12.92,78.42 L 12.75,78.61 L 12.62,78.81 L 12.51,79.02 L 12.43,79.23 L 12.37,79.45 L 12.34,79.66 L 12.34,79.86 L 12.36,80.06 L 12.39,80.24 L 12.45,80.41 L 12.52,80.57 L 12.61,80.71 L 12.7,80.84 L 12.81,80.94 L 12.92,81.03 L 13.03,81.11 L 13.14,81.16" Stroke="{DynamicResource Aero.Art.Vine}" StrokeThickness="1.2" StrokeLineCap="Round" StrokeJoin="Round"/>
+                        <Path Data="M 22.92,16.66 C 22.35,5.74 31.21,-3.24 42.7,-3.19 C 40.31,7.41 32.07,15.82 22.92,16.66 Z" Fill="{DynamicResource Aero.Art.Leaf.Deep}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 24.15,15.52 Q 30.83,6.66 40.04,-1.12" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 74.7,44.69 C 80.4,53.09 77.67,64.48 68.51,69.97 C 65.32,60.39 67.83,49.75 74.7,44.69 Z" Fill="{DynamicResource Aero.Art.Leaf}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 74.27,46.19 Q 73.22,56.44 69.63,67.04" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 82.38,77.65 C 91.71,76.85 99.66,84.18 99.95,94.02 C 90.8,92.28 83.36,85.46 82.38,77.65 Z" Fill="{DynamicResource Aero.Art.Leaf.Deep}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 83.39,78.68 Q 91.17,84.14 98.1,91.81" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 82.41,71 C 83.32,81.89 74.75,91.14 63.26,91.46 C 65.31,80.78 73.29,72.12 82.41,71 Z" Fill="{DynamicResource Aero.Art.Leaf}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 81.21,72.18 Q 74.82,81.24 65.85,89.3" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 72.75,107.75 C 68.99,114.6 60.23,116.71 53.27,112.36 C 58.71,106.82 66.88,104.82 72.75,107.75 Z" Fill="{DynamicResource Aero.Art.Leaf}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 71.57,107.98 Q 64.18,110.85 55.67,112.1" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 24.66,50.86 C 22.28,57.48 14.79,60.58 8,57.7 C 12.05,52 19.04,49.08 24.66,50.86 Z" Fill="{DynamicResource Aero.Art.Leaf.Deep}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 23.65,51.23 Q 17.48,54.82 10.09,57.13" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 112,34 C 108,28.28 109.84,19.64 115.53,17.37 C 119.82,21.76 117.98,30.4 112,34 Z M 112,34 C 116.2,28.43 124.99,27.51 128.91,32.22 C 126.06,37.65 117.27,38.57 112,34 Z M 112,34 C 118.6,36.27 122.19,44.35 118.91,49.53 C 112.87,48.5 109.28,40.42 112,34 Z M 112,34 C 111.88,40.98 105.31,46.89 99.37,45.38 C 98.48,39.31 105.05,33.4 112,34 Z M 112,34 C 105.33,36.04 97.67,31.62 97.28,25.5 C 102.77,22.78 110.43,27.2 112,34 Z" Fill="{DynamicResource Aero.Art.Petal}" Stroke="{DynamicResource Aero.Art.Petal.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 112,34 C 109.52,30.46 110.66,25.09 114.19,23.69 C 116.85,26.41 115.71,31.77 112,34 Z M 112,34 C 114.6,30.55 120.06,29.97 122.48,32.9 C 120.72,36.26 115.27,36.84 112,34 Z M 112,34 C 116.09,35.41 118.32,40.42 116.29,43.63 C 112.54,42.99 110.31,37.98 112,34 Z M 112,34 C 111.92,38.32 107.85,41.99 104.17,41.05 C 103.62,37.29 107.69,33.62 112,34 Z M 112,34 C 107.86,35.26 103.12,32.52 102.87,28.73 C 106.28,27.05 111.03,29.79 112,34 Z" Fill="{DynamicResource Aero.Art.Petal.Gloss}"/>
+                        <Ellipse Canvas.Left="108.6" Canvas.Top="30.6" Width="6.8" Height="6.8" Fill="{DynamicResource Aero.Art.Petal.Core}"/>
+                        <Path Data="M 115.79,30.59 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 116.42,36.55 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 110.94,38.99 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 106.93,34.53 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 109.93,29.34 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0" Fill="{DynamicResource Aero.Art.Sparkle}"/>
+                        <Path Data="M 70,118 C 69.5,113.93 72.84,109.94 76.43,110.34 C 77.44,113.8 74.1,117.78 70,118 Z M 70,118 C 73.72,116.27 78.54,118.22 79.27,121.75 C 76.29,123.78 71.47,121.83 70,118 Z M 70,118 C 72.8,121 72.43,126.19 69.3,127.98 C 66.45,125.77 66.81,120.58 70,118 Z M 70,118 C 68.01,121.59 62.96,122.85 60.3,120.42 C 61.51,117.02 66.56,115.77 70,118 Z M 70,118 C 65.97,117.22 63.22,112.81 64.7,109.52 C 68.3,109.63 71.06,114.04 70,118 Z" Fill="{DynamicResource Aero.Art.Petal}" Stroke="{DynamicResource Aero.Art.Petal.Edge}" StrokeThickness="0.8" Opacity="0.9"/>
+                        <Path Data="M 70,118 C 69.69,115.47 71.76,113 73.99,113.25 C 74.61,115.4 72.54,117.87 70,118 Z M 70,118 C 72.31,116.93 75.3,118.13 75.75,120.32 C 73.9,121.58 70.91,120.37 70,118 Z M 70,118 C 71.73,119.86 71.51,123.08 69.57,124.18 C 67.8,122.82 68.02,119.6 70,118 Z M 70,118 C 68.77,120.22 65.64,121 63.98,119.5 C 64.74,117.4 67.87,116.62 70,118 Z M 70,118 C 67.5,117.51 65.79,114.78 66.71,112.74 C 68.95,112.81 70.66,115.54 70,118 Z" Fill="{DynamicResource Aero.Art.Petal.Gloss}" Opacity="0.9"/>
+                        <Ellipse Canvas.Left="68" Canvas.Top="116" Width="4" Height="4" Fill="{DynamicResource Aero.Art.Petal.Core}" Opacity="0.9"/>
+                        <Path Data="M 72.91,117.27 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 71.59,120.54 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 68.07,120.3 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 67.22,116.88 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 70.21,115.01 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0" Fill="{DynamicResource Aero.Art.Sparkle}" Opacity="0.9"/>
+                        <Ellipse Canvas.Left="68.84" Canvas.Top="79.21" Width="6" Height="6" Fill="{DynamicResource Aero.Art.Bubble}"/>
+                        <Ellipse Canvas.Left="70.19" Canvas.Top="80.41" Width="2.1" Height="1.5" Fill="{DynamicResource Aero.Art.Bubble.Spot}"/>
+                        </Canvas>
+                        <Path Canvas.Left="286" Canvas.Top="44" Data="M 0,-7 L 1.4,-1.4 L 7,0 L 1.4,1.4 L 0,7 L -1.4,1.4 L -7,0 L -1.4,-1.4 Z" Fill="{DynamicResource Aero.Art.Sparkle}"/>
+                        <Path Canvas.Left="250" Canvas.Top="92" Data="M 0,-4 L 0.8,-0.8 L 4,0 L 0.8,0.8 L 0,4 L -0.8,0.8 L -4,0 L -0.8,-0.8 Z" Fill="{DynamicResource Aero.Art.Sparkle}" Opacity="0.8"/>
+                    </Canvas>
+                    <Border Background="{DynamicResource Aero.Art.TextPool}"/>
+                    <Border Background="{DynamicResource Aero.Art.FooterPool}"/>
+                    <!-- Aurora ribbons sweeping up from the bottom left. -->
+                    <Canvas Width="340" Height="400" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <Path Data="M 150,400 C 210,330 280,280 360,250 L 360,400 Z" Fill="{DynamicResource Aero.Art.Ground}"/>
+                        <Canvas Name="AeroBannerRibbons">
+                            <Path Data="M -30,262 C 90,224 210,236 370,118 L 370,134 C 220,252 100,246 -30,286 Z" Fill="{DynamicResource Aero.Art.Ribbon.Aqua}"/>
+                            <Path Data="M -30,318 C 80,268 190,256 370,162 L 370,196 C 200,282 90,298 -30,352 Z" Fill="{DynamicResource Aero.Art.Ribbon}"/>
+                            <Path Data="M -30,364 C 120,318 240,316 370,236 L 370,245 C 250,330 120,334 -30,376 Z" Fill="{DynamicResource Aero.Art.Ribbon.Mint}"/>
+                            <Path Data="M -30,298 C 100,262 230,268 370,190 L 370,193 C 232,274 100,268 -30,302 Z" Fill="{DynamicResource Aero.Art.Ribbon}" Opacity="0.9"/>
+                        </Canvas>
+                        <!-- Glass bubbles resting on the light. -->
+                        <Ellipse Canvas.Left="150" Canvas.Top="262" Width="46" Height="46" Fill="{DynamicResource Aero.Art.Bubble}"/>
+                        <Ellipse Canvas.Left="159" Canvas.Top="268" Width="15" Height="10" Fill="{DynamicResource Aero.Art.Bubble.Spot}"/>
+                        <!-- Glossy flowers, frosted leaves and curling vines in the bottom right. -->
+                        <Canvas Name="AeroBannerFlora">
+                        <Path Data="M 350,330 C 300,300 262,312 232,280 C 210,256 214,230 238,222 L 239.17,221.69 L 240.36,221.52 L 241.55,221.5 L 242.72,221.63 L 243.85,221.89 L 244.92,222.28 L 245.93,222.8 L 246.85,223.42 L 247.69,224.15 L 248.41,224.96 L 249.03,225.84 L 249.53,226.78 L 249.9,227.76 L 250.15,228.76 L 250.27,229.77 L 250.27,230.78 L 250.15,231.76 L 249.91,232.71 L 249.57,233.61 L 249.12,234.45 L 248.58,235.22 L 247.96,235.9 L 247.28,236.5 L 246.53,237 L 245.75,237.39 L 244.93,237.69 L 244.1,237.88 L 243.27,237.97 L 242.44,237.95 L 241.64,237.84 L 240.87,237.63 L 240.14,237.34 L 239.47,236.96 L 238.86,236.52 L 238.32,236.01 L 237.85,235.45 L 237.46,234.85 L 237.16,234.23 L 236.93,233.58 L 236.8,232.92 L 236.74,232.26 L 236.76,231.62 L 236.86,231 L 237.03,230.4 L 237.27,229.85 L 237.56,229.34 L 237.91,228.88 L 238.3,228.48 L 238.73,228.14 L 239.18,227.85 L 239.65,227.63 L 240.13,227.48 L 240.61,227.39 L 241.09,227.35 L 241.55,227.38 L 241.99,227.46 L 242.41,227.58 L 242.79,227.76 L 243.14,227.97 L 243.45,228.21 L 243.72,228.48 L 243.95,228.77 L 244.13,229.07 L 244.26,229.38 L 244.36,229.69 L 244.41,229.99 L 244.43,230.29 L 244.41,230.57 L 244.36,230.84 L 244.28,231.08 L 244.18,231.3 L 244.06,231.49" Stroke="{DynamicResource Aero.Art.Vine}" StrokeThickness="1.8" StrokeLineCap="Round" StrokeJoin="Round"/>
+                        <Path Data="M 345,395 C 312,384 284,392 264,374 L 263.42,373.42 L 262.93,372.78 L 262.51,372.09 L 262.18,371.37 L 261.95,370.62 L 261.8,369.87 L 261.75,369.1 L 261.78,368.35 L 261.9,367.62 L 262.11,366.91 L 262.39,366.24 L 262.74,365.62 L 263.16,365.05 L 263.64,364.54 L 264.17,364.09 L 264.73,363.72 L 265.33,363.42 L 265.95,363.2 L 266.59,363.05 L 267.22,362.98 L 267.86,362.98 L 268.47,363.06 L 269.07,363.2 L 269.63,363.42 L 270.16,363.69 L 270.65,364.02 L 271.08,364.39 L 271.46,364.81 L 271.79,365.27 L 272.05,365.75 L 272.26,366.24 L 272.4,366.75 L 272.47,367.27 L 272.49,367.78 L 272.45,368.28 L 272.35,368.76 L 272.2,369.21 L 272,369.64 L 271.75,370.04 L 271.47,370.39 L 271.15,370.7 L 270.81,370.97 L 270.45,371.19 L 270.07,371.36 L 269.68,371.48 L 269.29,371.56 L 268.9,371.59 L 268.52,371.57 L 268.16,371.51 L 267.81,371.41 L 267.49,371.27 L 267.2,371.11 L 266.93,370.91 L 266.69,370.69 L 266.49,370.45 L 266.32,370.2 L 266.19,369.93 L 266.1,369.67 L 266.03,369.4 L 266,369.13 L 266.01,368.88 L 266.04,368.63 L 266.09,368.4 L 266.17,368.19 L 266.27,367.99 L 266.39,367.82 L 266.52,367.67 L 266.66,367.54 L 266.81,367.43 L 266.96,367.35 L 267.11,367.29 L 267.26,367.25" Stroke="{DynamicResource Aero.Art.Vine}" StrokeThickness="1.5" StrokeLineCap="Round" StrokeJoin="Round"/>
+                        <Path Data="M 318.7,315.38 C 315.85,329.95 301.23,338.84 286.12,334.99 C 292.76,321.82 306.38,313.47 318.7,315.38 Z" Fill="{DynamicResource Aero.Art.Leaf.Deep}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 316.7,316.48 Q 304.99,325.94 290.3,333.13" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 277.72,304.31 C 265.51,301.65 258.29,289.17 261.8,276.52 C 272.78,282.35 279.56,293.97 277.72,304.31 Z" Fill="{DynamicResource Aero.Art.Leaf}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 276.84,302.6 Q 269.08,292.57 263.29,280.07" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 261.27,299.24 C 258.72,310.68 246.99,317.39 235.14,314.03 C 240.66,303.77 251.59,297.47 261.27,299.24 Z" Fill="{DynamicResource Aero.Art.Leaf}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 259.67,300.07 Q 250.22,307.28 238.48,312.65" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 223.83,269.13 C 215.32,276 202.86,274.08 196.16,264.74 C 206.15,260.46 217.79,262.21 223.83,269.13 Z" Fill="{DynamicResource Aero.Art.Leaf.Deep}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 222.19,268.8 Q 211.1,268.58 199.4,265.67" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 217.7,251.52 C 216.54,243.01 222.91,235.41 231.91,234.7 C 230.72,243.16 224.8,250.27 217.7,251.52 Z" Fill="{DynamicResource Aero.Art.Leaf}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 218.59,250.55 Q 223.25,243.18 229.96,236.5" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 316.73,389.01 C 316.99,401.51 306.54,411.44 293.42,410.98 C 296.53,398.94 306.25,389.64 316.73,389.01 Z" Fill="{DynamicResource Aero.Art.Leaf}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 315.28,390.27 Q 307.33,400.15 296.53,408.7" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 290.1,385.73 C 280.05,384.27 273.49,374.56 275.62,364.11 C 284.84,368.21 291,377.24 290.1,385.73 Z" Fill="{DynamicResource Aero.Art.Leaf.Deep}" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 289.29,384.4 Q 282.43,376.71 277.03,366.9" Stroke="{DynamicResource Aero.Art.Leaf.Edge}" StrokeThickness="0.7" StrokeLineCap="Round"/>
+                        <Path Data="M 290,336 C 279.68,323.24 282.57,302.64 295.57,296.39 C 306.34,305.98 303.44,326.58 290,336 Z M 290,336 C 298.95,322.24 319.43,318.63 329.39,329.05 C 323.6,342.26 303.11,345.87 290,336 Z M 290,336 C 305.85,340.26 315.62,358.62 308.78,371.32 C 294.43,369.89 284.66,351.52 290,336 Z M 290,336 C 290.85,352.39 276.4,367.35 262.21,364.77 C 259.14,350.68 273.59,335.72 290,336 Z M 290,336 C 274.67,341.88 255.98,332.76 254.05,318.47 C 266.5,311.19 285.19,320.3 290,336 Z" Fill="{DynamicResource Aero.Art.Petal}" Stroke="{DynamicResource Aero.Art.Petal.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 290,336 C 283.6,328.09 285.39,315.32 293.45,311.44 C 300.13,317.39 298.33,330.16 290,336 Z M 290,336 C 295.55,327.47 308.25,325.23 314.42,331.69 C 310.83,339.88 298.13,342.12 290,336 Z M 290,336 C 299.83,338.64 305.88,350.02 301.64,357.9 C 292.75,357.01 286.69,345.62 290,336 Z M 290,336 C 290.53,346.16 281.57,355.44 272.77,353.84 C 270.87,345.1 279.82,335.83 290,336 Z M 290,336 C 280.5,339.64 268.91,333.99 267.71,325.13 C 275.43,320.62 287.02,326.27 290,336 Z" Fill="{DynamicResource Aero.Art.Petal.Gloss}"/>
+                        <Ellipse Canvas.Left="282" Canvas.Top="328" Width="16" Height="16" Fill="{DynamicResource Aero.Art.Petal.Core}"/>
+                        <Path Data="M 298.34,327.37 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 300.79,341.26 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 288.33,347.88 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 278.18,338.08 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 284.37,325.4 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0" Fill="{DynamicResource Aero.Art.Sparkle}"/>
+                        <Path Data="M 332,262 C 329.12,252.58 335.36,241.77 344,241.22 C 347.84,248.97 341.6,259.78 332,262 Z M 332,262 C 340.07,256.35 352.28,258.95 355.48,266.99 C 349.28,273.03 337.08,270.44 332,262 Z M 332,262 C 339.86,267.93 341.17,280.34 334.51,285.87 C 326.85,281.85 325.54,269.44 332,262 Z M 332,262 C 328.79,271.31 317.39,276.39 310.07,271.76 C 311.53,263.23 322.93,258.16 332,262 Z M 332,262 C 322.15,261.82 313.8,252.55 315.94,244.16 C 324.5,242.91 332.85,252.19 332,262 Z" Fill="{DynamicResource Aero.Art.Petal}" Stroke="{DynamicResource Aero.Art.Petal.Edge}" StrokeThickness="0.8"/>
+                        <Path Data="M 332,262 C 330.22,256.16 334.09,249.46 339.44,249.11 C 341.82,253.92 337.95,260.62 332,262 Z M 332,262 C 337,258.5 344.57,260.11 346.55,265.09 C 342.72,268.84 335.15,267.23 332,262 Z M 332,262 C 336.88,265.68 337.68,273.37 333.56,276.8 C 328.8,274.31 328,266.61 332,262 Z M 332,262 C 330.01,267.77 322.94,270.92 318.41,268.05 C 319.31,262.76 326.38,259.62 332,262 Z M 332,262 C 325.89,261.89 320.72,256.14 322.04,250.94 C 327.35,250.17 332.53,255.92 332,262 Z" Fill="{DynamicResource Aero.Art.Petal.Gloss}"/>
+                        <Ellipse Canvas.Left="327.2" Canvas.Top="257.2" Width="9.6" Height="9.6" Fill="{DynamicResource Aero.Art.Petal.Core}"/>
+                        <Path Data="M 338.58,259.07 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 336.82,267.35 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 328.4,268.24 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 324.96,260.5 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 331.25,254.84 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0" Fill="{DynamicResource Aero.Art.Sparkle}"/>
+                        <Path Data="M 214,312 C 211.39,306.88 213.88,300.04 218.79,298.84 C 221.78,302.91 219.29,309.75 214,312 Z M 214,312 C 218.06,307.94 225.34,308.19 227.99,312.49 C 225.05,316.59 217.77,316.33 214,312 Z M 214,312 C 219.12,314.61 221.12,321.61 217.86,325.46 C 213.05,323.92 211.04,316.93 214,312 Z M 214,312 C 213.1,317.67 207.06,321.74 202.39,319.83 C 202.37,314.78 208.4,310.71 214,312 Z M 214,312 C 208.33,312.9 202.59,308.41 202.97,303.38 C 207.76,301.79 213.5,306.28 214,312 Z" Fill="{DynamicResource Aero.Art.Petal}" Stroke="{DynamicResource Aero.Art.Petal.Edge}" StrokeThickness="0.8" Opacity="0.95"/>
+                        <Path Data="M 214,312 C 212.38,308.83 213.93,304.58 216.97,303.84 C 218.82,306.37 217.28,310.61 214,312 Z M 214,312 C 216.52,309.48 221.03,309.64 222.67,312.3 C 220.85,314.84 216.34,314.69 214,312 Z M 214,312 C 217.17,313.62 218.42,317.96 216.39,320.34 C 213.41,319.39 212.17,315.05 214,312 Z M 214,312 C 213.44,315.52 209.7,318.04 206.8,316.85 C 206.79,313.72 210.53,311.2 214,312 Z M 214,312 C 210.48,312.56 206.92,309.78 207.16,306.66 C 210.13,305.67 213.69,308.45 214,312 Z" Fill="{DynamicResource Aero.Art.Petal.Gloss}" Opacity="0.95"/>
+                        <Ellipse Canvas.Left="211.2" Canvas.Top="309.2" Width="5.6" Height="5.6" Fill="{DynamicResource Aero.Art.Petal.Core}" Opacity="0.95"/>
+                        <Path Data="M 217.48,309.65 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 217.31,314.59 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 212.56,315.95 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 209.8,311.85 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 212.84,307.96 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0" Fill="{DynamicResource Aero.Art.Sparkle}" Opacity="0.95"/>
+                        <Ellipse Canvas.Left="265.62" Canvas.Top="285.59" Width="6.8" Height="6.8" Fill="{DynamicResource Aero.Art.Bubble}"/>
+                        <Ellipse Canvas.Left="267.15" Canvas.Top="286.95" Width="2.38" Height="1.7" Fill="{DynamicResource Aero.Art.Bubble.Spot}"/>
+                        <Ellipse Canvas.Left="279.58" Canvas.Top="371.21" Width="5.2" Height="5.2" Fill="{DynamicResource Aero.Art.Bubble}"/>
+                        <Ellipse Canvas.Left="280.75" Canvas.Top="372.25" Width="1.82" Height="1.3" Fill="{DynamicResource Aero.Art.Bubble.Spot}"/>
+                        </Canvas>
+                        <Ellipse Canvas.Left="14" Canvas.Top="252" Width="34" Height="34" Fill="{DynamicResource Aero.Art.Bubble}"/>
+                        <Ellipse Canvas.Left="21" Canvas.Top="257" Width="11" Height="7" Fill="{DynamicResource Aero.Art.Bubble.Spot}"/>
+                        <Ellipse Canvas.Left="150" Canvas.Top="352" Width="70" Height="70" Fill="{DynamicResource Aero.Art.Bokeh}" Opacity="0.6"/>
+                    </Canvas>
+                    <!-- Drifting bokeh and bubbles (they only move while the window is active). -->
+                    <Canvas Name="AeroBannerDrift" Width="340" Height="400" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <Ellipse Canvas.Left="262" Canvas.Top="150" Width="34" Height="34" Fill="{DynamicResource Aero.Art.Bokeh}"/>
+                        <Ellipse Canvas.Left="196" Canvas.Top="206" Width="16" Height="16" Fill="{DynamicResource Aero.Art.Bubble}"/>
+                        <Ellipse Canvas.Left="200" Canvas.Top="208" Width="5" Height="4" Fill="{DynamicResource Aero.Art.Bubble.Spot}"/>
+                        <Ellipse Canvas.Left="96" Canvas.Top="282" Width="22" Height="22" Fill="{DynamicResource Aero.Art.Bokeh}"/>
+                        <Ellipse Canvas.Left="306" Canvas.Top="232" Width="12" Height="12" Fill="{DynamicResource Aero.Art.Bubble}"/>
+                        <Ellipse Canvas.Left="58" Canvas.Top="300" Width="12" Height="12" Fill="{DynamicResource Aero.Art.Bokeh}"/>
+                        <Path Data="M 196,214 C 200.71,212.56 206.11,215.68 206.39,220 C 202.51,221.92 197.11,218.8 196,214 Z" Fill="{DynamicResource Aero.Art.Petal}" Stroke="{DynamicResource Aero.Art.Petal.Edge}" StrokeThickness="0.6"/>
+                        <Path Data="M 150,300 C 151.86,303.66 150.08,308.54 146.58,309.4 C 144.44,306.49 146.22,301.61 150,300 Z" Fill="{DynamicResource Aero.Art.Petal}" Stroke="{DynamicResource Aero.Art.Petal.Edge}" StrokeThickness="0.6"/>
+                        <Path Data="M 282,150 C 282.83,146.4 286.89,144.06 289.79,145.5 C 289.59,148.74 285.53,151.08 282,150 Z" Fill="{DynamicResource Aero.Art.Petal}" Stroke="{DynamicResource Aero.Art.Petal.Edge}" StrokeThickness="0.6"/>
+                    </Canvas>
+                    <!-- The glass edge against the content. -->
+                    <Border Width="1" HorizontalAlignment="Right" Background="#50FFFFFF"/>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <!-- Ambient life, only while the window is active on glass: the bokeh drifts and the rays breathe. -->
+    <Style Selector=":is(Window).aero-glass.aero-active ContentControl.aero-banner-art /template/ Canvas#AeroBannerDrift">
+        <Style.Animations>
+            <Animation Duration="0:0:14" IterationCount="Infinite" PlaybackDirection="Alternate">
+                <Animation.Easing>
+                    <theming:AeroStepEasing Steps="56"/>
+                </Animation.Easing>
+                <KeyFrame Cue="0%">
+                    <Setter Property="TranslateTransform.Y" Value="0"/>
+                    <Setter Property="TranslateTransform.X" Value="0"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="TranslateTransform.Y" Value="-26"/>
+                    <Setter Property="TranslateTransform.X" Value="8"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    <Style Selector=":is(Window).aero-glass.aero-active ContentControl.aero-banner-art /template/ Canvas#AeroBannerRays">
+        <Style.Animations>
+            <Animation Duration="0:0:9" IterationCount="Infinite" PlaybackDirection="Alternate">
+                <Animation.Easing>
+                    <theming:AeroStepEasing Steps="20"/>
+                </Animation.Easing>
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.85"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.45"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <!-- The flowers bloom in once, when the window opens. -->
+    <Style Selector="ContentControl.aero-banner-art /template/ Canvas#AeroBannerFlora">
+        <Style.Animations>
+            <Animation Duration="0:0:0.9" Delay="0:0:0.15" Easing="CubicEaseOut" FillMode="Backward">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="TranslateTransform.Y" Value="14"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="TranslateTransform.Y" Value="0"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    <Style Selector="ContentControl.aero-banner-art /template/ Canvas#AeroBannerSprig">
+        <Style.Animations>
+            <Animation Duration="0:0:0.9" Delay="0:0:0.35" Easing="CubicEaseOut" FillMode="Backward">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="TranslateTransform.Y" Value="-10"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="TranslateTransform.Y" Value="0"/>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    <Style Selector="controls|SettingsNavigation TreeView /template/ Canvas#AeroSprig">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+
+    <!-- The backdrop of the empty main window, behind the hotkey gadget. Static. -->
+    <Style Selector="ContentControl.aero-backdrop-art">
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Background="{DynamicResource Aero.Art.Backdrop}"/>
+                    <Border Background="{DynamicResource Aero.Art.Backdrop.Glow}"/>
+                    <Viewbox Height="230" VerticalAlignment="Bottom" Stretch="Fill">
+                        <Canvas Width="900" Height="230">
+                            <Path Data="M -20,200 C 200,150 480,190 920,40 L 920,70 C 500,214 210,180 -20,232 Z" Fill="{DynamicResource Aero.Art.Backdrop.Ribbon}"/>
+                            <Path Data="M -20,214 C 260,160 520,196 920,78 L 920,84 C 520,206 260,172 -20,222 Z" Fill="{DynamicResource Aero.Art.Backdrop.Ribbon.Light}"/>
+                            <Path Data="M -20,160 C 220,130 420,150 920,10 L 920,18 C 430,162 220,142 -20,168 Z" Fill="{DynamicResource Aero.Art.Backdrop.Ribbon}" Opacity="0.6"/>
+                        </Canvas>
+                    </Viewbox>
+                    <Canvas Width="260" Height="240" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        <Path Data="M 270,230 C 220,214 190,190 170,150 C 156,120 170,100 194,104 L 195.18,104.27 L 196.31,104.68 L 197.37,105.22 L 198.34,105.88 L 199.22,106.64 L 199.99,107.49 L 200.64,108.41 L 201.16,109.4 L 201.56,110.43 L 201.82,111.49 L 201.95,112.55 L 201.95,113.62 L 201.83,114.66 L 201.58,115.66 L 201.21,116.61 L 200.74,117.5 L 200.17,118.31 L 199.52,119.04 L 198.79,119.67 L 198,120.21 L 197.17,120.63 L 196.3,120.95 L 195.42,121.15 L 194.53,121.25 L 193.65,121.23 L 192.79,121.11 L 191.96,120.89 L 191.19,120.58 L 190.46,120.18 L 189.81,119.7 L 189.22,119.16 L 188.72,118.56 L 188.3,117.91 L 187.97,117.23 L 187.73,116.53 L 187.57,115.82 L 187.51,115.11 L 187.54,114.41 L 187.64,113.73 L 187.83,113.09 L 188.08,112.48 L 188.41,111.92 L 188.78,111.42 L 189.21,110.97 L 189.68,110.6 L 190.18,110.28 L 190.7,110.04 L 191.23,109.87 L 191.77,109.76 L 192.3,109.72 L 192.82,109.75 L 193.32,109.84 L 193.79,109.98 L 194.22,110.18 L 194.62,110.41 L 194.98,110.69 L 195.28,111 L 195.54,111.33 L 195.75,111.68 L 195.91,112.04 L 196.03,112.4 L 196.09,112.76 L 196.11,113.11 L 196.08,113.45 L 196.02,113.77 L 195.93,114.07 L 195.8,114.33 L 195.65,114.57 L 195.48,114.78 L 195.3,114.96 L 195.11,115.1 L 194.91,115.22" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round"/>
+                        <Path Data="M 236.09,216.38 C 231.86,228.96 217.85,235.13 204.89,229.95 C 212.33,219.04 225.39,213.24 236.09,216.38 Z" Fill="{DynamicResource Aero.Art.Backdrop.Leaf}" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="0.8"/>
+                        <Path Data="M 183.28,172.14 C 176.56,163.52 178.69,151.09 188.14,144.55 C 192.25,154.61 190.3,166.22 183.28,172.14 Z" Fill="{DynamicResource Aero.Art.Backdrop.Leaf}" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="0.8"/>
+                        <Path Data="M 164.82,133.31 C 155.06,136.12 145.08,129.99 142.71,119.59 C 152.81,119.52 162.14,125.22 164.82,133.31 Z" Fill="{DynamicResource Aero.Art.Backdrop.Leaf}" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="0.8"/>
+                        <Path Data="M 226,168 C 217.61,156.85 220.68,139.44 231.9,134.52 C 240.77,142.98 237.7,160.4 226,168 Z M 226,168 C 234.01,156.57 251.52,154.11 259.67,163.27 C 254.35,174.32 236.85,176.78 226,168 Z M 226,168 C 239.34,172.09 247.09,187.98 240.9,198.56 C 228.76,196.92 221.01,181.03 226,168 Z M 226,168 C 226.24,181.95 213.52,194.23 201.54,191.62 C 199.35,179.56 212.07,167.28 226,168 Z M 226,168 C 212.81,172.54 197.2,164.24 195.98,152.04 C 206.77,146.22 222.38,154.52 226,168 Z" Fill="{DynamicResource Aero.Art.Backdrop.Petal}" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="0.8"/>
+                        <Path Data="M 226,168 C 220.8,161.09 222.7,150.29 229.66,147.24 C 235.16,152.49 233.25,163.29 226,168 Z M 226,168 C 230.96,160.92 241.82,159.39 246.87,165.07 C 243.58,171.92 232.73,173.44 226,168 Z M 226,168 C 234.27,170.53 239.08,180.39 235.24,186.95 C 227.71,185.93 222.9,176.08 226,168 Z M 226,168 C 226.15,176.65 218.26,184.26 210.84,182.64 C 209.48,175.17 217.36,167.55 226,168 Z M 226,168 C 217.82,170.81 208.14,165.67 207.39,158.1 C 214.08,154.5 223.76,159.65 226,168 Z" Fill="{DynamicResource Aero.Art.Petal.Gloss}"/>
+                        <Ellipse Canvas.Left="219.2" Canvas.Top="161.2" Width="13.6" Height="13.6" Fill="{DynamicResource Aero.Art.Backdrop.Petal}"/>
+                        <Path Data="M 233.34,160.91 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 235.01,172.79 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 224.23,178.05 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 215.9,169.42 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 221.53,158.83 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0" Fill="{DynamicResource Aero.Art.Sparkle}"/>
+                        <Path Data="M 150,214 C 148.34,206.8 153.58,199.04 160.07,199.08 C 162.53,205.08 157.3,212.84 150,214 Z M 150,214 C 156.33,210.2 165.33,212.78 167.3,218.96 C 162.35,223.16 153.36,220.58 150,214 Z M 150,214 C 155.57,218.85 155.9,228.2 150.63,231.99 C 145.11,228.58 144.78,219.23 150,214 Z M 150,214 C 147.11,220.8 138.32,224 133.09,220.16 C 134.62,213.85 143.42,210.65 150,214 Z M 150,214 C 142.64,213.35 136.88,205.98 138.92,199.82 C 145.39,199.33 151.15,206.7 150,214 Z" Fill="{DynamicResource Aero.Art.Backdrop.Petal}" Stroke="{DynamicResource Aero.Art.Backdrop.Vine}" StrokeThickness="0.8"/>
+                        <Path Data="M 150,214 C 148.97,209.54 152.22,204.73 156.24,204.75 C 157.77,208.47 154.52,213.28 150,214 Z M 150,214 C 153.93,211.64 159.5,213.24 160.73,217.08 C 157.66,219.68 152.08,218.08 150,214 Z M 150,214 C 153.46,217.01 153.66,222.81 150.39,225.15 C 146.97,223.04 146.76,217.24 150,214 Z M 150,214 C 148.21,218.21 142.76,220.2 139.51,217.82 C 140.47,213.91 145.92,211.92 150,214 Z M 150,214 C 145.44,213.6 141.87,209.03 143.13,205.21 C 147.14,204.9 150.71,209.48 150,214 Z" Fill="{DynamicResource Aero.Art.Petal.Gloss}"/>
+                        <Ellipse Canvas.Left="146.4" Canvas.Top="210.4" Width="7.2" Height="7.2" Fill="{DynamicResource Aero.Art.Backdrop.Petal}"/>
+                        <Path Data="M 155.07,212.15 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 153.32,218.26 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 146.98,218.48 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 144.81,212.51 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0 M 149.81,208.6 m -0.9,0 a 0.9,0.9 0 1 0 1.8,0 a 0.9,0.9 0 1 0 -1.8,0" Fill="{DynamicResource Aero.Art.Sparkle}"/>
+                        <Ellipse Canvas.Left="96" Canvas.Top="120" Width="40" Height="40" Fill="{DynamicResource Aero.Art.Backdrop.Bubble}"/>
+                        <Ellipse Canvas.Left="104" Canvas.Top="126" Width="12" Height="8" Fill="{DynamicResource Aero.Art.Bubble.Spot}" Opacity="0.7"/>
+                        <Ellipse Canvas.Left="70" Canvas.Top="176" Width="20" Height="20" Fill="{DynamicResource Aero.Art.Backdrop.Bubble}"/>
+                        <Ellipse Canvas.Left="230" Canvas.Top="80" Width="16" Height="16" Fill="{DynamicResource Aero.Art.Backdrop.Bubble}"/>
+                    </Canvas>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
     </Style>
 </Styles>

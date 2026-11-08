@@ -87,7 +87,9 @@
                     Background="{DynamicResource ShareX.Brush.Accent}"
                     ClipToBounds="True">
                 <Grid>
-                    <Canvas IsHitTestVisible="False">
+                    <!-- Banner art of the Aero themes (AeroTheme.axaml); empty in the other themes. -->
+                    <ContentControl Classes="aero-banner-art"/>
+                    <Canvas Classes="banner-bubbles" IsHitTestVisible="False">
                         <Ellipse Width="280" Height="280" Canvas.Left="185" Canvas.Top="-105" Fill="#18FFFFFF"/>
                         <Ellipse Width="170" Height="170" Canvas.Left="-72" Canvas.Top="465" Fill="#12FFFFFF"/>
                         <Ellipse Width="72" Height="72" Canvas.Left="270" Canvas.Top="430" Fill="#10FFFFFF"/>
