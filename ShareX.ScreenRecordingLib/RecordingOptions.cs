@@ -27,10 +27,10 @@ using System.Drawing;
 
 namespace ShareX.ScreenRecordingLib;
 
-/// <summary>Native H.264/AAC MP4 or adaptive GIF recording. Coordinates are physical desktop pixels.</summary>
+/// <summary>Native H.264/AAC MP4, adaptive GIF or animated WebP recording. Coordinates are physical desktop pixels.</summary>
 public sealed record RecordingOptions
 {
-    /// <summary>The .mp4 or .gif extension selects the output format.</summary>
+    /// <summary>The .mp4, .gif or .webp extension selects the output format.</summary>
     public required string OutputPath { get; init; }
     public Rectangle Region { get; init; }
     /// <summary>When nonzero, capture this window (including when occluded) instead of Region.</summary>
@@ -65,21 +65,29 @@ public sealed record RecordingOptions
     /// <summary>For MP4, reject a software video encoder rather than silently increasing CPU usage.</summary>
     public bool RequireHardwareEncoder { get; init; } = true;
     public TimeSpan Duration { get; init; }
+    /// <summary>Animated WebP quality from 0 to 100; 100 encodes losslessly.</summary>
+    public int WebPQuality { get; init; } = 100;
+    /// <summary>When nonzero and WebPQuality is below 100, encode losslessly unless the file would exceed this many bytes.</summary>
+    public long WebPLossyAboveBytes { get; init; }
 
-    internal bool IsGif => Path.GetExtension(OutputPath).Equals(".gif", StringComparison.OrdinalIgnoreCase);
+    internal bool IsWebP => Path.GetExtension(OutputPath).Equals(".webp", StringComparison.OrdinalIgnoreCase);
+    /// <summary>GIF and WebP share the cached animated image pipeline.</summary>
+    internal bool IsGif => IsWebP || Path.GetExtension(OutputPath).Equals(".gif", StringComparison.OrdinalIgnoreCase);
     internal bool HasAudio => !IsGif && (CaptureSystemAudio || CaptureMicrophone);
 
     internal void Validate()
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(OutputPath);
         if (!IsGif && !Path.GetExtension(OutputPath).Equals(".mp4", StringComparison.OrdinalIgnoreCase))
-            throw new ArgumentException("Native recording writes H.264/AAC MP4 or adaptive GIF files.", nameof(OutputPath));
+            throw new ArgumentException("Native recording writes H.264/AAC MP4, adaptive GIF or animated WebP files.", nameof(OutputPath));
         if (WindowHandle == 0 && (Region.Width < 2 || Region.Height < 2))
             throw new ArgumentException("Select a window or a region of at least 2 × 2 pixels.", nameof(Region));
         if (FramesPerSecond is < 1 or > 240) throw new ArgumentOutOfRangeException(nameof(FramesPerSecond));
-        if (IsGif && FramesPerSecond > 100) throw new ArgumentOutOfRangeException(nameof(FramesPerSecond), "GIF frames have a minimum duration of 10 ms.");
+        if (IsGif && !IsWebP && FramesPerSecond > 100) throw new ArgumentOutOfRangeException(nameof(FramesPerSecond), "GIF frames have a minimum duration of 10 ms.");
         if (!IsGif && VideoBitrate is < 100_000 or > 200_000_000) throw new ArgumentOutOfRangeException(nameof(VideoBitrate));
         if (!IsGif && AudioBitrate is not (96_000 or 128_000 or 160_000 or 192_000)) throw new ArgumentOutOfRangeException(nameof(AudioBitrate));
+        if (WebPQuality is < 0 or > 100) throw new ArgumentOutOfRangeException(nameof(WebPQuality));
+        if (WebPLossyAboveBytes < 0) throw new ArgumentOutOfRangeException(nameof(WebPLossyAboveBytes));
         if (Duration < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(Duration));
         if (!Enum.IsDefined(CameraResolution)) throw new ArgumentOutOfRangeException(nameof(CameraResolution));
         if (!Enum.IsDefined(CameraPosition)) throw new ArgumentOutOfRangeException(nameof(CameraPosition));

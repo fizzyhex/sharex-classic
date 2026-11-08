@@ -39,6 +39,10 @@ public sealed class SkiaAnimatedImage : IDisposable
     public int Width => codec.Info.Width;
     public int Height => codec.Info.Height;
     public SKEncodedImageFormat Format => codec.EncodedFormat;
+    /// <summary>Extra plays after the first; -1 repeats forever.</summary>
+    public int RepetitionCount => codec.RepetitionCount;
+
+    public int GetFrameDuration(int index) => FrameCount > 1 ? codec.FrameInfo[index].Duration : 0;
 
     public SkiaAnimatedImage(string filePath)
     {
@@ -81,6 +85,27 @@ public sealed class SkiaAnimatedImage : IDisposable
         {
             bitmap.Dispose();
             throw;
+        }
+    }
+
+    /// <summary>Decode a run of frames in order, reusing each frame to build the next.</summary>
+    /// <remarks>The same bitmap is yielded every time; it is only valid until the next frame is requested.</remarks>
+    public IEnumerable<SKBitmap> GetFrames(int first, int endExclusive)
+    {
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(endExclusive, FrameCount);
+        if (first >= endExclusive) yield break;
+        using SKBitmap bitmap = GetFrame(first);
+        yield return bitmap;
+        SKCodecFrameInfo[] info = codec.FrameInfo;
+        for (int frame = first + 1; frame < endExclusive; frame++)
+        {
+            // The bitmap holds the previous frame, which satisfies any frame that depends on it or earlier.
+            int prior = info.Length > frame && info[frame].RequiredFrame < 0 ? -1 : frame - 1;
+            SKCodecResult result = codec.GetPixels(bitmap.Info, bitmap.GetPixels(), new SKCodecOptions(frame, prior));
+            if (result is not SKCodecResult.Success and not SKCodecResult.IncompleteInput)
+                throw new InvalidDataException($"Frame {frame} decoding failed: {result}.");
+            bitmap.NotifyPixelsChanged();
+            yield return bitmap;
         }
     }
 

@@ -363,7 +363,7 @@ public sealed partial class AnimatedGifTrimmerViewModel : ViewModelBase, IDispos
             ShowErrorRequested?.Invoke(Strings.AnimatedGifTrimmer_UseReencode);
             return;
         }
-        string? output = await SelectOutputRequested(Path.GetFileNameWithoutExtension(InputFilePath) + "-trimmed.gif");
+        string? output = await SelectOutputRequested(Path.GetFileNameWithoutExtension(InputFilePath) + "-trimmed" + _document.Extension);
         if (output == null || _disposed) return;
         StopPlayback();
         using CancellationTokenSource cancellation = CancellationTokenSource.CreateLinkedTokenSource(_lifetime.Token);

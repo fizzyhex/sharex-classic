@@ -424,6 +424,17 @@ namespace ShareX
         public bool ScreenRecordHDRToneMapping = false;
         public int ScreenRecordFPS = 30;
         public int GIFFPS = 15;
+        public ScreenRecordGIFFormat ScreenRecordGIFFormat = ScreenRecordGIFFormat.GIF;
+        public int ScreenRecordGIFWebPQuality = 100;
+        public bool ScreenRecordGIFWebPAutoLossy = false;
+        public int ScreenRecordGIFWebPAutoLossySizeKB = 5000;
+
+        /// <summary>WebP frame durations are in milliseconds, so GIF recordings saved as WebP allow much higher rates.</summary>
+        public static int GetMaxGIFFPS(ScreenRecordGIFFormat format) =>
+            format == ScreenRecordGIFFormat.WebP ? 240 : HelpersOptions.DevMode ? 60 : 30;
+
+        /// <summary>GIFFPS limited to the current format, in case it was raised while WebP was selected.</summary>
+        public int GetGIFFPS() => Math.Clamp(GIFFPS, 1, GetMaxGIFFPS(ScreenRecordGIFFormat));
         public bool ScreenRecordShowCursor = true;
         public bool ScreenRecordMouseHighlighter = false;
         public bool ScreenRecordShowTimer = true;

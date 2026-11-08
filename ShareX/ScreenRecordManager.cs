@@ -100,9 +100,11 @@ namespace ShareX
         {
             bool useNative = taskSettings.CaptureSettings.ScreenRecordUseNative;
             bool isGif = outputType == ScreenRecordOutput.GIF;
+            // GIF recordings may be saved as animated WebP; everything else still treats them as GIF.
+            bool gifAsWebP = isGif && taskSettings.CaptureSettings.ScreenRecordGIFFormat == ScreenRecordGIFFormat.WebP;
             if (!useNative && isGif)
             {
-                taskSettings.CaptureSettings.FFmpegOptions.VideoCodec = FFmpegVideoCodec.gif;
+                taskSettings.CaptureSettings.FFmpegOptions.VideoCodec = gifAsWebP ? FFmpegVideoCodec.libwebp : FFmpegVideoCodec.gif;
             }
 
             if (!useNative && taskSettings.CaptureSettings.FFmpegOptions.IsAnimatedImage)
@@ -111,10 +113,10 @@ namespace ShareX
             }
 
             bool useGifFps = isGif || (!useNative && taskSettings.CaptureSettings.FFmpegOptions.VideoCodec == FFmpegVideoCodec.gif);
-            int fps = useGifFps ? taskSettings.CaptureSettings.GIFFPS : taskSettings.CaptureSettings.ScreenRecordFPS;
+            int fps = useGifFps ? taskSettings.CaptureSettings.GetGIFFPS() : taskSettings.CaptureSettings.ScreenRecordFPS;
 
             if (useNative)
-                DebugHelper.WriteLine("Starting native screen recording. {0}, FPS: {1}", isGif ? "Adaptive GIF" : "H.264/AAC MP4", fps);
+                DebugHelper.WriteLine("Starting native screen recording. {0}, FPS: {1}", gifAsWebP ? "Animated WebP" : isGif ? "Adaptive GIF" : "H.264/AAC MP4", fps);
             else
                 DebugHelper.WriteLine("Starting screen recording. Video encoder: \"{0}\", Audio encoder: \"{1}\", FPS: {2}",
                     taskSettings.CaptureSettings.FFmpegOptions.VideoCodec.GetDescription(), taskSettings.CaptureSettings.FFmpegOptions.AudioCodec.GetDescription(), fps);
@@ -206,7 +208,7 @@ namespace ShareX
                     }
                     captureRectangle = configurationBar.RecordingRegion;
                     captureWindow = configurationBar.CaptureWindow;
-                    fps = useGifFps ? taskSettings.CaptureSettings.GIFFPS : taskSettings.CaptureSettings.ScreenRecordFPS;
+                    fps = useGifFps ? taskSettings.CaptureSettings.GetGIFFPS() : taskSettings.CaptureSettings.ScreenRecordFPS;
                 }
                 catch (Exception ex)
                 {
@@ -258,7 +260,7 @@ namespace ShareX
                     string extension;
                     if (useNative && isGif)
                     {
-                        extension = "gif";
+                        extension = gifAsWebP ? "webp" : "gif";
                     }
                     else if (useNative || taskSettings.CaptureSettings.ScreenRecordTwoPassEncoding)
                     {
@@ -489,7 +491,10 @@ namespace ShareX
                     OutputPath = recordingPath,
                     Region = recordForm.RecordingRegion,
                     WindowHandle = captureWindow,
-                    FramesPerSecond = isGif ? settings.CaptureSettings.GIFFPS : settings.CaptureSettings.ScreenRecordFPS,
+                    FramesPerSecond = isGif ? settings.CaptureSettings.GetGIFFPS() : settings.CaptureSettings.ScreenRecordFPS,
+                    WebPQuality = Math.Clamp(settings.CaptureSettings.ScreenRecordGIFWebPQuality, 0, 100),
+                    WebPLossyAboveBytes = settings.CaptureSettings.ScreenRecordGIFWebPAutoLossy
+                        ? Math.Max(1, settings.CaptureSettings.ScreenRecordGIFWebPAutoLossySizeKB) * 1024L : 0,
                     VideoBitrate = settings.CaptureSettings.ScreenRecordVideoBitrate * 1000,
                     CaptureSystemAudio = !isGif && settings.CaptureSettings.ScreenRecordSystemAudio,
                     SystemAudioDeviceId = settings.CaptureSettings.ScreenRecordSystemAudioDeviceId,

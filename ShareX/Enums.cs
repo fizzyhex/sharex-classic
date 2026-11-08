@@ -197,6 +197,12 @@ namespace ShareX
         LastRegion
     }
 
+    public enum ScreenRecordGIFFormat
+    {
+        GIF,
+        WebP
+    }
+
     public enum HotkeyType // Localized
     {
         None,

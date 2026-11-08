@@ -3018,6 +3018,33 @@ namespace ShareX.Localization {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Use lossy WebP if file size is bigger than the specified size.
+        /// </summary>
+        public static string TaskSettingsWindow_UseLossyWebPIfFileSizeIsBiggerThanTheSpecifiedSize {
+            get {
+                return ResourceManager.GetString("TaskSettingsWindow_UseLossyWebPIfFileSizeIsBiggerThanTheSpecifiedSize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to GIF file format:.
+        /// </summary>
+        public static string TaskSettingsWindow_GIFFileFormat {
+            get {
+                return ResourceManager.GetString("TaskSettingsWindow_GIFFileFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 100 saves losslessly. Lower values produce smaller files.
+        /// </summary>
+        public static string TaskSettingsWindow_GIFWebPQualityHint {
+            get {
+                return ResourceManager.GetString("TaskSettingsWindow_GIFWebPQualityHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 4:4:4 preserves more color detail around text and sharp edges, but usually produces larger files..
         /// </summary>
         public static string TaskSettingsWindow_JPEGSubsamplingHint {

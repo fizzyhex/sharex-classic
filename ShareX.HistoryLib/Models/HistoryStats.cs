@@ -177,8 +177,10 @@ public sealed class HistoryStats
         string fileName = !string.IsNullOrEmpty(item.FileName) ? item.FileName : item.FilePath;
         string extension = FileHelpers.GetFileNameExtension(fileName, checkSecondExtension: false);
 
-        // GIF screen recordings are saved as images, but they are recordings.
-        if (FileHelpers.IsVideoFile(fileName) || extension.Equals("gif", StringComparison.OrdinalIgnoreCase))
+        // GIF screen recordings are saved as images (GIF, or animated WebP), but they are recordings.
+        if (FileHelpers.IsVideoFile(fileName) || extension.Equals("gif", StringComparison.OrdinalIgnoreCase) ||
+            (extension.Equals("webp", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(item.FilePath) &&
+                FileHelpers.IsAnimatedImageFile(item.FilePath)))
         {
             return HistoryStatsKind.Recording;
         }
