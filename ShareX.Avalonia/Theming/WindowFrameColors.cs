@@ -42,6 +42,11 @@ namespace ShareX.AvaloniaUI.Theming
         private const int DWMWA_CAPTION_COLOR = 35;
         private const int DWMWA_TEXT_COLOR = 36;
         private const uint DWMWA_COLOR_DEFAULT = 0xFFFFFFFF;
+        private const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+
+        /// <summary>DWM_WINDOW_CORNER_PREFERENCE values.</summary>
+        public const uint CornerDefault = 0;
+        public const uint CornerRoundSmall = 3;
 
         [DllImport("dwmapi.dll")]
         private static extern int DwmSetWindowAttribute(nint windowHandle, int attribute, ref uint value, int size);
@@ -57,6 +62,17 @@ namespace ShareX.AvaloniaUI.Theming
             Set(handle, DWMWA_CAPTION_COLOR, colors?.Caption);
             Set(handle, DWMWA_TEXT_COLOR, colors?.Text);
             Set(handle, DWMWA_BORDER_COLOR, colors?.Border);
+        }
+
+        /// <summary>Sets how Windows 11 rounds the corners of the window.</summary>
+        public static void SetCornerPreference(Window window, uint preference)
+        {
+            if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000) || window.TryGetPlatformHandle()?.Handle is not nint handle || handle == 0)
+            {
+                return;
+            }
+
+            DwmSetWindowAttribute(handle, DWMWA_WINDOW_CORNER_PREFERENCE, ref preference, sizeof(uint));
         }
 
         private static void Set(nint handle, int attribute, Color? color)

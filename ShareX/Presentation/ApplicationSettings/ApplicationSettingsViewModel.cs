@@ -106,7 +106,9 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
         new("Dark", Strings.ApplicationSettingsWindow_Dark),
         new("Light", Strings.ApplicationSettingsWindow_Light),
         new("ClassicLight", Strings.ApplicationSettingsWindow_ClassicLight),
-        new("ClassicDark", Strings.ApplicationSettingsWindow_ClassicDark)
+        new("ClassicDark", Strings.ApplicationSettingsWindow_ClassicDark),
+        new("Aero", Strings.ApplicationSettingsWindow_Aero),
+        new("AeroBasic", Strings.ApplicationSettingsWindow_AeroBasic)
     ];
     public IReadOnlyList<EnumOption<IconPack>> IconPackOptions { get; } =
     [
@@ -370,9 +372,13 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
     // The classic themes use the accent color as the highlight and tint the interface with it, unless it is white.
     public bool IsClassicThemeSelected => !UseSystemTheme && ThemeManager.IsClassicThemeName(Settings.ThemeOptions.Theme);
 
+    // The Aero themes use the accent color as the window glass color.
+    public bool IsAeroThemeSelected => !UseSystemTheme && ThemeManager.IsAeroThemeName(Settings.ThemeOptions.Theme);
+
     private void OnThemeSelectionChanged()
     {
         OnPropertyChanged(nameof(IsClassicThemeSelected));
+        OnPropertyChanged(nameof(IsAeroThemeSelected));
     }
 
     public EnumOption<string>? SelectedTheme
@@ -1049,6 +1055,11 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
 
     private static string NormalizeTheme(string? theme)
     {
+        if (ThemeManager.IsAeroThemeName(theme))
+        {
+            return theme!.Contains("Basic", StringComparison.OrdinalIgnoreCase) ? "AeroBasic" : "Aero";
+        }
+
         if (ThemeManager.IsClassicThemeName(theme))
         {
             return theme!.Contains("Dark", StringComparison.OrdinalIgnoreCase) ? "ClassicDark" : "ClassicLight";

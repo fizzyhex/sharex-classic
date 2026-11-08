@@ -72,7 +72,9 @@ public sealed class StartScreenViewModel : INotifyPropertyChanged, IDisposable
         new("Dark", Strings.ApplicationSettingsWindow_Dark),
         new("Light", Strings.ApplicationSettingsWindow_Light),
         new("ClassicLight", Strings.ApplicationSettingsWindow_ClassicLight),
-        new("ClassicDark", Strings.ApplicationSettingsWindow_ClassicDark)
+        new("ClassicDark", Strings.ApplicationSettingsWindow_ClassicDark),
+        new("Aero", Strings.ApplicationSettingsWindow_Aero),
+        new("AeroBasic", Strings.ApplicationSettingsWindow_AeroBasic)
     ];
 
     public StartScreenViewModel()
@@ -269,7 +271,9 @@ public sealed class StartScreenViewModel : INotifyPropertyChanged, IDisposable
     private static string NormalizeTheme(string? theme) =>
         string.Equals(theme, "Light", StringComparison.OrdinalIgnoreCase) ? "Light" :
         string.Equals(theme, "ClassicLight", StringComparison.OrdinalIgnoreCase) ? "ClassicLight" :
-        string.Equals(theme, "ClassicDark", StringComparison.OrdinalIgnoreCase) ? "ClassicDark" : "Dark";
+        string.Equals(theme, "ClassicDark", StringComparison.OrdinalIgnoreCase) ? "ClassicDark" :
+        string.Equals(theme, "Aero", StringComparison.OrdinalIgnoreCase) ? "Aero" :
+        string.Equals(theme, "AeroBasic", StringComparison.OrdinalIgnoreCase) ? "AeroBasic" : "Dark";
 
     private static string RemoveTrailingColon(string text) => text.TrimEnd().TrimEnd(':', '：').TrimEnd();
 

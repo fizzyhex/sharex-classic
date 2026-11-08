@@ -572,6 +572,15 @@
   <data name="ApplicationSettingsWindow_ClassicDark" xml:space="preserve">
     <value>Classic Dark</value>
   </data>
+  <data name="ApplicationSettingsWindow_Aero" xml:space="preserve">
+    <value>Aero</value>
+  </data>
+  <data name="ApplicationSettingsWindow_AeroBasic" xml:space="preserve">
+    <value>Aero Basic</value>
+  </data>
+  <data name="ApplicationSettingsWindow_AeroAccentColorNote" xml:space="preserve">
+    <value>The Aero themes use the accent color as the window glass color, like the Windows 7 window color, and tint the highlights with it. Choose white for the default Sky color.</value>
+  </data>
   <data name="ApplicationSettingsWindow_ClassicAccentColorNote" xml:space="preserve">
     <value>The classic themes highlight with the accent color and tint the interface with it. Choose white for the standard Windows colors.</value>
   </data>

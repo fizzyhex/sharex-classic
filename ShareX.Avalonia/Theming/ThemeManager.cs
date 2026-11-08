@@ -49,6 +49,20 @@ namespace ShareX.AvaloniaUI.Theming
         // native Windows look, Classic Dark is the dark theme ShareX 21 applied to the same controls.
         public static readonly ThemeVariant ShareXClassicLight = new ThemeVariant("ShareXClassicLight", ThemeVariant.Light);
         public static readonly ThemeVariant ShareXClassicDark = new ThemeVariant("ShareXClassicDark", ThemeVariant.Dark);
+        // The Aero themes recreate Windows 7: Aero draws glass window frames, Aero Basic the opaque frame Windows 7 used
+        // without desktop composition. Aero Basic inherits every resource of Aero.
+        public static readonly ThemeVariant ShareXAero = new ThemeVariant("ShareXAero", ThemeVariant.Light);
+        public static readonly ThemeVariant ShareXAeroBasic = new ThemeVariant("ShareXAeroBasic", ShareXAero);
+
+        /// <summary>"Sky", the default Windows 7 window color. The Aero themes use the accent color as the glass color.</summary>
+        public static readonly Color AeroSkyColor = Color.Parse("#74B8FC");
+        // Windows 7 draws selection and highlights with this blue; the Aero blues are re-hued from it.
+        private static readonly Color AeroHighlightColor = Color.Parse("#3399FF");
+        private const double AeroReferenceHue = 205;
+        private static readonly Color AeroLinkColor = Color.Parse("#0066CC");
+        /// <summary>The part of an Aero window taken by the frame drawn around its client area (AeroTheme.axaml).</summary>
+        public static readonly Thickness AeroFrameInset = new(7, 30, 7, 7);
+        private static readonly ThemeFamily[] StyledThemeFamilies = [ThemeFamily.Classic, ThemeFamily.Aero];
 
         // Windows Forms draws selection with the system highlight color (#0078D7). The classic themes take the
         // accent color as the highlight instead and tint the rest of the palette with its hue; a white accent
@@ -58,6 +72,7 @@ namespace ShareX.AvaloniaUI.Theming
         private const double ClassicTintStrength = 0.4;
         private const double ClassicTintMaximumChroma = 0.12;
         private const double ClassicThumbTintFactor = 2.5;
+        // Tinted copies of the classic or Aero resources, computed from the accent color.
         private static readonly ResourceDictionary ClassicTintResources = new();
         private static (ThemeVariant Theme, Color Accent)? _classicTint;
         // A tinted classic theme colors the native title bar like Windows does with "Show accent color on title bars":
@@ -71,9 +86,10 @@ namespace ShareX.AvaloniaUI.Theming
         private static ApplicationThemeOptions? _options;
         private static IPlatformSettings? _platformSettings;
         private static ResourceInclude? _compactResources;
-        private static StyleInclude? _classicStyles;
-        private static readonly ConditionalWeakTable<Window, StyleInclude> WindowClassicStyles = new();
-        private static bool _windowClassicHandlerRegistered;
+        // The control themes of the classic and Aero families, in the application styles and in every window's styles.
+        private static readonly Dictionary<ThemeFamily, StyleInclude> FamilyStyles = new();
+        private static readonly ConditionalWeakTable<Window, Dictionary<ThemeFamily, StyleInclude>> WindowFamilyStyles = new();
+        private static bool _windowStylesHandlerRegistered;
         private static readonly ResourceDictionary SpacingResources = new();
 
         public static event EventHandler<ThemeVariant>? ThemeChanged;
@@ -105,7 +121,7 @@ namespace ShareX.AvaloniaUI.Theming
 
             if (target is Application app)
             {
-                ApplyClassicStyles(app, IsClassicVariant(theme));
+                ApplyFamilyStyles(app, GetThemeFamily(theme));
                 app.RequestedThemeVariant = theme;
 
                 if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -139,6 +155,28 @@ namespace ShareX.AvaloniaUI.Theming
         public static bool IsDarkTheme => Equals(_currentTheme, ShareXDark) || Equals(_currentTheme, ShareXClassicDark);
 
         public static bool IsClassicTheme => IsClassicVariant(_currentTheme);
+
+        public static bool IsAeroTheme => GetThemeFamily(_currentTheme) == ThemeFamily.Aero;
+
+        public static bool IsAeroBasicTheme => Equals(_currentTheme, ShareXAeroBasic);
+
+        /// <summary>The classic and Aero themes recreate Windows looks and use the window frame Windows draws (or, for
+        /// Aero, the Windows 7 frame) instead of the custom title bar of the main window.</summary>
+        public static bool IsRetroTheme => GetThemeFamily(_currentTheme) != ThemeFamily.Modern;
+
+        public static ThemeFamily GetThemeFamily(string? theme)
+        {
+            return IsAeroThemeName(theme) ? ThemeFamily.Aero
+                : IsClassicThemeName(theme) ? ThemeFamily.Classic
+                : ThemeFamily.Modern;
+        }
+
+        private static ThemeFamily GetThemeFamily(ThemeVariant theme)
+        {
+            return IsClassicVariant(theme) ? ThemeFamily.Classic
+                : Equals(theme, ShareXAero) || Equals(theme, ShareXAeroBasic) ? ThemeFamily.Aero
+                : ThemeFamily.Modern;
+        }
 
         public static void Refresh()
         {
@@ -188,27 +226,56 @@ namespace ShareX.AvaloniaUI.Theming
             ApplySpacing(application);
         }
 
-        private static void ApplyClassicStyles(Application application, bool enabled)
+        private static StyleInclude CreateFamilyStyles(ThemeFamily family)
         {
-            // The classic control themes replace the Fluent templates, so they are only part of the application
-            // styles while the classic theme is active. They come last so they win over ControlStyles.axaml.
-            _classicStyles ??= new StyleInclude(new Uri("avares://ShareX.Avalonia/"))
+            string file = family == ThemeFamily.Aero ? "AeroTheme.axaml" : "ClassicTheme.axaml";
+            return new StyleInclude(new Uri("avares://ShareX.Avalonia/"))
             {
-                Source = new Uri("avares://ShareX.Avalonia/Theming/ClassicTheme.axaml")
+                Source = new Uri($"avares://ShareX.Avalonia/Theming/{file}")
             };
+        }
 
-            bool included = application.Styles.Contains(_classicStyles);
-
-            if (enabled && !included)
+        private static void ApplyFamilyStyles(Application application, ThemeFamily family)
+        {
+            // The classic and Aero control themes replace the Fluent templates, so they are only part of the
+            // application styles while a theme of their family is active. They come last so they win over
+            // ControlStyles.axaml. The styles of the other family are removed before the new ones are added.
+            // Leaving Aero, the windows drop the Aero frame first, while every control is still fully styled: the
+            // frame change resizes the native window, which runs a layout pass at once.
+            if (family != ThemeFamily.Aero && application.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime frames)
             {
-                application.Styles.Add(_classicStyles);
-            }
-            else if (!enabled && included)
-            {
-                application.Styles.Remove(_classicStyles);
+                foreach (Window window in frames.Windows)
+                {
+                    AeroWindowFrame.Apply(window, false, false);
+                }
             }
 
-            if (enabled != included && application.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
+            bool changed = false;
+
+            foreach (ThemeFamily candidate in StyledThemeFamilies)
+            {
+                if (candidate != family && FamilyStyles.TryGetValue(candidate, out StyleInclude? styles) && application.Styles.Remove(styles))
+                {
+                    changed = true;
+                }
+            }
+
+            if (family != ThemeFamily.Modern)
+            {
+                if (!FamilyStyles.TryGetValue(family, out StyleInclude? styles))
+                {
+                    styles = CreateFamilyStyles(family);
+                    FamilyStyles[family] = styles;
+                }
+
+                if (!application.Styles.Contains(styles))
+                {
+                    application.Styles.Add(styles);
+                    changed = true;
+                }
+            }
+
+            if (changed && application.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
             {
                 foreach (Window window in lifetime.Windows)
                 {
@@ -217,47 +284,66 @@ namespace ShareX.AvaloniaUI.Theming
             }
 
             // Window styles are applied after application styles, and most windows restyle buttons, cards and
-            // inputs, so the classic styles are also appended to each window. New windows get them as soon as
+            // inputs, so the family styles are also appended to each window. New windows get them as soon as
             // their template is applied, before the first frame is drawn.
-            if (!_windowClassicHandlerRegistered)
+            if (!_windowStylesHandlerRegistered)
             {
-
-                TemplatedControl.TemplateAppliedEvent.AddClassHandler<Window>((window, _) => ApplyClassicStyles(window, IsClassicTheme));
-                _windowClassicHandlerRegistered = true;
+                TemplatedControl.TemplateAppliedEvent.AddClassHandler<Window>((window, _) => ApplyFamilyStyles(window, GetThemeFamily(_currentTheme)));
+                _windowStylesHandlerRegistered = true;
             }
 
             if (application.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 foreach (Window window in desktop.Windows)
                 {
-                    ApplyClassicStyles(window, enabled);
+                    ApplyFamilyStyles(window, family);
                 }
             }
         }
 
-        private static void ApplyClassicStyles(Window window, bool enabled)
+        private static void ApplyFamilyStyles(Window window, ThemeFamily family)
         {
-            ApplyWindowFrame(window);
+            Dictionary<ThemeFamily, StyleInclude> includes = WindowFamilyStyles.GetValue(window, _ => new Dictionary<ThemeFamily, StyleInclude>());
+            bool changed = false;
 
-            if (enabled)
+            foreach (ThemeFamily candidate in StyledThemeFamilies)
             {
-                StyleInclude styles = WindowClassicStyles.GetValue(window, _ => new StyleInclude(new Uri("avares://ShareX.Avalonia/"))
+                if (candidate != family && includes.TryGetValue(candidate, out StyleInclude? styles) && window.Styles.Remove(styles))
                 {
-                    Source = new Uri("avares://ShareX.Avalonia/Theming/ClassicTheme.axaml")
-                });
+                    changed = true;
+                }
+            }
 
-                // Keep the classic styles last, after any styles the window added since.
+            if (family != ThemeFamily.Modern)
+            {
+                if (!includes.TryGetValue(family, out StyleInclude? styles))
+                {
+                    styles = CreateFamilyStyles(family);
+                    includes[family] = styles;
+                }
+
+                // Keep the family styles last, after any styles the window added since.
                 if (window.Styles.Count == 0 || !ReferenceEquals(window.Styles[^1], styles))
                 {
                     window.Styles.Remove(styles);
                     window.Styles.Add(styles);
-                    ReapplyStyling(window);
+                    changed = true;
                 }
             }
-            else if (WindowClassicStyles.TryGetValue(window, out StyleInclude? styles) && window.Styles.Remove(styles))
+
+            if (changed)
             {
                 ReapplyStyling(window);
             }
+
+            // The frame comes last, once the window content is styled for the new theme (see ReapplyStyling).
+            ApplyWindowFrame(window);
+        }
+
+        /// <summary>Applies the window frame of the current theme again, for windows that changed their decorations.</summary>
+        public static void RefreshWindowFrame(Window window)
+        {
+            ApplyWindowFrame(window);
         }
 
         private static void ReapplyStyling(Window window)
@@ -266,8 +352,8 @@ namespace ShareX.AvaloniaUI.Theming
             // control at once but applies the new ones lazily. A layout pass in between applies an empty template,
             // which controls with required template parts such as ToggleSwitch reject, so restyle straight away.
             // Early in a window's life its content is only a logical child, so both trees are walked.
-            window.ApplyStyling();
-
+            // The window itself comes last: a change to its frame (such as the client area extension of the Aero frame)
+            // resizes the native window, which runs a layout pass straight away, so its content must be styled by then.
             foreach (ILogical logical in window.GetLogicalDescendants())
             {
                 (logical as StyledElement)?.ApplyStyling();
@@ -277,6 +363,8 @@ namespace ShareX.AvaloniaUI.Theming
             {
                 visual.ApplyStyling();
             }
+
+            window.ApplyStyling();
         }
 
         private static void ApplySpacing(Application? application)
@@ -423,6 +511,11 @@ namespace ShareX.AvaloniaUI.Theming
 
         private static ThemeVariant MapConfiguredTheme(string? theme)
         {
+            if (IsAeroThemeName(theme))
+            {
+                return theme!.Contains("Basic", StringComparison.OrdinalIgnoreCase) ? ShareXAeroBasic : ShareXAero;
+            }
+
             if (IsClassicThemeName(theme))
             {
                 return theme!.Contains("Dark", StringComparison.OrdinalIgnoreCase) ? ShareXClassicDark : ShareXClassicLight;
@@ -442,6 +535,19 @@ namespace ShareX.AvaloniaUI.Theming
                 theme.Contains("Classic", StringComparison.OrdinalIgnoreCase);
         }
 
+        public static bool IsAeroThemeName(string? theme)
+        {
+            return !string.IsNullOrWhiteSpace(theme) &&
+                theme.Contains("Aero", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>White (as for the classic themes) or Sky asks the Aero themes for the default Windows 7 colors.</summary>
+        public static bool IsAeroDefaultAccent(Color color)
+        {
+            return IsClassicNeutralAccent(color) ||
+                (color.R == AeroSkyColor.R && color.G == AeroSkyColor.G && color.B == AeroSkyColor.B);
+        }
+
         private static bool IsLightTheme(string? theme)
         {
             return !string.IsNullOrWhiteSpace(theme) &&
@@ -452,6 +558,12 @@ namespace ShareX.AvaloniaUI.Theming
         {
             if (application == null)
             {
+                return;
+            }
+
+            if (GetThemeFamily(theme) == ThemeFamily.Aero)
+            {
+                ApplyAeroAccentColor(application, startColor, theme);
                 return;
             }
 
@@ -467,22 +579,76 @@ namespace ShareX.AvaloniaUI.Theming
             Color endColor = classic ? startColor : DarkenColor(startColor, 0.10);
             Color foregroundColor = classic ? GetClassicHighlightTextColor(startColor) : GetAccentForegroundColor(startColor, endColor);
             UpdateWindowFrames(application, theme, tinted ? startColor : null, foregroundColor);
+            // Links are drawn on the window background rather than on the accent, so a dark or grey
+            // accent would make them unreadable on the dark theme (and a pale one on the light theme).
             Color linkColor = !classic ? GetLinkColor(application, startColor, theme)
                 : Equals(theme, ShareXClassicDark) ? ClassicDarkLinkColor : ClassicLightLinkColor;
 
-            // Links are drawn on the window background rather than on the accent, so a dark or grey
-            // accent would make them unreadable on the dark theme (and a pale one on the light theme).
+            // Selected rows in lists and trees. The classic accent is the system highlight, which the Windows Forms
+            // tree view fills the selected row with, so both cases come from the accent colors.
+            SetAccentResources(application, startColor, endColor, foregroundColor, linkColor,
+                CreateAccentBrush(startColor, endColor), new SolidColorBrush(startColor), new SolidColorBrush(foregroundColor));
+        }
+
+        /// <summary>
+        /// Aero uses the accent color as the window glass color, like the Windows 7 window color setting. White and Sky
+        /// give the default Windows 7 look; any other color also re-hues the blue highlights of the controls.
+        /// </summary>
+        private static void ApplyAeroAccentColor(Application application, Color accent, ThemeVariant theme)
+        {
+            Color glass = IsAeroDefaultAccent(accent) ? AeroSkyColor : Color.FromRgb(accent.R, accent.G, accent.B);
+            bool tinted = glass != AeroSkyColor;
+            HslColor glassHsl = glass.ToHsl();
+
+            ApplyClassicTint(application, theme, tinted ? glass : null);
+
+            Color highlight = tinted ? TintAeroColor(AeroHighlightColor, glassHsl) : AeroHighlightColor;
+            Color highlightText = GetClassicHighlightTextColor(highlight);
+
+            // The glass frames are drawn by the Aero theme; DWM only draws the thin outer border, dark like the Windows
+            // 7 frame outline, and the caption of windows that keep a native frame.
+            Color basicCaption = tinted ? TintAeroColor(Color.Parse("#B9D1EA"), glassHsl) : Color.Parse("#B9D1EA");
+            Color basicInactive = tinted ? TintAeroColor(Color.Parse("#D7E4F2"), glassHsl) : Color.Parse("#D7E4F2");
+            _activeFrame = new WindowFrameColorSet(basicCaption, Colors.Black, BlendColor(glass, Colors.Black, 0.55));
+            _inactiveFrame = new WindowFrameColorSet(basicInactive, Color.Parse("#404040"), BlendColor(glass, Color.Parse("#808890"), 0.6));
+            RefreshWindowFrames(application);
+
+            IBrush selection = application.TryGetResource("Aero.List.Selected.Background", theme, out object? background) && background is IBrush brush
+                ? brush
+                : new SolidColorBrush(highlight);
+            IBrush selectionBorder = application.TryGetResource("Aero.List.Selected.Border", theme, out object? border) && border is IBrush borderBrush
+                ? borderBrush
+                : new SolidColorBrush(highlight);
+
+            // Accent surfaces (such as the start screen banner) get a soft Windows 7 sky gradient of the highlight.
+            LinearGradientBrush accentSurface = new()
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(0.35, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(BlendColor(highlight, Colors.White, 0.22), 0),
+                    new GradientStop(highlight, 0.45),
+                    new GradientStop(DarkenColor(highlight, 0.28), 1)
+                }
+            };
+
+            SetAccentResources(application, highlight, highlight, highlightText, AeroLinkColor,
+                selection, selectionBorder, new SolidColorBrush(Colors.Black), accentSurface);
+        }
+
+        private static void SetAccentResources(Application application, Color startColor, Color endColor, Color foregroundColor,
+            Color linkColor, IBrush selectionBackground, IBrush selectionBorder, IBrush selectionForeground, IBrush? accentBrush = null)
+        {
             application.Resources["ShareX.Color.Link"] = linkColor;
             application.Resources["ShareX.Brush.Link"] = new SolidColorBrush(linkColor);
             application.Resources["HyperlinkButtonForeground"] = new SolidColorBrush(linkColor);
             application.Resources["HyperlinkButtonForegroundPointerOver"] = new SolidColorBrush(linkColor);
             application.Resources["HyperlinkButtonForegroundPressed"] = new SolidColorBrush(linkColor);
 
-            // Selected rows in lists and trees. The classic accent is the system highlight, which the Windows Forms
-            // tree view fills the selected row with, so both cases come from the accent colors.
-            application.Resources["ShareX.Brush.Selection.Background"] = CreateAccentBrush(startColor, endColor);
-            application.Resources["ShareX.Brush.Selection.Border"] = new SolidColorBrush(startColor);
-            application.Resources["ShareX.Brush.Selection.Foreground"] = new SolidColorBrush(foregroundColor);
+            application.Resources["ShareX.Brush.Selection.Background"] = selectionBackground;
+            application.Resources["ShareX.Brush.Selection.Border"] = selectionBorder;
+            application.Resources["ShareX.Brush.Selection.Foreground"] = selectionForeground;
 
             application.Resources["SystemAccentColor"] = startColor;
             application.Resources["ShareX.Color.Accent.Start"] = startColor;
@@ -490,7 +656,7 @@ namespace ShareX.AvaloniaUI.Theming
             application.Resources["ShareX.Color.Accent.Foreground"] = foregroundColor;
             application.Resources["ShareX.Brush.Accent.Start"] = new SolidColorBrush(startColor);
             application.Resources["ShareX.Brush.Accent.Foreground"] = new SolidColorBrush(foregroundColor);
-            application.Resources["ShareX.Brush.Accent"] = CreateAccentBrush(startColor, endColor);
+            application.Resources["ShareX.Brush.Accent"] = accentBrush ?? CreateAccentBrush(startColor, endColor);
 
             AccentColorChanged?.Invoke(null, startColor);
         }
@@ -532,13 +698,29 @@ namespace ShareX.AvaloniaUI.Theming
             // they are computed from. Dropping them restores it.
             ClassicTintResources.Clear();
 
-            if (accent is not Color accentColor || !TryGetThemeDictionary(application, theme, out ResourceDictionary? source))
+            // Aero Basic has no dictionary of its own; it inherits the Aero resources.
+            bool aero = GetThemeFamily(theme) == ThemeFamily.Aero;
+            ThemeVariant sourceTheme = aero ? ShareXAero : theme;
+
+            if (accent is not Color accentColor || !TryGetThemeDictionary(application, sourceTheme, out ResourceDictionary? source))
             {
                 return;
             }
 
             HslColor accentHsl = accentColor.ToHsl();
             Dictionary<object, object?> values = new();
+
+            if (aero)
+            {
+                ApplyAeroTint(source, sourceTheme, accentColor, accentHsl, values);
+
+                foreach (KeyValuePair<object, object?> pair in values)
+                {
+                    ClassicTintResources[pair.Key] = pair.Value;
+                }
+
+                return;
+            }
 
             foreach (object key in source.Keys)
             {
@@ -573,6 +755,124 @@ namespace ShareX.AvaloniaUI.Theming
             foreach (KeyValuePair<object, object?> pair in values)
             {
                 ClassicTintResources[pair.Key] = pair.Value;
+            }
+        }
+
+        private static void ApplyAeroTint(ResourceDictionary source, ThemeVariant theme, Color glass, HslColor glassHsl, Dictionary<object, object?> values)
+        {
+            Color Tint(Color color) => TintAeroColor(color, glassHsl);
+
+            foreach (object key in source.Keys)
+            {
+                if (key is not string name || !IsTintableResource(name) || !source.TryGetResource(key, theme, out object? value))
+                {
+                    continue;
+                }
+
+                object? tinted = value switch
+                {
+                    Color c => Tint(c),
+                    ISolidColorBrush brush => new SolidColorBrush(Tint(brush.Color), brush.Opacity),
+                    LinearGradientBrush gradient => TintGradient(gradient, Tint),
+                    RadialGradientBrush gradient => TintGradient(gradient, Tint),
+                    _ => null
+                };
+
+                if (tinted != null)
+                {
+                    values[key] = tinted;
+                }
+            }
+
+            // The accent color is the glass color: translucent while the window is active, thinner and greyer while it
+            // is inactive. The Windows 7 glass mixes the color with the blurred desktop the same way.
+            Color inactive = BlendColor(glass, Color.Parse("#C4CCD6"), 0.55);
+            values["Aero.Glass.Active"] = CreateVerticalGradient(Color.FromArgb(0x9C, glass.R, glass.G, glass.B), Color.FromArgb(0x84, glass.R, glass.G, glass.B));
+            values["Aero.Glass.Inactive"] = CreateVerticalGradient(Color.FromArgb(0x5A, inactive.R, inactive.G, inactive.B), Color.FromArgb(0x46, inactive.R, inactive.G, inactive.B));
+        }
+
+        /// <summary>
+        /// Re-hues the Windows 7 blues (hues around the Aero blue) with the accent color, keeping their lightness so the
+        /// pale hover and selection colors stay pale. Greys and other colors are kept, as Windows 7 did.
+        /// </summary>
+        private static Color TintAeroColor(Color color, HslColor accent)
+        {
+            if (color.A == 0)
+            {
+                return color;
+            }
+
+            HslColor hsl = color.ToHsl();
+            double hueDistance = Math.Abs(hsl.H - AeroReferenceHue);
+            hueDistance = Math.Min(hueDistance, 360 - hueDistance);
+
+            if (hsl.S < 0.2 || hueDistance > 40)
+            {
+                return color;
+            }
+
+            double saturation = Math.Min(1, hsl.S * Math.Min(1, accent.S / 0.85));
+            return new HslColor(color.A / 255d, accent.H, saturation, hsl.L).ToRgb();
+        }
+
+        private static LinearGradientBrush CreateVerticalGradient(Color top, Color bottom)
+        {
+            return new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(top, 0),
+                    new GradientStop(bottom, 1)
+                }
+            };
+        }
+
+        private static LinearGradientBrush TintGradient(LinearGradientBrush gradient, Func<Color, Color> tint)
+        {
+            LinearGradientBrush tinted = new()
+            {
+                StartPoint = gradient.StartPoint,
+                EndPoint = gradient.EndPoint,
+                Opacity = gradient.Opacity
+            };
+
+            foreach (GradientStop stop in gradient.GradientStops)
+            {
+                tinted.GradientStops.Add(new GradientStop(tint(stop.Color), stop.Offset));
+            }
+
+            return tinted;
+        }
+
+        private static RadialGradientBrush TintGradient(RadialGradientBrush gradient, Func<Color, Color> tint)
+        {
+            RadialGradientBrush tinted = new()
+            {
+                Center = gradient.Center,
+                GradientOrigin = gradient.GradientOrigin,
+                RadiusX = gradient.RadiusX,
+                RadiusY = gradient.RadiusY,
+                Opacity = gradient.Opacity
+            };
+
+            foreach (GradientStop stop in gradient.GradientStops)
+            {
+                tinted.GradientStops.Add(new GradientStop(tint(stop.Color), stop.Offset));
+            }
+
+            return tinted;
+        }
+
+        private static void RefreshWindowFrames(Application application)
+        {
+            if (application.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                foreach (Window window in desktop.Windows)
+                {
+                    ApplyWindowFrame(window);
+                }
             }
         }
 
@@ -612,6 +912,7 @@ namespace ShareX.AvaloniaUI.Theming
             }
 
             WindowFrameColors.Apply(window, window.IsActive ? _activeFrame : _inactiveFrame);
+            AeroWindowFrame.Apply(window, GetThemeFamily(_currentTheme) == ThemeFamily.Aero, !Equals(_currentTheme, ShareXAeroBasic));
         }
 
         private static Color GetThemeColor(Application application, ThemeVariant theme, string key, Color fallback)
@@ -651,7 +952,8 @@ namespace ShareX.AvaloniaUI.Theming
 
         private static bool IsTintableResource(string key)
         {
-            if (!key.StartsWith("Classic.", StringComparison.Ordinal) && !key.StartsWith("ShareX.Color.", StringComparison.Ordinal) &&
+            if (!key.StartsWith("Classic.", StringComparison.Ordinal) && !key.StartsWith("Aero.", StringComparison.Ordinal) &&
+                !key.StartsWith("ShareX.Color.", StringComparison.Ordinal) &&
                 !key.StartsWith("ShareX.Brush.", StringComparison.Ordinal) && key != "MenuFlyoutPresenterBackground" &&
                 key != "ColorViewTabBackgroundBrush")
             {

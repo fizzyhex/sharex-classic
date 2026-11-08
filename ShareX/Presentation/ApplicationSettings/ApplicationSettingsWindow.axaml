@@ -332,6 +332,10 @@
                                                TextWrapping="Wrap"
                                                FontWeight="Normal"
                                                IsVisible="{Binding IsClassicThemeSelected}"/>
+                                    <TextBlock Text="{x:Static res:Strings.ApplicationSettingsWindow_AeroAccentColorNote}"
+                                               TextWrapping="Wrap"
+                                               FontWeight="Normal"
+                                               IsVisible="{Binding IsAeroThemeSelected}"/>
                                     <CheckBox Classes="setting"
                                               Content="{x:Static res:Strings.ApplicationSettingsWindow_FollowSystemAccentColor}"
                                               IsChecked="{Binding UseSystemAccentColor, Mode=TwoWay}"/>

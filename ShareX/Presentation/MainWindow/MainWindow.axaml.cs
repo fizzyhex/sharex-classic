@@ -194,11 +194,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void ApplyWindowChrome()
     {
-        // The classic themes use the standard Windows title bar, like the Windows Forms main window did.
-        bool classic = ThemeManager.IsClassicTheme;
+        // The classic themes use the standard Windows title bar, like the Windows Forms main window did, and the Aero
+        // themes the Windows 7 frame that ThemeManager draws around windows with a standard frame.
+        bool classic = ThemeManager.IsRetroTheme;
 
         if (TitleBar.IsVisible != classic)
         {
+            // Switching between the classic and Aero themes keeps the native decorations.
+            ApplyClientAreaExtension(classic);
+            ThemeManager.RefreshWindowFrame(this);
             return;
         }
 
@@ -209,9 +213,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ? desktop.Windows.FirstOrDefault(x => x.IsActive)
             : null;
 
-        ExtendClientAreaToDecorationsHint = !classic;
+        ApplyClientAreaExtension(classic);
         WindowDecorations = classic ? Avalonia.Controls.WindowDecorations.Full : Avalonia.Controls.WindowDecorations.BorderOnly;
         TitleBar.IsVisible = !classic;
+        ThemeManager.RefreshWindowFrame(this);
 
         // The frame change raises the window after this returns, so restore the order once it has been applied.
         // Activate alone does nothing for a window that is still active; toggling Topmost raises it.
@@ -230,9 +235,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
+    private void ApplyClientAreaExtension(bool nativeTitleBar)
+    {
+        if (ThemeManager.IsAeroTheme)
+        {
+            // The Aero frame styles extend the client area themselves, which a local value would override.
+            ClearValue(ExtendClientAreaToDecorationsHintProperty);
+        }
+        else if (ExtendClientAreaToDecorationsHint == nativeTitleBar || !IsSet(ExtendClientAreaToDecorationsHintProperty))
+        {
+            ExtendClientAreaToDecorationsHint = !nativeTitleBar;
+        }
+    }
+
     private void OnThemeToggleClick(object? sender, RoutedEventArgs e)
     {
-        string theme = ThemeManager.IsClassicTheme
+        string theme = ThemeManager.IsAeroTheme
+            ? ThemeManager.IsAeroBasicTheme ? "Aero" : "AeroBasic"
+            : ThemeManager.IsClassicTheme
             ? ThemeManager.IsDarkTheme ? "ClassicLight" : "ClassicDark"
             : ThemeManager.IsDarkTheme ? "Light" : "Dark";
         ApplicationThemeOptions options = ApplicationState.Settings.ThemeOptions;
@@ -579,7 +599,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void ConfigureWindowHeightFromNavigation()
+    private void ConfigureWindowHeightFromNavigation(bool minimumOnly = false)
     {
         Avalonia.Size availableSize = new(double.PositiveInfinity, double.PositiveInfinity);
         NavigationPanel.Measure(availableSize);
@@ -588,7 +608,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         double navigationHeight = Math.Ceiling(NavigationPanel.DesiredSize.Height);
         double titleBarHeight = Math.Ceiling(TitleBar.DesiredSize.Height);
         double frameHeight = WindowFrame.BorderThickness.Top + WindowFrame.BorderThickness.Bottom;
-        double windowHeight = navigationHeight + titleBarHeight + frameHeight;
+        // The Aero frame (caption and glass border) is drawn inside the window.
+        double aeroFrameHeight = ThemeManager.IsAeroTheme ? ThemeManager.AeroFrameInset.Top + ThemeManager.AeroFrameInset.Bottom : 0;
+        double windowHeight = navigationHeight + titleBarHeight + frameHeight + aeroFrameHeight;
 
         if (windowHeight <= 0 || double.IsNaN(windowHeight) || double.IsInfinity(windowHeight))
         {
@@ -596,6 +618,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         MinHeight = windowHeight;
+
+        if (minimumOnly)
+        {
+            return;
+        }
 
         DrawingSize savedSize = ApplicationState.Settings.MainFormSize;
         if (!ApplicationState.Settings.RememberMainFormSize || savedSize.IsEmpty)
@@ -1371,6 +1398,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             RequestedThemeVariant = theme;
             ApplyWindowChrome();
+            ConfigureWindowHeightFromNavigation(minimumOnly: true);
             OnPropertyChanged(nameof(IsDarkTheme));
             OnPropertyChanged(nameof(ThemeToggleText));
         });

@@ -49,35 +49,54 @@ public sealed class ApplicationThemeOptions : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Selects a theme from the user interface. Moving to or from a classic theme also switches the icon pack,
-    /// because the classic themes recreate ShareX 21, which only had the legacy icons. The default accent color
-    /// becomes white, which the classic themes draw untinted, and white becomes the default again on the way back;
-    /// any other accent color is the user's choice and is kept.
+    /// Selects a theme from the user interface. Moving to or from a classic or Aero theme also switches the icon pack,
+    /// because those themes recreate older Windows looks (and ShareX 21, which only had the legacy icons). Each theme
+    /// family has its own default accent color: the ShareX blue, white (which the classic themes draw untinted) and
+    /// Sky (the default Windows 7 glass color). The default of one family becomes the default of the next one, and
+    /// white becomes Sky in Aero; any other accent color is the user's choice and is kept.
     /// </summary>
     public void SelectTheme(string theme)
     {
-        bool wasClassic = ThemeManager.IsClassicThemeName(Theme);
-        bool isClassic = ThemeManager.IsClassicThemeName(theme);
+        ThemeFamily oldFamily = ThemeManager.GetThemeFamily(Theme);
+        ThemeFamily newFamily = ThemeManager.GetThemeFamily(theme);
 
-        if (wasClassic != isClassic)
+        if (oldFamily != newFamily)
         {
-            if (isClassic && AccentColor == Color.Parse(DefaultAccentColorHex))
+            Color accent = AccentColor;
+            bool isDefault = oldFamily switch
             {
-                AccentColor = Colors.White;
-            }
-            else if (!isClassic && ThemeManager.IsClassicNeutralAccent(AccentColor))
+                ThemeFamily.Classic => ThemeManager.IsClassicNeutralAccent(accent),
+                ThemeFamily.Aero => ThemeManager.IsAeroDefaultAccent(accent),
+                _ => accent == Color.Parse(DefaultAccentColorHex)
+            };
+
+            if (isDefault || (newFamily == ThemeFamily.Aero && ThemeManager.IsClassicNeutralAccent(accent)))
             {
-                AccentColorHex = DefaultAccentColorHex;
+                if (newFamily == ThemeFamily.Modern)
+                {
+                    AccentColorHex = DefaultAccentColorHex;
+                }
+                else
+                {
+                    AccentColor = GetDefaultAccentColor(newFamily);
+                }
             }
         }
 
         Theme = theme;
 
-        if (wasClassic != isClassic)
+        if ((oldFamily == ThemeFamily.Modern) != (newFamily == ThemeFamily.Modern))
         {
-            IconPack = isClassic ? IconPack.Legacy : IconPack.Modern;
+            IconPack = newFamily == ThemeFamily.Modern ? IconPack.Modern : IconPack.Legacy;
         }
     }
+
+    public static Color GetDefaultAccentColor(ThemeFamily family) => family switch
+    {
+        ThemeFamily.Classic => Colors.White,
+        ThemeFamily.Aero => ThemeManager.AeroSkyColor,
+        _ => Color.Parse(DefaultAccentColorHex)
+    };
 
     public bool UseSystemTheme
     {

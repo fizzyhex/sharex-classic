@@ -625,5 +625,514 @@
             <x:Boolean x:Key="Classic.Combo.Triangle">True</x:Boolean>
         </ResourceDictionary>
 
+        <!-- ShareX Aero: Windows 7 Aero (the colors of WPF's PresentationFramework.Aero). Aero Basic inherits it and
+             only draws an opaque window frame. ThemeManager re-hues the blue entries when the accent color (the glass
+             color) is not the default Sky, and computes the glass brushes from it. -->
+        <ResourceDictionary x:Key="{x:Static helpers:ThemeManager.ShareXAero}">
+            <!-- 9pt Segoe UI, the Windows 7 message font. -->
+            <x:Double x:Key="ShareX.FontSize.Default">12</x:Double>
+            <Color x:Key="ShareX.Color.Accent.Start">#3399FF</Color>
+            <Color x:Key="ShareX.Color.Accent.End">#3399FF</Color>
+            <Color x:Key="ShareX.Color.Accent.Foreground">#FFFFFF</Color>
+            <Color x:Key="ShareX.Color.Link">#0066CC</Color>
+
+            <Color x:Key="ShareX.Color.Text">#000000</Color>
+            <Color x:Key="ShareX.Color.Text.Secondary">#000000</Color>
+            <Color x:Key="ShareX.Color.Status.Success">#008000</Color>
+            <Color x:Key="ShareX.Color.Status.Error">#C80000</Color>
+
+            <Color x:Key="ShareX.Color.Background.Main">#FFFFFF</Color>
+            <Color x:Key="ShareX.Color.Background.Panel">#FFFFFF</Color>
+            <Color x:Key="ShareX.Color.Background.Popup">#FFFFFF</Color>
+            <Color x:Key="ShareX.Color.Background.Menu">#F5F5F5</Color>
+            <Color x:Key="ShareX.Color.Background.Toolbar">#F0F3F8</Color>
+
+            <Color x:Key="ShareX.Color.Border">#D5DFE5</Color>
+            <Color x:Key="ShareX.Color.Control.Background">#F0F0F0</Color>
+            <Color x:Key="ShareX.Color.Control.Background.Hover">#E5F3FB</Color>
+            <Color x:Key="ShareX.Color.Control.Border">#ADB2B5</Color>
+            <Color x:Key="ShareX.Color.Separator">#D5DFE5</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Cancel.Background">#DC2626</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Cancel.Border">#EF4444</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Continue.Background">#10B981</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Continue.Border">#13DD9A</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Foreground">#FFFFFF</Color>
+
+            <SolidColorBrush x:Key="ShareX.Brush.Accent" Color="{StaticResource ShareX.Color.Accent.Start}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Accent.Start" Color="{StaticResource ShareX.Color.Accent.Start}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Accent.Foreground" Color="{StaticResource ShareX.Color.Accent.Foreground}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Link" Color="{StaticResource ShareX.Color.Link}" />
+
+            <SolidColorBrush x:Key="ShareX.Brush.Text" Color="{StaticResource ShareX.Color.Text}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Text.Secondary" Color="{StaticResource ShareX.Color.Text.Secondary}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Status.Success" Color="{StaticResource ShareX.Color.Status.Success}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Status.Error" Color="{StaticResource ShareX.Color.Status.Error}" />
+
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Main" Color="{StaticResource ShareX.Color.Background.Main}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Panel" Color="{StaticResource ShareX.Color.Background.Panel}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Popup" Color="{StaticResource ShareX.Color.Background.Popup}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Menu" Color="{StaticResource ShareX.Color.Background.Menu}" />
+            <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="{StaticResource ShareX.Color.Background.Menu}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Toolbar" Color="{StaticResource ShareX.Color.Background.Toolbar}" />
+
+            <SolidColorBrush x:Key="ShareX.Brush.Border" Color="{StaticResource ShareX.Color.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Background" Color="{StaticResource ShareX.Color.Control.Background}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Background.Hover" Color="{StaticResource ShareX.Color.Control.Background.Hover}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Border" Color="{StaticResource ShareX.Color.Control.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Background.Disabled" Color="#F4F4F4" />
+            <SolidColorBrush x:Key="ShareX.Brush.Separator" Color="{StaticResource ShareX.Color.Separator}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Cancel.Background" Color="{StaticResource ShareX.Color.TaskMode.Cancel.Background}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Cancel.Border" Color="{StaticResource ShareX.Color.TaskMode.Cancel.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Continue.Background" Color="{StaticResource ShareX.Color.TaskMode.Continue.Background}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Continue.Border" Color="{StaticResource ShareX.Color.TaskMode.Continue.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Foreground" Color="{StaticResource ShareX.Color.TaskMode.Foreground}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Overlay.Soft" Color="#30000000" />
+            <SolidColorBrush x:Key="ShareX.Brush.Overlay.Modal" Color="#80000000" />
+
+            <DrawingBrush x:Key="ShareX.Brush.Checkered" TileMode="Tile" SourceRect="0,0,30,30" DestinationRect="0,0,30,30">
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#FFFFFF">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,30,30" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="#EBEBEB">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0,15,15" />
+                                    <RectangleGeometry Rect="15,15,15,15" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+
+            <DrawingBrush x:Key="ShareX.Brush.Checkered.Small" TileMode="Tile" SourceRect="0,0,8,8" DestinationRect="0,0,8,8">
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#FFFFFF">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,8,8" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="#EBEBEB">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0,4,4" />
+                                    <RectangleGeometry Rect="4,4,4,4" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+
+            <!-- Brushes of the Aero control templates (AeroTheme.axaml). -->
+            <SolidColorBrush x:Key="Aero.Text" Color="#000000" />
+            <SolidColorBrush x:Key="Aero.GrayText" Color="#6D6D6D" />
+            <SolidColorBrush x:Key="Aero.MainInstruction.Text" Color="#003399" />
+            <SolidColorBrush x:Key="Aero.Window" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Aero.Control" Color="#F0F0F0" />
+            <SolidColorBrush x:Key="Aero.Highlight" Color="#3399FF" />
+            <SolidColorBrush x:Key="Aero.HighlightText" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Aero.Glyph" Color="#000000" />
+            <SolidColorBrush x:Key="Aero.Glyph.Disabled" Color="#AFAFAF" />
+
+            <!-- Push button (ButtonChrome) -->
+            <LinearGradientBrush x:Key="Aero.Button.Face" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#F3F3F3" Offset="0" />
+                <GradientStop Color="#EBEBEB" Offset="0.5" />
+                <GradientStop Color="#DDDDDD" Offset="0.5" />
+                <GradientStop Color="#CDCDCD" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Button.Border" Color="#707070" />
+            <LinearGradientBrush x:Key="Aero.Button.InnerBorder" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#FAFFFFFF" Offset="0" />
+                <GradientStop Color="#85FFFFFF" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Button.Face.Hot" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#EAF6FD" Offset="0" />
+                <GradientStop Color="#D9F0FC" Offset="0.5" />
+                <GradientStop Color="#BEE6FD" Offset="0.5" />
+                <GradientStop Color="#A7D9F5" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Button.Border.Hot" Color="#3C7FB1" />
+            <LinearGradientBrush x:Key="Aero.Button.Face.Pressed" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#C2E4F6" Offset="0" />
+                <GradientStop Color="#C2E4F6" Offset="0.5" />
+                <GradientStop Color="#ABDAF3" Offset="0.5" />
+                <GradientStop Color="#90CBEB" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Button.Border.Pressed" Color="#2C628B" />
+            <SolidColorBrush x:Key="Aero.Button.Face.Disabled" Color="#F4F4F4" />
+            <SolidColorBrush x:Key="Aero.Button.Border.Disabled" Color="#ADB2B5" />
+            <SolidColorBrush x:Key="Aero.Button.Text.Disabled" Color="#ADADAD" />
+            <SolidColorBrush x:Key="Aero.Button.DefaultRing" Color="#F900CCFF" />
+            <LinearGradientBrush x:Key="Aero.Button.PressedShadow.Top" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#80333333" Offset="0" />
+                <GradientStop Color="#00333333" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Button.PressedShadow.Left" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#80333333" Offset="0" />
+                <GradientStop Color="#00333333" Offset="1" />
+            </LinearGradientBrush>
+
+            <!-- Check box and radio button (BulletChrome) -->
+            <SolidColorBrush x:Key="Aero.Check.Border" Color="#8E8F8F" />
+            <SolidColorBrush x:Key="Aero.Check.Background" Color="#F4F4F4" />
+            <LinearGradientBrush x:Key="Aero.Check.InnerBorder" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#AEB3B9" Offset="0.25" />
+                <GradientStop Color="#C2C4C6" Offset="0.5" />
+                <GradientStop Color="#EAEBEB" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Check.InnerFill" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#CBCFD5" Offset="0.2" />
+                <GradientStop Color="#F7F7F7" Offset="0.8" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Check.Border.Hot" Color="#3C7FB1" />
+            <SolidColorBrush x:Key="Aero.Check.Background.Hot" Color="#DEF9FA" />
+            <LinearGradientBrush x:Key="Aero.Check.InnerBorder.Hot" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#79C6F9" Offset="0.3" />
+                <GradientStop Color="#79C6F9" Offset="0.5" />
+                <GradientStop Color="#D2EDFD" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Check.InnerFill.Hot" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#B1DFFD" Offset="0.2" />
+                <GradientStop Color="#E9F7FE" Offset="0.8" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Check.Border.Pressed" Color="#2C628B" />
+            <SolidColorBrush x:Key="Aero.Check.Background.Pressed" Color="#C2E4F6" />
+            <LinearGradientBrush x:Key="Aero.Check.InnerBorder.Pressed" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#54A6D5" Offset="0.3" />
+                <GradientStop Color="#5EB5E4" Offset="0.5" />
+                <GradientStop Color="#C4E5F6" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Check.InnerFill.Pressed" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#7FBADC" Offset="0.2" />
+                <GradientStop Color="#D6EDF9" Offset="0.8" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Check.Border.Disabled" Color="#ADB2B5" />
+            <LinearGradientBrush x:Key="Aero.Check.InnerBorder.Disabled" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#E1E3E5" Offset="0.25" />
+                <GradientStop Color="#E8E9EA" Offset="0.5" />
+                <GradientStop Color="#F3F3F3" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Check.Mark" Color="#31347C" />
+            <SolidColorBrush x:Key="Aero.Check.Mark.Disabled" Color="#AEB7CF" />
+            <LinearGradientBrush x:Key="Aero.Check.Indeterminate" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#2FA8D5" Offset="0.2" />
+                <GradientStop Color="#25598C" Offset="0.8" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Check.Indeterminate.Hot" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#33D7ED" Offset="0.2" />
+                <GradientStop Color="#2094CE" Offset="0.8" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Check.Indeterminate.Disabled" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#C0E5F3" Offset="0.2" />
+                <GradientStop Color="#BDCDDC" Offset="0.8" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Radio.InnerBorder" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#B3B8BD" Offset="0" />
+                <GradientStop Color="#EBEBEB" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Radio.InnerBorder.Hot" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#80CAF9" Offset="0" />
+                <GradientStop Color="#D2EEFD" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Radio.InnerBorder.Pressed" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#5CAAD7" Offset="0" />
+                <GradientStop Color="#C3E4F6" Offset="1" />
+            </LinearGradientBrush>
+            <RadialGradientBrush x:Key="Aero.Radio.Dot" Center="25%,25%" GradientOrigin="25%,25%" RadiusX="75%" RadiusY="75%">
+                <GradientStop Color="#E5E5E5" Offset="0.1" />
+                <GradientStop Color="#5DCEDD" Offset="0.35" />
+                <GradientStop Color="#0B82C7" Offset="1" />
+            </RadialGradientBrush>
+            <RadialGradientBrush x:Key="Aero.Radio.Dot.Hot" Center="25%,25%" GradientOrigin="25%,25%" RadiusX="75%" RadiusY="75%">
+                <GradientStop Color="#FFFFFF" Offset="0.1" />
+                <GradientStop Color="#74FFFF" Offset="0.35" />
+                <GradientStop Color="#0DA0F3" Offset="1" />
+            </RadialGradientBrush>
+            <RadialGradientBrush x:Key="Aero.Radio.Dot.Pressed" Center="25%,25%" GradientOrigin="25%,25%" RadiusX="75%" RadiusY="75%">
+                <GradientStop Color="#95D9FC" Offset="0" />
+                <GradientStop Color="#3A84AA" Offset="0.35" />
+                <GradientStop Color="#075483" Offset="1" />
+            </RadialGradientBrush>
+            <RadialGradientBrush x:Key="Aero.Radio.Dot.Disabled" Center="25%,25%" GradientOrigin="25%,25%" RadiusX="75%" RadiusY="75%">
+                <GradientStop Color="#C9D5DE" Offset="0" />
+                <GradientStop Color="#C0E3E8" Offset="0.35" />
+                <GradientStop Color="#B0D4E9" Offset="1" />
+            </RadialGradientBrush>
+            <SolidColorBrush x:Key="Aero.Radio.Dot.Stroke" Color="#193B55" />
+            <SolidColorBrush x:Key="Aero.Radio.Dot.Stroke.Disabled" Color="#A2AEB9" />
+
+            <!-- Text box (ListBoxChrome): the top edge is darker, from absolute gradients 20px tall. -->
+            <SolidColorBrush x:Key="Aero.Edit.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Aero.Edit.Background.Disabled" Color="#F4F4F4" />
+            <LinearGradientBrush x:Key="Aero.Edit.Border" StartPoint="0,0" EndPoint="0,20">
+                <GradientStop Color="#ABADB3" Offset="0.05" />
+                <GradientStop Color="#E2E3EA" Offset="0.07" />
+                <GradientStop Color="#E3E9EF" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Edit.Border.Hot" StartPoint="0,0" EndPoint="0,20">
+                <GradientStop Color="#5794BF" Offset="0.05" />
+                <GradientStop Color="#B7D5EA" Offset="0.07" />
+                <GradientStop Color="#C7E2F1" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Edit.Border.Focus" StartPoint="0,0" EndPoint="0,20">
+                <GradientStop Color="#3D7BAD" Offset="0.05" />
+                <GradientStop Color="#A4C9E3" Offset="0.07" />
+                <GradientStop Color="#B7D9ED" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Edit.Border.Disabled" Color="#ADB2B5" />
+
+            <!-- Drop-down lists, list boxes and trees (Explorer selection) -->
+            <SolidColorBrush x:Key="Aero.DropDown.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Aero.DropDown.Border" Color="#646464" />
+            <SolidColorBrush x:Key="Aero.List.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Aero.List.Border" Color="#828790" />
+            <SolidColorBrush x:Key="Aero.List.Hot.Border" Color="#B8D6FB" />
+            <LinearGradientBrush x:Key="Aero.List.Hot.Background" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#FAFBFD" Offset="0" />
+                <GradientStop Color="#EBF3FD" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.List.Selected.Border" Color="#84ACDD" />
+            <LinearGradientBrush x:Key="Aero.List.Selected.Background" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#DCEBFC" Offset="0" />
+                <GradientStop Color="#C1DBFC" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.List.SelectedHot.Border" Color="#7DA2CE" />
+            <LinearGradientBrush x:Key="Aero.List.SelectedHot.Background" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#DCEBFC" Offset="0" />
+                <GradientStop Color="#B6D3F7" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.List.Gloss" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#A0FFFFFF" Offset="0" />
+                <GradientStop Color="#30FFFFFF" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Tree.Background" Color="Transparent" />
+
+            <!-- Scroll bar (ScrollChrome) -->
+            <LinearGradientBrush x:Key="Aero.ScrollBar.Track.Vertical" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#E1E1E1" Offset="0" />
+                <GradientStop Color="#EDEDED" Offset="0.2" />
+                <GradientStop Color="#EDEDED" Offset="0.8" />
+                <GradientStop Color="#E3E3E3" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.ScrollBar.Track.Horizontal" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#E1E1E1" Offset="0" />
+                <GradientStop Color="#EDEDED" Offset="0.2" />
+                <GradientStop Color="#EDEDED" Offset="0.8" />
+                <GradientStop Color="#E3E3E3" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.ScrollBar.Thumb.Vertical" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#F3F3F3" Offset="0" />
+                <GradientStop Color="#E8E8E9" Offset="0.5" />
+                <GradientStop Color="#D6D6D8" Offset="0.5" />
+                <GradientStop Color="#BCBDC0" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.ScrollBar.Thumb.Horizontal" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#F3F3F3" Offset="0" />
+                <GradientStop Color="#E8E8E9" Offset="0.5" />
+                <GradientStop Color="#D6D6D8" Offset="0.5" />
+                <GradientStop Color="#BCBDC0" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.ScrollBar.Thumb.Hot.Vertical" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#E3F4FC" Offset="0" />
+                <GradientStop Color="#D6EEFB" Offset="0.5" />
+                <GradientStop Color="#A9DBF6" Offset="0.5" />
+                <GradientStop Color="#A4D5EF" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.ScrollBar.Thumb.Hot.Horizontal" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#E3F4FC" Offset="0" />
+                <GradientStop Color="#D6EEFB" Offset="0.5" />
+                <GradientStop Color="#A9DBF6" Offset="0.5" />
+                <GradientStop Color="#A4D5EF" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.ScrollBar.Thumb.Pressed.Vertical" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#CAECF9" Offset="0" />
+                <GradientStop Color="#AFE1F7" Offset="0.5" />
+                <GradientStop Color="#6FCAF0" Offset="0.5" />
+                <GradientStop Color="#66BADD" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.ScrollBar.Thumb.Pressed.Horizontal" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#CAECF9" Offset="0" />
+                <GradientStop Color="#AFE1F7" Offset="0.5" />
+                <GradientStop Color="#6FCAF0" Offset="0.5" />
+                <GradientStop Color="#66BADD" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.ScrollBar.Thumb.Border" Color="#959595" />
+            <SolidColorBrush x:Key="Aero.ScrollBar.Thumb.Border.Hot" Color="#3C7FB1" />
+            <SolidColorBrush x:Key="Aero.ScrollBar.Thumb.Border.Pressed" Color="#15598A" />
+            <SolidColorBrush x:Key="Aero.ScrollBar.Thumb.Shadow" Color="#CFCFCF" />
+            <SolidColorBrush x:Key="Aero.ScrollBar.Grip" Color="#606060" />
+            <SolidColorBrush x:Key="Aero.ScrollBar.Grip.Hot" Color="#3C7FB1" />
+            <SolidColorBrush x:Key="Aero.ScrollBar.Arrow" Color="#4D4D4D" />
+            <SolidColorBrush x:Key="Aero.ScrollBar.Arrow.Hot" Color="#1F638A" />
+            <SolidColorBrush x:Key="Aero.ScrollBar.Arrow.Disabled" Color="#BFBFBF" />
+
+            <!-- Track bar -->
+            <SolidColorBrush x:Key="Aero.TrackBar.Track" Color="#E7EAEA" />
+            <LinearGradientBrush x:Key="Aero.TrackBar.Track.Border" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#AEB1AF" Offset="0.1" />
+                <GradientStop Color="#FFFFFF" Offset="0.9" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.TrackBar.Thumb" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#FFFFFF" Offset="0" />
+                <GradientStop Color="#F0EFEF" Offset="0.4" />
+                <GradientStop Color="#D6D5D5" Offset="0.8" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.TrackBar.Thumb.Hot" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#FFFFFF" Offset="0" />
+                <GradientStop Color="#B8E2F9" Offset="0.5" />
+                <GradientStop Color="#B0DFF8" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.TrackBar.Thumb.Pressed" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#B8E4FA" Offset="0.25" />
+                <GradientStop Color="#5EB4E3" Offset="0.5" />
+                <GradientStop Color="#4C8BB4" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.TrackBar.Thumb.Vertical" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#FFFFFF" Offset="0" />
+                <GradientStop Color="#F0EFEF" Offset="0.4" />
+                <GradientStop Color="#D6D5D5" Offset="0.8" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.TrackBar.Thumb.Hot.Vertical" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#FFFFFF" Offset="0" />
+                <GradientStop Color="#B8E2F9" Offset="0.5" />
+                <GradientStop Color="#B0DFF8" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.TrackBar.Thumb.Pressed.Vertical" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#B8E4FA" Offset="0.25" />
+                <GradientStop Color="#5EB4E3" Offset="0.5" />
+                <GradientStop Color="#4C8BB4" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.TrackBar.Thumb.Border" Color="#929292" />
+            <SolidColorBrush x:Key="Aero.TrackBar.Thumb.Border.Hot" Color="#3C7FB1" />
+            <SolidColorBrush x:Key="Aero.TrackBar.Thumb.Border.Pressed" Color="#2C628B" />
+            <SolidColorBrush x:Key="Aero.TrackBar.Thumb.Disabled" Color="#F4F4F4" />
+            <SolidColorBrush x:Key="Aero.TrackBar.Thumb.Border.Disabled" Color="#AEB1AF" />
+            <SolidColorBrush x:Key="Aero.TrackBar.Tick" Color="#C4C4C4" />
+
+            <!-- Progress bar: a green indicator under white glass overlays (kept green whatever the accent). -->
+            <LinearGradientBrush x:Key="Aero.Progress.Track" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#BABABA" Offset="0" />
+                <GradientStop Color="#C7C7C7" Offset="0.5" />
+                <GradientStop Color="#BABABA" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Progress.Border" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#B2B2B2" Offset="0" />
+                <GradientStop Color="#8C8C8C" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Progress.Fill" Color="#01D328" />
+            <SolidColorBrush x:Key="Aero.Progress.Text" Color="#000000" />
+
+            <!-- Menus and tool tips -->
+            <SolidColorBrush x:Key="Aero.Menu.Background" Color="#F5F5F5" />
+            <SolidColorBrush x:Key="Aero.Menu.Border" Color="#959595" />
+            <SolidColorBrush x:Key="Aero.Menu.Text" Color="#000000" />
+            <SolidColorBrush x:Key="Aero.Menu.Gutter" Color="#F1F1F1" />
+            <SolidColorBrush x:Key="Aero.Menu.Gutter.Line" Color="#E2E3E3" />
+            <SolidColorBrush x:Key="Aero.Menu.Gutter.Light" Color="#FFFFFF" />
+            <LinearGradientBrush x:Key="Aero.Menu.Highlight" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#34C5EBFF" Offset="0" />
+                <GradientStop Color="#3481D8FF" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Menu.Highlight.Border" Color="#8071CBF1" />
+            <SolidColorBrush x:Key="Aero.Menu.Highlight.Inner" Color="#40FFFFFF" />
+            <LinearGradientBrush x:Key="Aero.Menu.Highlight.Disabled" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#0A000000" Offset="0" />
+                <GradientStop Color="#1A000000" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Menu.Highlight.Border.Disabled" Color="#40000000" />
+            <SolidColorBrush x:Key="Aero.Menu.Checked" Color="#E6EFF4" />
+            <SolidColorBrush x:Key="Aero.Menu.Checked.Border" Color="#CDD3E6" />
+            <SolidColorBrush x:Key="Aero.Menu.Checked.Glyph" Color="#0C12A1" />
+            <SolidColorBrush x:Key="Aero.Menu.Separator" Color="#E0E0E0" />
+            <SolidColorBrush x:Key="Aero.Menu.Separator.Light" Color="#FFFFFF" />
+            <LinearGradientBrush x:Key="Aero.ToolTip.Background" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#FFFFFF" Offset="0" />
+                <GradientStop Color="#E4E5F0" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.ToolTip.Border" Color="#767676" />
+            <SolidColorBrush x:Key="Aero.ToolTip.Text" Color="#575757" />
+            <SolidColorBrush x:Key="Aero.GroupBox.Border" Color="#D5DFE5" />
+            <SolidColorBrush x:Key="Aero.GroupBox.Light" Color="#FFFFFF" />
+            <!-- Control Panel style navigation pane -->
+            <LinearGradientBrush x:Key="Aero.Nav.Background" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#DFE9F5" Offset="0" />
+                <GradientStop Color="#EEF3FA" Offset="0.3" />
+                <GradientStop Color="#F7F9FD" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Nav.Border" Color="#C5D3E3" />
+
+            <!-- Window frame. ThemeManager replaces the glass brushes with ones made from the accent color. -->
+            <LinearGradientBrush x:Key="Aero.Glass.Active" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#9C74B8FC" Offset="0" />
+                <GradientStop Color="#8474B8FC" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Glass.Inactive" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#5AB4CCE4" Offset="0" />
+                <GradientStop Color="#46B4CCE4" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Glass.Basic.Active" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#D3E1F2" Offset="0" />
+                <GradientStop Color="#BCD0EA" Offset="0.3" />
+                <GradientStop Color="#A9C4E5" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.Glass.Basic.Inactive" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#EBEFF5" Offset="0" />
+                <GradientStop Color="#D7E4F2" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.Glass.Outline" Color="#B0182838" />
+            <SolidColorBrush x:Key="Aero.Glass.Outline.Inactive" Color="#70303840" />
+            <RadialGradientBrush x:Key="Aero.Caption.Button.Hot" Center="50%,100%" GradientOrigin="50%,100%" RadiusX="80%" RadiusY="95%">
+                <GradientStop Color="#E83CB5FF" Offset="0" />
+                <GradientStop Color="#703CB5FF" Offset="0.6" />
+                <GradientStop Color="#203CB5FF" Offset="1" />
+            </RadialGradientBrush>
+            <RadialGradientBrush x:Key="Aero.Caption.Button.Pressed" Center="50%,100%" GradientOrigin="50%,100%" RadiusX="80%" RadiusY="95%">
+                <GradientStop Color="#F01E6EA7" Offset="0" />
+                <GradientStop Color="#B01E5A8A" Offset="0.7" />
+                <GradientStop Color="#801E4A70" Offset="1" />
+            </RadialGradientBrush>
+            <SolidColorBrush x:Key="Aero.Caption.Button.Border.Hot" Color="#C0004A7C" />
+            <LinearGradientBrush x:Key="Aero.CaptionClose.Background" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#E8A493" Offset="0" />
+                <GradientStop Color="#D7735F" Offset="0.5" />
+                <GradientStop Color="#C44C35" Offset="0.5" />
+                <GradientStop Color="#D9785E" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.CaptionClose.Hot" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#F6B3A2" Offset="0" />
+                <GradientStop Color="#F08D7A" Offset="0.5" />
+                <GradientStop Color="#E8553C" Offset="0.5" />
+                <GradientStop Color="#F79478" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Aero.CaptionClose.Pressed" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#D08A7A" Offset="0" />
+                <GradientStop Color="#C0533F" Offset="0.5" />
+                <GradientStop Color="#A8301C" Offset="0.5" />
+                <GradientStop Color="#B8321F" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Aero.CaptionClose.Border" Color="#B0601408" />
+            <RadialGradientBrush x:Key="Aero.CaptionClose.Glow" Center="50%,60%" GradientOrigin="50%,60%" RadiusX="50%" RadiusY="50%">
+                <GradientStop Color="#C0FF5A30" Offset="0" />
+                <GradientStop Color="#60FF4A2E" Offset="0.55" />
+                <GradientStop Color="#00FF4A2E" Offset="1" />
+            </RadialGradientBrush>
+
+            <!-- Tab strip of the color view (Avalonia.Controls.ColorPicker) -->
+            <SolidColorBrush x:Key="ColorViewTabBackgroundBrush" Color="#F0F0F0" />
+            <CornerRadius x:Key="ColorViewTabBackgroundCornerRadius">3</CornerRadius>
+            <!-- Height of the start screen drop-downs, which the accent color picker matches. -->
+            <x:Double x:Key="Classic.OptionControl.Height">30</x:Double>
+        </ResourceDictionary>
+
+        <!-- Aero Basic: the Aero controls with the opaque frame that AeroWindowFrame draws when there is no glass. -->
+        <ResourceDictionary x:Key="{x:Static helpers:ThemeManager.ShareXAeroBasic}" />
+
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>
