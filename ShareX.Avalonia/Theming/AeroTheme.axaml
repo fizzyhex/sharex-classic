@@ -115,10 +115,19 @@
         <!-- ============================================================================================== -->
         <!-- Window frame: glass (or the opaque Aero Basic frame), glowing caption text and caption buttons. -->
         <!-- ============================================================================================== -->
+        <!--
+            Caption buttons: transparent at rest with thin glyphs, like Windows 11; the Aero glass highlight, gloss and glow
+            fade in while the pointer is over them.
+        -->
         <ControlTheme x:Key="AeroCaptionButton" TargetType="theming:AeroCaptionButton">
-            <Setter Property="Background" Value="#18FFFFFF"/>
-            <Setter Property="BorderBrush" Value="#90202A38"/>
-            <Setter Property="Height" Value="19"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource Aero.Caption.Text}"/>
+            <Setter Property="Tag" Value="{DynamicResource Aero.Caption.Button.Glow}"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="29"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="CornerRadius" Value="0"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="Template">
@@ -170,13 +179,27 @@
                                 Margin="1"
                                 Background="{StaticResource AeroCaptionGloss}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
-                                IsHitTestVisible="False"/>
+                                Opacity="0"
+                                IsHitTestVisible="False">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.25"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
                         <Border Name="AeroCapInner"
                                 Margin="1"
                                 BorderBrush="#60FFFFFF"
                                 BorderThickness="1"
                                 CornerRadius="{TemplateBinding CornerRadius}"
-                                IsHitTestVisible="False"/>
+                                Opacity="0"
+                                IsHitTestVisible="False">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.25"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
                         <ContentPresenter Name="PART_ContentPresenter"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
@@ -184,7 +207,7 @@
                     </Panel>
                 </ControlTemplate>
             </Setter>
-            <Style Selector="^:pointerover /template/ Border#AeroCapHot">
+            <Style Selector="^:pointerover /template/ Border#AeroCapHot, ^:pointerover /template/ Border#AeroCapGloss, ^:pointerover /template/ Border#AeroCapInner">
                 <Setter Property="Opacity" Value="1"/>
             </Style>
             <Style Selector="^:pointerover /template/ Border#AeroCapGlow">
@@ -203,10 +226,14 @@
 
         <!-- The close button is glossy red and glows red beyond its edges while hot. -->
         <ControlTheme x:Key="AeroCaptionCloseButton" TargetType="theming:AeroCaptionButton">
-            <Setter Property="Background" Value="{DynamicResource Aero.CaptionClose.Background}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource Aero.CaptionClose.Border}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource Aero.Caption.Text}"/>
             <Setter Property="Tag" Value="{DynamicResource Aero.CaptionClose.Glow}"/>
-            <Setter Property="Height" Value="19"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="29"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="CornerRadius" Value="0"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="Template">
@@ -247,13 +274,27 @@
                                 Margin="1"
                                 Background="{StaticResource AeroCaptionGloss}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
-                                IsHitTestVisible="False"/>
+                                Opacity="0"
+                                IsHitTestVisible="False">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.25"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
                         <Border Name="AeroCapInner"
                                 Margin="1"
                                 BorderBrush="#60FFFFFF"
                                 BorderThickness="1"
                                 CornerRadius="{TemplateBinding CornerRadius}"
-                                IsHitTestVisible="False"/>
+                                Opacity="0"
+                                IsHitTestVisible="False">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.25"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
                         <ContentPresenter Name="PART_ContentPresenter"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
@@ -261,7 +302,7 @@
                     </Panel>
                 </ControlTemplate>
             </Setter>
-            <Style Selector="^:pointerover /template/ Border#AeroCapHot">
+            <Style Selector="^:pointerover /template/ Border#AeroCapHot, ^:pointerover /template/ Border#AeroCapGloss, ^:pointerover /template/ Border#AeroCapInner">
                 <Setter Property="Opacity" Value="1"/>
             </Style>
             <Style Selector="^:pointerover /template/ Border#AeroCapGlow">
@@ -275,6 +316,9 @@
             </Style>
             <Style Selector="^:disabled">
                 <Setter Property="Opacity" Value="0.45"/>
+            </Style>
+            <Style Selector="^:pointerover, ^:pressed">
+                <Setter Property="Foreground" Value="White"/>
             </Style>
         </ControlTheme>
 
@@ -326,9 +370,9 @@
                                         IsHitTestVisible="False"/>
                                 <!-- The red glow around the hot close button spills over the glass. -->
                                 <Border x:Name="AeroCloseGlow"
-                                        Width="75"
-                                        Height="36"
-                                        Margin="0,-6,-8,0"
+                                        Width="70"
+                                        Height="40"
+                                        Margin="0,-6,-12,0"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Top"
                                         Background="{DynamicResource Aero.CaptionClose.Glow}"
@@ -386,60 +430,26 @@
                                                    TextTrimming="CharacterEllipsis"/>
                                     </Panel>
                                 </StackPanel>
+                                <!-- Laid out like the Windows 11 caption buttons: flush in the corner, 46 px wide, thin line glyphs. -->
                                 <StackPanel x:Name="AeroCaptionButtons"
                                             Orientation="Horizontal"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
-                                            Margin="0,1,6,0"
                                             IsVisible="{TemplateBinding HasTitleBar}">
                                     <theming:AeroCaptionButton x:Name="PART_MinimizeButton"
                                             Theme="{StaticResource AeroCaptionButton}"
-                                            Width="26"
-                                            Height="19"
-                                            Padding="0"
-                                            Background="#18FFFFFF"
-                                            BorderBrush="#90202A38"
-                                            CornerRadius="0,0,0,4"
-                                            Tag="{DynamicResource Aero.Caption.Button.Glow}"
                                             WindowDecorationProperties.ElementRole="MinimizeButton">
-                                        <Path Margin="0,6,0,0"
-                                              Data="M 0.5,0.5 H 9.5 V 3.5 H 0.5 Z"
-                                              Fill="#FFFFFF"
-                                              Stroke="#A0283444"
-                                              StrokeThickness="1"/>
+                                        <Path Width="10" Height="1" Data="M 0,0.5 H 10" Stroke="{Binding $parent[theming:AeroCaptionButton].Foreground}" StrokeThickness="1"/>
                                     </theming:AeroCaptionButton>
                                     <theming:AeroCaptionButton x:Name="PART_MaximizeButton"
                                             Theme="{StaticResource AeroCaptionButton}"
-                                            Width="27"
-                                            Height="19"
-                                            Padding="0"
-                                            Margin="-1,0,0,0"
-                                            Background="#18FFFFFF"
-                                            BorderBrush="#90202A38"
-                                            CornerRadius="0"
-                                            Tag="{DynamicResource Aero.Caption.Button.Glow}"
                                             WindowDecorationProperties.ElementRole="MaximizeButton">
-                                        <Path x:Name="AeroMaximizeGlyph"
-                                              Data="M 0.5,0.5 H 10.5 V 8.5 H 0.5 Z M 2.5,3.5 V 6.5 H 8.5 V 3.5 Z"
-                                              Fill="#FFFFFF"
-                                              Stroke="#A0283444"
-                                              StrokeThickness="1"/>
+                                        <Path x:Name="AeroMaximizeGlyph" Width="10" Height="10" Data="M 0.5,0.5 H 9.5 V 9.5 H 0.5 Z" Stroke="{Binding $parent[theming:AeroCaptionButton].Foreground}" StrokeThickness="1"/>
                                     </theming:AeroCaptionButton>
                                     <theming:AeroCaptionButton x:Name="PART_CloseButton"
                                             Theme="{StaticResource AeroCaptionCloseButton}"
-                                            Width="47"
-                                            Height="19"
-                                            Padding="0"
-                                            Margin="-1,0,0,0"
-                                            Background="{DynamicResource Aero.CaptionClose.Background}"
-                                            BorderBrush="{DynamicResource Aero.CaptionClose.Border}"
-                                            Tag="{DynamicResource Aero.CaptionClose.Glow}"
-                                            CornerRadius="0,0,4,0"
                                             WindowDecorationProperties.ElementRole="CloseButton">
-                                        <Path Data="M 0.5,0.5 H 4 L 6,2.5 L 8,0.5 H 11.5 L 7.75,4.75 L 11.5,9 H 8 L 6,7 L 4,9 H 0.5 L 4.25,4.75 Z"
-                                              Fill="#FFFFFF"
-                                              Stroke="#A0401008"
-                                              StrokeThickness="1"/>
+                                        <Path Width="10" Height="10" Data="M 0,0 L 10,10 M 10,0 L 0,10" Stroke="{Binding $parent[theming:AeroCaptionButton].Foreground}" StrokeThickness="1"/>
                                     </theming:AeroCaptionButton>
                                 </StackPanel>
                             </Panel>
@@ -453,19 +463,9 @@
                                 <TextBlock Text="{TemplateBinding Title}" VerticalAlignment="Center" Margin="12,0,0,0" FontSize="12"/>
                                 <theming:AeroCaptionButton x:Name="PART_PopoverCloseButton"
                                         Theme="{StaticResource AeroCaptionCloseButton}"
-                                        Width="47"
-                                        Height="19"
-                                        Padding="0"
-                                        Background="{DynamicResource Aero.CaptionClose.Background}"
-                                        BorderBrush="{DynamicResource Aero.CaptionClose.Border}"
-                                        Tag="{DynamicResource Aero.CaptionClose.Glow}"
                                         HorizontalAlignment="Right"
-                                        CornerRadius="0,0,4,4"
                                         WindowDecorationProperties.ElementRole="CloseButton">
-                                    <Path Data="M 0.5,0.5 H 4 L 6,2.5 L 8,0.5 H 11.5 L 7.75,4.75 L 11.5,9 H 8 L 6,7 L 4,9 H 0.5 L 4.25,4.75 Z"
-                                          Fill="#FFFFFF"
-                                          Stroke="#A0401008"
-                                          StrokeThickness="1"/>
+                                    <Path Width="10" Height="10" Data="M 0,0 L 10,10 M 10,0 L 0,10" Stroke="{Binding $parent[theming:AeroCaptionButton].Foreground}" StrokeThickness="1"/>
                                 </theming:AeroCaptionButton>
                             </Panel>
                         </WindowDrawnDecorationsContent.FullscreenPopover>
@@ -489,47 +489,42 @@
             <Style Selector="^:maximized /template/ Border#AeroCloseGlow">
                 <Setter Property="Margin" Value="0,-10,-12,0"/>
             </Style>
-            <Style Selector="^:maximized /template/ StackPanel#AeroCaptionButtons">
-                <Setter Property="Margin" Value="0,0,2,0"/>
+            <Style Selector="^:maximized /template/ theming|AeroCaptionButton">
+                <Setter Property="Height" Value="21"/>
             </Style>
+            <!-- The title bar height of a maximized window also covers the frame that is off screen, so the title is sized
+                 to the visible caption instead; centred on the full height it would hang over the client area. -->
             <Style Selector="^:maximized /template/ StackPanel#AeroTitlePanel">
                 <Setter Property="Margin" Value="4,0,150,0"/>
+                <Setter Property="Height" Value="22"/>
             </Style>
             <Style Selector="^:maximized /template/ Path#AeroMaximizeGlyph">
-                <Setter Property="Data" Value="M 3.5,0.5 H 10.5 V 6.5 H 8.5 V 2.5 H 3.5 Z M 0.5,3.5 H 8.5 V 9.5 H 0.5 Z M 2.5,5.5 V 7.5 H 6.5 V 5.5 Z"/>
+                <Setter Property="Data" Value="M 2.5,2.5 V 0.5 H 9.5 V 7.5 H 7.5 M 0.5,2.5 H 7.5 V 9.5 H 0.5 Z"/>
             </Style>
             <Style Selector="^:not(:has-maximize) /template/ Panel#AeroResizeGrips">
                 <Setter Property="IsVisible" Value="False"/>
             </Style>
 
-            <!-- Caption buttons the window does not allow are hidden; a lone close button is rounded on both sides. -->
+            <!-- Caption buttons the window does not allow are hidden. -->
             <Style Selector="^:not(:has-minimize) /template/ theming|AeroCaptionButton#PART_MinimizeButton">
                 <Setter Property="IsVisible" Value="False"/>
             </Style>
             <Style Selector="^:not(:has-maximize) /template/ theming|AeroCaptionButton#PART_MaximizeButton">
                 <Setter Property="IsVisible" Value="False"/>
             </Style>
-            <Style Selector="^:not(:has-minimize):not(:has-maximize) /template/ theming|AeroCaptionButton#PART_CloseButton">
-                <Setter Property="Width" Value="43"/>
-                <Setter Property="CornerRadius" Value="0,0,4,4"/>
-            </Style>
             <Style Selector="^ /template/ theming|AeroCaptionButton:disabled">
                 <Setter Property="Opacity" Value="0.45"/>
             </Style>
 
-            <!-- Inactive windows: thinner, greyer glass, and the close button loses its red. -->
+            <!-- Inactive windows: thinner, greyer glass and dimmed caption glyphs, as in Windows 11. -->
             <Style Selector="^.inactive /template/ Border#AeroGlassActive">
                 <Setter Property="Opacity" Value="0"/>
             </Style>
             <Style Selector="^.inactive /template/ Border#AeroGlassInactive">
                 <Setter Property="Opacity" Value="1"/>
             </Style>
-            <Style Selector="^.inactive /template/ theming|AeroCaptionButton#PART_CloseButton">
-                <Setter Property="Background" Value="#18FFFFFF"/>
-                <Setter Property="BorderBrush" Value="#90202A38"/>
-            </Style>
             <Style Selector="^.inactive /template/ StackPanel#AeroCaptionButtons">
-                <Setter Property="Opacity" Value="0.8"/>
+                <Setter Property="Opacity" Value="0.6"/>
             </Style>
             <Style Selector="^.inactive /template/ TextBlock#AeroTitleText">
                 <Setter Property="Foreground" Value="{DynamicResource Aero.Caption.Text.Inactive}"/>
@@ -550,14 +545,6 @@
             </Style>
             <Style Selector="^.opaque /template/ Border#AeroClientEdge">
                 <Setter Property="BorderBrush" Value="{DynamicResource Aero.Glass.Basic.Edge}"/>
-            </Style>
-            <Style Selector="^.opaque /template/ theming|AeroCaptionButton#PART_MinimizeButton, ^.opaque /template/ theming|AeroCaptionButton#PART_MaximizeButton">
-                <Setter Property="Background" Value="{DynamicResource Aero.Caption.Basic.Face}"/>
-                <Setter Property="BorderBrush" Value="{DynamicResource Aero.Glass.Basic.Edge}"/>
-            </Style>
-            <Style Selector="^.opaque.inactive /template/ theming|AeroCaptionButton#PART_CloseButton">
-                <Setter Property="Background" Value="{DynamicResource Aero.Caption.Basic.Face}"/>
-                <Setter Property="BorderBrush" Value="{DynamicResource Aero.Glass.Basic.Edge.Inactive}"/>
             </Style>
         </ControlTheme>
 
@@ -3065,7 +3052,7 @@
     </Style>
     <Style Selector=":is(Window).aero-active Button[IsDefault=True]:not(:pointerover):not(:pressed):not(:disabled) /template/ Border#AeroChromeHalo">
         <Style.Animations>
-            <Animation Duration="0:0:2" IterationCount="Infinite">
+            <Animation Duration="0:0:2" Delay="0:0:0.4" IterationCount="Infinite">
                 <Animation.Easing>
                     <theming:AeroStepEasing Steps="16"/>
                 </Animation.Easing>
@@ -3083,7 +3070,7 @@
     </Style>
     <Style Selector=":is(Window).aero-active Button[IsDefault=True]:not(:pointerover):not(:pressed):not(:disabled) /template/ Border#AeroChromeHot">
         <Style.Animations>
-            <Animation Duration="0:0:2" IterationCount="Infinite">
+            <Animation Duration="0:0:2" Delay="0:0:0.4" IterationCount="Infinite">
                 <Animation.Easing>
                     <theming:AeroStepEasing Steps="16"/>
                 </Animation.Easing>
@@ -3343,21 +3330,27 @@
 
     <!-- ================================================================================================== -->
     <!-- Motion: menus, drop-downs and tool tips fade in and settle; settings pages slide in.               -->
-    <!-- Only Opacity and render transforms animate, once, when they open.                                  -->
+    <!-- Only Opacity and render transforms change, through transitions that follow the open state.         -->
     <!-- ================================================================================================== -->
-    <Style Selector="ContextMenu:open /template/ Border#AeroMenuSurface">
-        <Style.Animations>
-            <Animation Duration="0:0:0.18" Easing="CubicEaseOut">
-                <KeyFrame Cue="0%">
-                    <Setter Property="Opacity" Value="0"/>
-                    <Setter Property="TranslateTransform.Y" Value="-5"/>
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="Opacity" Value="1"/>
-                    <Setter Property="TranslateTransform.Y" Value="0"/>
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
+    <!--
+        Menus, drop-downs and tool tips open with transitions rather than animations: their open state can turn off and
+        on again while the pointer moves (as it does for submenus and settings pages, below), which would restart an
+        animation from transparent. A transition carries on from the current value, so only a real opening fades in.
+    -->
+    <Style Selector="ContextMenu /template/ Border#AeroMenuSurface">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="RenderTransform" Value="translateY(-5px)"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.18" Easing="CubicEaseOut"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <!-- ContextMenu has no :open pseudo-class; its IsOpen property says when it is shown. -->
+    <Style Selector="ContextMenu[IsOpen=True] /template/ Border#AeroMenuSurface">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="RenderTransform" Value="none"/>
     </Style>
     <Style Selector="MenuFlyoutPresenter /template/ Border#AeroMenuSurface">
         <Style.Animations>
@@ -3392,45 +3385,49 @@
         <Setter Property="Opacity" Value="1"/>
         <Setter Property="RenderTransform" Value="none"/>
     </Style>
+    <Style Selector="ComboBox /template/ Border#AeroMenuSurface">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="RenderTransform" Value="translateY(-5px)"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.18" Easing="CubicEaseOut"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+    </Style>
     <Style Selector="ComboBox:dropdownopen /template/ Border#AeroMenuSurface">
-        <Style.Animations>
-            <Animation Duration="0:0:0.18" Easing="CubicEaseOut">
-                <KeyFrame Cue="0%">
-                    <Setter Property="Opacity" Value="0"/>
-                    <Setter Property="TranslateTransform.Y" Value="-5"/>
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="Opacity" Value="1"/>
-                    <Setter Property="TranslateTransform.Y" Value="0"/>
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="RenderTransform" Value="none"/>
+    </Style>
+    <Style Selector="ToolTip /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.15" Easing="SineEaseOut"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="ToolTip:open /template/ ContentPresenter#PART_ContentPresenter">
-        <Style.Animations>
-            <Animation Duration="0:0:0.15" Easing="SineEaseOut">
-                <KeyFrame Cue="0%">
-                    <Setter Property="Opacity" Value="0"/>
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="Opacity" Value="1"/>
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
+        <Setter Property="Opacity" Value="1"/>
+    </Style>
+    <!--
+        Settings pages slide in with transitions rather than an animation, for the same reason as submenus: flicking
+        between pages turns a page's visibility off and on again, which would restart an animation from transparent.
+        A page that is shown again carries on from where its transition had got to.
+    -->
+    <Style Selector="ScrollViewer StackPanel.settings-page">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="RenderTransform" Value="translateX(16px)"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.26" Easing="CubicEaseOut"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.26" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="ScrollViewer[IsVisible=True] StackPanel.settings-page">
-        <Style.Animations>
-            <Animation Duration="0:0:0.26" Easing="CubicEaseOut">
-                <KeyFrame Cue="0%">
-                    <Setter Property="Opacity" Value="0"/>
-                    <Setter Property="TranslateTransform.X" Value="16"/>
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="Opacity" Value="1"/>
-                    <Setter Property="TranslateTransform.X" Value="0"/>
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="RenderTransform" Value="none"/>
     </Style>
 
     <!-- ================================================================================================== -->
@@ -3516,6 +3513,11 @@
                     <Canvas Width="340" Height="340" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <Ellipse Canvas.Left="150" Canvas.Top="-170" Width="340" Height="340" Fill="{DynamicResource Aero.Art.Sun}"/>
                         <Canvas Name="AeroBannerRays" Opacity="0.85">
+                            <Canvas.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:1.2" Easing="SineEaseInOut"/>
+                                </Transitions>
+                            </Canvas.Transitions>
                             <Path Data="M 330,-20 L -40,250 L 20,300 Z" Fill="{DynamicResource Aero.Art.Ray}"/>
                             <Path Data="M 330,-20 L 60,330 L 92,340 Z" Fill="{DynamicResource Aero.Art.Ray}"/>
                             <Path Data="M 330,-20 L 170,340 L 230,340 Z" Fill="{DynamicResource Aero.Art.Ray}" Opacity="0.8"/>
@@ -3607,6 +3609,12 @@
                     </Canvas>
                     <!-- Drifting bokeh and bubbles (they only move while the window is active). -->
                     <Canvas Name="AeroBannerDrift" Width="340" Height="400" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <!-- When the window goes inactive the drift pauses; the bokeh glides back instead of jumping. -->
+                        <Canvas.Transitions>
+                            <Transitions>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:1.2" Easing="SineEaseInOut"/>
+                            </Transitions>
+                        </Canvas.Transitions>
                         <Ellipse Canvas.Left="262" Canvas.Top="150" Width="34" Height="34" Fill="{DynamicResource Aero.Art.Bokeh}"/>
                         <Ellipse Canvas.Left="196" Canvas.Top="206" Width="16" Height="16" Fill="{DynamicResource Aero.Art.Bubble}"/>
                         <Ellipse Canvas.Left="200" Canvas.Top="208" Width="5" Height="4" Fill="{DynamicResource Aero.Art.Bubble.Spot}"/>
@@ -3631,12 +3639,10 @@
                     <theming:AeroStepEasing Steps="56"/>
                 </Animation.Easing>
                 <KeyFrame Cue="0%">
-                    <Setter Property="TranslateTransform.Y" Value="0"/>
-                    <Setter Property="TranslateTransform.X" Value="0"/>
+                    <Setter Property="RenderTransform" Value="translate(0px, 0px)"/>
                 </KeyFrame>
                 <KeyFrame Cue="100%">
-                    <Setter Property="TranslateTransform.Y" Value="-26"/>
-                    <Setter Property="TranslateTransform.X" Value="8"/>
+                    <Setter Property="RenderTransform" Value="translate(8px, -26px)"/>
                 </KeyFrame>
             </Animation>
         </Style.Animations>
