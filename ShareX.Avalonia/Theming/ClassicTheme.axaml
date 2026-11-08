@@ -1917,4 +1917,9 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
+
+    <!-- Page headings in settings windows use the window text color, like Windows Forms labels, not the accent. -->
+    <Style Selector="TextBlock.page-title-text">
+        <Setter Property="Foreground" Value="{DynamicResource Classic.ControlText}"/>
+    </Style>
 </Styles>
