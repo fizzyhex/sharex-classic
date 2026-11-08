@@ -795,8 +795,8 @@
 
         <!--
             Navigation item (the main window sidebar): flat until hot, then it lights up like the Windows 7 Start menu,
-            a glossy glass highlight with a glow rising from its bottom edge and a sweep of light. The glow comes in
-            quickly and fades out slowly.
+            a glossy glass highlight with a glow rising from its bottom edge and a sweep of light. The glow fades in
+            and out like the other Aero buttons.
         -->
         <ControlTheme x:Key="AeroNavButton" TargetType="Button">
             <Setter Property="Foreground" Value="{DynamicResource Aero.Text}"/>
@@ -855,20 +855,17 @@
                     </Panel>
                 </ControlTemplate>
             </Setter>
+            <!-- One transition for both directions: swapping the transitions as the hover state changes would drop the
+                 fade, so the glow would snap on and off. -->
             <Style Selector="^ /template/ Border#AeroNavHot">
                 <Setter Property="Transitions">
                     <Transitions>
-                        <DoubleTransition Property="Opacity" Duration="0:0:0.45" Easing="SineEaseOut"/>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.25" Easing="SineEaseOut"/>
                     </Transitions>
                 </Setter>
             </Style>
             <Style Selector="^:pointerover /template/ Border#AeroNavHot">
                 <Setter Property="Opacity" Value="1"/>
-                <Setter Property="Transitions">
-                    <Transitions>
-                        <DoubleTransition Property="Opacity" Duration="0:0:0.1"/>
-                    </Transitions>
-                </Setter>
             </Style>
             <Style Selector="^:pointerover /template/ Rectangle#AeroSheen">
                 <Style.Animations>
