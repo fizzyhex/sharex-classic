@@ -408,10 +408,12 @@
                                     <Border Width="8" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" WindowDecorationProperties.ElementRole="ResizeNW"/>
                                     <Border Width="8" Height="8" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Transparent" WindowDecorationProperties.ElementRole="ResizeNE"/>
                                 </Panel>
+                                <!-- The title shares the height of the caption buttons, so both are centred on the visible caption; the
+                                     reported title bar height can be taller than the glass above the client area. -->
                                 <StackPanel x:Name="AeroTitlePanel"
                                             Orientation="Horizontal"
                                             VerticalAlignment="Top"
-                                            Height="{TemplateBinding TitleBarHeight}"
+                                            Height="29"
                                             Margin="8,0,150,0"
                                             Spacing="5"
                                             IsHitTestVisible="False"
@@ -492,11 +494,9 @@
             <Style Selector="^:maximized /template/ theming|AeroCaptionButton">
                 <Setter Property="Height" Value="21"/>
             </Style>
-            <!-- The title bar height of a maximized window also covers the frame that is off screen, so the title is sized
-                 to the visible caption instead; centred on the full height it would hang over the client area. -->
             <Style Selector="^:maximized /template/ StackPanel#AeroTitlePanel">
                 <Setter Property="Margin" Value="4,0,150,0"/>
-                <Setter Property="Height" Value="22"/>
+                <Setter Property="Height" Value="21"/>
             </Style>
             <Style Selector="^:maximized /template/ Path#AeroMaximizeGlyph">
                 <Setter Property="Data" Value="M 2.5,2.5 V 0.5 H 9.5 V 7.5 H 7.5 M 0.5,2.5 H 7.5 V 9.5 H 0.5 Z"/>
