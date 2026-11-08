@@ -54,7 +54,7 @@ public sealed class ScreenRecorder : IDisposable, IAsyncDisposable
     public CameraCaptureInfo? Camera { get; private set; }
     /// <summary>Nonfatal camera errors; screen and audio recording continue.</summary>
     public event Action<string>? Diagnostic;
-    /// <summary>GIF encoding progress after capture has stopped, from 0 to 100.</summary>
+    /// <summary>GIF or WebP encoding progress after capture has stopped, from 0 to 100.</summary>
     public event Action<int>? EncodingProgressChanged;
     public bool IsRecording => Volatile.Read(ref recording) != 0;
     public bool IsPaused => clock.IsPaused;
@@ -177,7 +177,7 @@ public sealed class ScreenRecorder : IDisposable, IAsyncDisposable
             using MediaFoundationWriter? writer = options.IsGif ? null : MediaFoundationWriter.Create(graphics, options, width, height);
             using GpuVideoProcessor processor = new(graphics, width, height, options.FramesPerSecond, !options.IsGif, writer?.Width ?? width, writer?.Height ?? height);
             using GifWriter? gifWriter = options.IsGif ? new(graphics, options, width, height) : null;
-            Encoder = writer?.Encoder ?? GifWriter.Encoder;
+            Encoder = writer?.Encoder ?? (options.IsWebP ? GifWriter.WebPEncoder : GifWriter.Encoder);
             using VideoTexturePool? textures = writer == null ? null : new(graphics, processor, writer.EncoderBindFlags);
             using GraphicsCapture capture = new(graphics, processor, targets, options.IncludeCursor, options.FramesPerSecond, options.HdrToneMapping);
             using CameraCapture? camera = options.CaptureCamera ? new(graphics, options) : null;

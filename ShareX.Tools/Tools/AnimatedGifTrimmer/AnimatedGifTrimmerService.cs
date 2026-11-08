@@ -29,11 +29,14 @@ using SkiaSharp;
 
 namespace ShareX.Tools;
 
-/// <summary>A GIF's cut points are frame boundaries; all times are stored as GIF centiseconds.</summary>
+/// <summary>A GIF's cut points are frame boundaries; all times are stored in milliseconds.</summary>
+/// <remarks>Animated WebP files (GIF recordings saved as WebP) are trimmed the same way and exported as WebP.</remarks>
 internal sealed class AnimatedGifTrimmerDocument : IDisposable
 {
     private readonly SkiaAnimatedImage _image;
-    private readonly GifLosslessTrimmer _gif;
+    // Lossless WebP effort; higher values encode much more slowly for little gain on screen content.
+    private const int WebPLosslessEffort = 50;
+    private readonly GifLosslessTrimmer? _gif;
     private readonly object _imageLock = new();
     private readonly long[] _starts;
     private readonly int[] _delays;
@@ -41,13 +44,16 @@ internal sealed class AnimatedGifTrimmerDocument : IDisposable
 
     public string FilePath { get; }
     public int FrameCount => _delays.Length;
-    public double Duration => _starts[^1] / 100d;
-    public double FrameStart(int index) => _starts[index] / 100d;
-    public double FrameEnd(int index) => _starts[index + 1] / 100d;
+    /// <summary>The source's extension, including the dot; exports keep the source's format.</summary>
+    public string Extension => _gif == null ? ".webp" : ".gif";
+    public double Duration => _starts[^1] / 1000d;
+    public double FrameStart(int index) => _starts[index] / 1000d;
+    public double FrameEnd(int index) => _starts[index + 1] / 1000d;
+    // WebP exports always re-encode losslessly, so every selection keeps the original pixels.
     public bool CanCopySelection(int firstFrame, int endFrameExclusive) =>
-        _gif.CanCopySelection(firstFrame, endFrameExclusive);
+        _gif?.CanCopySelection(firstFrame, endFrameExclusive) ?? true;
 
-    private AnimatedGifTrimmerDocument(string filePath, SkiaAnimatedImage image, GifLosslessTrimmer gif,
+    private AnimatedGifTrimmerDocument(string filePath, SkiaAnimatedImage image, GifLosslessTrimmer? gif,
         long[] starts, int[] delays)
     {
         FilePath = filePath;
@@ -60,25 +66,27 @@ internal sealed class AnimatedGifTrimmerDocument : IDisposable
     public static AnimatedGifTrimmerDocument Open(string filePath, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        if (!File.Exists(filePath) || !string.Equals(Path.GetExtension(filePath), ".gif", StringComparison.OrdinalIgnoreCase))
+        string extension = Path.GetExtension(filePath);
+        bool webP = string.Equals(extension, ".webp", StringComparison.OrdinalIgnoreCase);
+        if (!File.Exists(filePath) || (!webP && !string.Equals(extension, ".gif", StringComparison.OrdinalIgnoreCase)))
             throw new InvalidDataException(Strings.AnimatedGifTrimmer_InvalidGif);
 
-        GifLosslessTrimmer gif = GifLosslessTrimmer.Parse(filePath, token);
+        GifLosslessTrimmer? gif = webP ? null : GifLosslessTrimmer.Parse(filePath, token);
         SkiaAnimatedImage image = new SkiaAnimatedImage(filePath);
         try
         {
-            if (image.Format != SKEncodedImageFormat.Gif)
+            if (image.Format != (webP ? SKEncodedImageFormat.Webp : SKEncodedImageFormat.Gif))
                 throw new InvalidDataException(Strings.AnimatedGifTrimmer_InvalidGif);
 
             int count = image.FrameCount;
-            if (count != gif.FrameCount) throw new InvalidDataException(Strings.AnimatedGifTrimmer_InvalidGif);
+            if (gif != null ? count != gif.FrameCount : count < 2) throw new InvalidDataException(Strings.AnimatedGifTrimmer_InvalidGif);
 
             long[] starts = new long[count + 1];
             int[] delays = new int[count];
             for (int i = 0; i < count; i++)
             {
                 token.ThrowIfCancellationRequested();
-                int delay = gif.GetDelay(i);
+                int delay = gif != null ? gif.GetDelay(i) * 10 : Math.Max(1, image.GetFrameDuration(i));
                 delays[i] = delay;
                 starts[i + 1] = checked(starts[i] + delay);
             }
@@ -94,19 +102,19 @@ internal sealed class AnimatedGifTrimmerDocument : IDisposable
 
     public int FrameAt(double seconds)
     {
-        long centiseconds = (long)Math.Clamp(Math.Floor(seconds * 100), 0, _starts[^1] - 1);
-        int index = Array.BinarySearch(_starts, centiseconds);
+        long milliseconds = (long)Math.Clamp(Math.Floor(seconds * 1000), 0, _starts[^1] - 1);
+        int index = Array.BinarySearch(_starts, milliseconds);
         return Math.Clamp(index >= 0 ? index : ~index - 1, 0, FrameCount - 1);
     }
 
     public int NearestBoundary(double seconds, bool includeEnd)
     {
-        long centiseconds = (long)Math.Clamp(Math.Round(seconds * 100), 0, _starts[^1]);
-        int index = Array.BinarySearch(_starts, centiseconds);
+        long milliseconds = (long)Math.Clamp(Math.Round(seconds * 1000), 0, _starts[^1]);
+        int index = Array.BinarySearch(_starts, milliseconds);
         if (index < 0)
         {
             index = ~index;
-            if (index > 0 && (index == _starts.Length || centiseconds - _starts[index - 1] < _starts[index] - centiseconds))
+            if (index > 0 && (index == _starts.Length || milliseconds - _starts[index - 1] < _starts[index] - milliseconds))
                 index--;
         }
         return Math.Clamp(index, 0, includeEnd ? FrameCount : FrameCount - 1);
@@ -150,18 +158,19 @@ internal sealed class AnimatedGifTrimmerDocument : IDisposable
             throw new ArgumentOutOfRangeException(nameof(firstFrame));
         if (string.Equals(Path.GetFullPath(FilePath), Path.GetFullPath(output), StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException(Strings.AnimatedGifTrimmer_SourceOverwrite);
-        if (!string.Equals(Path.GetExtension(output), ".gif", StringComparison.OrdinalIgnoreCase))
-            throw new InvalidOperationException(Strings.AnimatedGifTrimmer_OutputExtension);
+        if (!string.Equals(Path.GetExtension(output), Extension, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(_gif == null ? Strings.AnimatedGifTrimmer_OutputExtensionWebP : Strings.AnimatedGifTrimmer_OutputExtension);
         if (!reencode && !CanCopySelection(firstFrame, endFrameExclusive)) return false;
 
         string temporary = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(output))!,
-            $".sharex-gif-trim-{Guid.NewGuid():N}.gif");
+            $".sharex-gif-trim-{Guid.NewGuid():N}{Extension}");
         try
         {
-            if (reencode) Reencode(temporary, firstFrame, endFrameExclusive, progress, token);
+            if (_gif == null) ReencodeWebP(temporary, firstFrame, endFrameExclusive, progress, token);
+            else if (reencode) Reencode(temporary, firstFrame, endFrameExclusive, progress, token);
             else _gif.Copy(FilePath, temporary, firstFrame, endFrameExclusive, progress, token);
             token.ThrowIfCancellationRequested();
-            if (!reencode && _gif.NeedsVisualValidation(firstFrame) &&
+            if (!reencode && _gif != null && _gif.NeedsVisualValidation(firstFrame) &&
                 !FirstFrameMatches(temporary, firstFrame, token)) return false;
             File.Move(temporary, output, true);
             return true;
@@ -176,15 +185,41 @@ internal sealed class AnimatedGifTrimmerDocument : IDisposable
         IProgress<double>? progress, CancellationToken token)
     {
         using SkiaAnimatedImage image = new SkiaAnimatedImage(FilePath);
-        using AnimatedGifCreator creator = new(temporary, _delays[firstFrame] * 10,
-            _gif.RepeatCount, _gif.Loop);
-        for (int i = firstFrame; i < endFrameExclusive; i++)
+        using AnimatedGifCreator creator = new(temporary, _delays[firstFrame],
+            _gif!.RepeatCount, _gif.Loop);
+        int i = firstFrame;
+        foreach (SKBitmap frame in image.GetFrames(firstFrame, endFrameExclusive))
         {
             token.ThrowIfCancellationRequested();
-            using SKBitmap frame = image.GetFrame(i);
-            creator.AddFrame(frame, _delays[i] * 10, GIFQuality.Adaptive);
-            progress?.Report((i - firstFrame + 1d) / (endFrameExclusive - firstFrame) * 100);
+            creator.AddFrame(frame, _delays[i], GIFQuality.Adaptive);
+            i++;
+            progress?.Report((i - firstFrame) / (double)(endFrameExclusive - firstFrame) * 100);
         }
+    }
+
+    private void ReencodeWebP(string temporary, int firstFrame, int endFrameExclusive,
+        IProgress<double>? progress, CancellationToken token)
+    {
+        using SkiaAnimatedImage image = new SkiaAnimatedImage(FilePath);
+        // Skia counts repeats after the first play; WebP stores total plays, with 0 meaning forever.
+        int loopCount = image.RepetitionCount < 0 ? 0 : Math.Clamp(image.RepetitionCount + 1, 1, ushort.MaxValue);
+        SKWebpEncoderOptions options = SkiaImageHelpers.GetWebPEncoderOptions(100, true, WebPLosslessEffort);
+        using AnimatedWebPCreator creator = new(temporary, image.Width, image.Height, loopCount);
+        SKBitmap? previous = null;
+        try
+        {
+            int i = firstFrame;
+            foreach (SKBitmap frame in image.GetFrames(firstFrame, endFrameExclusive))
+            {
+                token.ThrowIfCancellationRequested();
+                creator.AddFrame(frame, previous!, Math.Min(_delays[i], AnimatedWebPCreator.MaxDuration), options);
+                previous?.Dispose();
+                previous = frame.Copy();
+                i++;
+                progress?.Report((i - firstFrame) / (double)(endFrameExclusive - firstFrame) * 100);
+            }
+        }
+        finally { previous?.Dispose(); }
     }
 
     private static SKBitmap DrawFrame(SKBitmap source, int maxDimension = int.MaxValue)

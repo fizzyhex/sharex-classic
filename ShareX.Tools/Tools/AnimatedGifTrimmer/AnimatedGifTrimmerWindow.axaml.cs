@@ -70,7 +70,7 @@ public partial class AnimatedGifTrimmerWindow : Window
             [
                 new FilePickerFileType(Strings.AnimatedGifTrimmer_GifFiles)
                 {
-                    Patterns = ["*.gif"]
+                    Patterns = ["*.gif", "*.webp"]
                 },
                 new FilePickerFileType(Strings.VideoTrimmer_AllFiles) { Patterns = ["*"] }
             ]
@@ -85,9 +85,9 @@ public partial class AnimatedGifTrimmerWindow : Window
             Title = Strings.AnimatedGifTrimmer_Export,
             SuggestedFileName = suggestedName,
             SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(Path.GetDirectoryName(_viewModel.InputFilePath)!),
-            DefaultExtension = "gif",
+            DefaultExtension = Path.GetExtension(suggestedName).TrimStart('.'),
             ShowOverwritePrompt = true,
-            FileTypeChoices = [new FilePickerFileType(Strings.AnimatedGifTrimmer_GifFiles) { Patterns = ["*.gif"] }]
+            FileTypeChoices = [new FilePickerFileType(Strings.AnimatedGifTrimmer_GifFiles) { Patterns = ["*" + Path.GetExtension(suggestedName)] }]
         });
         return file?.TryGetLocalPath();
     }

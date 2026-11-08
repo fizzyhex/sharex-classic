@@ -1855,8 +1855,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             Item(Strings.MainWindow_TrimVideo, AppIcons.Scissors, _uploadInfoManager.TrimVideo,
                 hasSelection && !isWorking && selected!.IsVideoFile),
             Item(Strings.MainWindow_TrimAnimatedGif, AppIcons.Scissors, _uploadInfoManager.TrimAnimatedGif,
-                hasSelection && !isWorking && selected!.IsFileExist &&
-                string.Equals(Path.GetExtension(selected.Info.FilePath), ".gif", StringComparison.OrdinalIgnoreCase)),
+                hasSelection && !isWorking && selected!.IsFileExist && FileHelpers.IsAnimatedImageFile(selected.Info.FilePath)),
             Item(Strings.MainWindow_BeautifyImage, AppIcons.ImageBeautifier, _uploadInfoManager.BeautifyImage,
                 hasSelection && !isWorking && selected!.IsImageFile),
             Item(Strings.MainWindow_AddImageEffects, AppIcons.MagicWand, _uploadInfoManager.AddImageEffects,

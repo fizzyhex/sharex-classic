@@ -78,8 +78,7 @@ internal static class HistoryContextMenuHelpers
             "EditImageMenu" => imageFile && services.EditImage != null,
             "EditImageInPhotoEditorMenu" => imageFile && services.EditImageInPhotoEditor != null,
             "TrimVideoMenu" => file && FileHelpers.IsVideoFile(item!.FilePath) && services.TrimVideo != null,
-            "TrimAnimatedGifMenu" => file &&
-                string.Equals(Path.GetExtension(item!.FilePath), ".gif", StringComparison.OrdinalIgnoreCase) &&
+            "TrimAnimatedGifMenu" => file && FileHelpers.IsAnimatedImageFile(item!.FilePath) &&
                 services.TrimAnimatedGif != null,
             "PinMenu" => imageFile && services.PinToScreen != null,
             "AnalyzeMenu" => imageFile && services.AnalyzeImage != null,

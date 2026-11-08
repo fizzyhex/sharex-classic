@@ -434,7 +434,7 @@ internal partial class ScreenRecorderBarWindow : Window
         if (_gif)
         {
             recording.Children.Add(Row(Strings.TaskSettingsWindow_GIFFPS,
-                Number(Capture.GIFFPS, 1, HelpersOptions.DevMode ? 60 : 30, 1, value => Capture.GIFFPS = (int)value)));
+                Number(Capture.GetGIFFPS(), 1, TaskSettingsCapture.GetMaxGIFFPS(Capture.ScreenRecordGIFFormat), 1, value => Capture.GIFFPS = (int)value)));
         }
         else
         {

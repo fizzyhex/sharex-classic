@@ -179,6 +179,14 @@ namespace ShareX.HelpersLib
             return CheckExtension(filePath, VideoFileExtensions);
         }
 
+        /// <summary>GIF files, and WebP files that are animated (such as GIF recordings saved as WebP).</summary>
+        public static bool IsAnimatedImageFile(string filePath)
+        {
+            string extension = Path.GetExtension(filePath);
+            return extension.Equals(".gif", StringComparison.OrdinalIgnoreCase) ||
+                (extension.Equals(".webp", StringComparison.OrdinalIgnoreCase) && AnimatedWebPCreator.IsAnimatedWebPFile(filePath));
+        }
+
         public static EDataType FindDataType(string filePath)
         {
             if (IsImageFile(filePath))

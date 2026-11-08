@@ -35,8 +35,8 @@ using Vortice.DXGI;
 
 namespace ShareX.ScreenRecordingLib.Encoding;
 
-/// <summary>Caches lossless BGRA frames during capture, then encodes an adaptive GIF after stopping.</summary>
-internal sealed unsafe class GifWriter : IDisposable
+/// <summary>Caches lossless BGRA frames during capture, then encodes an adaptive GIF or animated WebP after stopping.</summary>
+internal sealed unsafe partial class GifWriter : IDisposable
 {
     public static VideoEncoderInfo Encoder { get; } = new("ShareX adaptive GIF encoder", false, false);
     private sealed record CachedFrame(byte[] Pixels, long Timestamp);
@@ -44,6 +44,9 @@ internal sealed unsafe class GifWriter : IDisposable
     private readonly ID3D11Texture2D staging = null!;
     private readonly SKImageInfo imageInfo;
     private readonly string outputPath;
+    private readonly bool webP;
+    private readonly int webPQuality;
+    private readonly long webPLossyAboveBytes;
     private readonly int frameBytes;
     private readonly BlockingCollection<CachedFrame> frames;
     private readonly FileStream cache = null!;
@@ -55,6 +58,9 @@ internal sealed unsafe class GifWriter : IDisposable
     {
         this.graphics = graphics;
         outputPath = options.OutputPath;
+        webP = options.IsWebP;
+        webPQuality = options.WebPQuality;
+        webPLossyAboveBytes = options.WebPLossyAboveBytes;
         imageInfo = new(width, height, SKColorType.Bgra8888, SKAlphaType.Opaque);
         frameBytes = checked(width * height * 4);
         frames = new(Math.Clamp(64 * 1024 * 1024 / frameBytes, 1, 8));
@@ -138,6 +144,7 @@ internal sealed unsafe class GifWriter : IDisposable
         progress(0);
         caching!.GetAwaiter().GetResult();
         cache.Position = 0;
+        if (webP) { FinishWebP(duration, progress, aborted); return; }
         using BinaryReader reader = new(cache, System.Text.Encoding.UTF8, true);
         using SKBitmap bitmap = new(imageInfo);
         AdaptiveGifQuantizer quantizer = new();

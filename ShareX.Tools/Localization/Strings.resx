@@ -307,6 +307,9 @@
   <data name="AnimatedGifTrimmer_OutputExtension" xml:space="preserve">
     <value>Use the .gif extension for the output file.</value>
   </data>
+  <data name="AnimatedGifTrimmer_OutputExtensionWebP" xml:space="preserve">
+    <value>Use the .webp extension for the output file.</value>
+  </data>
   <data name="AnimatedGifTrimmer_Pause" xml:space="preserve">
     <value>Pause</value>
   </data>

@@ -391,8 +391,7 @@ namespace ShareX
 
         public void TrimAnimatedGif()
         {
-            if (IsItemSelected && SelectedItem.IsFileExist &&
-                string.Equals(Path.GetExtension(SelectedItem.Info.FilePath), ".gif", System.StringComparison.OrdinalIgnoreCase))
+            if (IsItemSelected && SelectedItem.IsFileExist && FileHelpers.IsAnimatedImageFile(SelectedItem.Info.FilePath))
             {
                 TaskHelpers.OpenAnimatedGifTrimmer(SelectedItem.Info.FilePath, SelectedItem.Info.TaskSettings);
             }

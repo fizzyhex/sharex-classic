@@ -618,6 +618,40 @@ internal sealed class TaskSettingsPageBuilder
         NumericUpDown duration = Number(() => (decimal)capture.ScreenRecordDuration, value => capture.ScreenRecordDuration = (float)value, 0, 86400, 0.1m);
         BindEnabled(duration, fixedDuration);
 
+        // GIF recordings keep their GIF name everywhere; this only picks the file they are saved as.
+        Control gifWebPQuality = Row(Strings.TaskSettingsWindow_WebPQuality,
+            Number(() => capture.ScreenRecordGIFWebPQuality, value => capture.ScreenRecordGIFWebPQuality = (int)value, 0, 100),
+            Strings.TaskSettingsWindow_GIFWebPQualityHint);
+        // Like the image JPEG fallback: save at full quality unless the file would exceed the size limit.
+        BoundValue<bool> gifWebPAutoLossy = new(capture.ScreenRecordGIFWebPAutoLossy, value => capture.ScreenRecordGIFWebPAutoLossy = value);
+        NumericUpDown gifWebPAutoLossySize = Number(() => capture.ScreenRecordGIFWebPAutoLossySizeKB,
+            value => capture.ScreenRecordGIFWebPAutoLossySizeKB = (int)value, 1, int.MaxValue);
+        BindEnabled(gifWebPAutoLossySize, gifWebPAutoLossy);
+        StackPanel gifWebPOptions = new()
+        {
+            Spacing = 4,
+            Children =
+            {
+                gifWebPQuality,
+                Check(Strings.TaskSettingsWindow_UseLossyWebPIfFileSizeIsBiggerThanTheSpecifiedSize, gifWebPAutoLossy),
+                Row(Strings.TaskSettingsWindow_SizeLimitKB, gifWebPAutoLossySize)
+            }
+        };
+        BindEnabled(gifWebPOptions, native);
+        SettingsSearch.SetIsAvailabilityContainer(gifWebPOptions, true);
+        gifWebPOptions.IsVisible = capture.ScreenRecordGIFFormat == ScreenRecordGIFFormat.WebP;
+        NumericUpDown gifFps = Number(() => capture.GetGIFFPS(), value => capture.GIFFPS = (int)value, 1,
+            TaskSettingsCapture.GetMaxGIFFPS(capture.ScreenRecordGIFFormat));
+        Control gifFormat = Row(Strings.TaskSettingsWindow_GIFFileFormat,
+            ObjectCombo(Enum.GetValues<ScreenRecordGIFFormat>(), () => capture.ScreenRecordGIFFormat, value =>
+            {
+                capture.ScreenRecordGIFFormat = value;
+                // Lowering the maximum also brings a higher WebP rate down to the GIF limit.
+                gifFps.Maximum = TaskSettingsCapture.GetMaxGIFFPS(value);
+                gifWebPOptions.IsVisible = value == ScreenRecordGIFFormat.WebP;
+                _window.RefreshSettingsSearch();
+            }, value => value == ScreenRecordGIFFormat.WebP ? "WebP" : "GIF"));
+
         BoundValue<bool> startDelayEnabled = new(capture.ScreenRecordStartDelayEnabled, value => capture.ScreenRecordStartDelayEnabled = value);
         NumericUpDown startDelay = Number(() => (decimal)capture.ScreenRecordStartDelay, value => capture.ScreenRecordStartDelay = (float)value, 0, 3600, 0.1m);
         BindEnabled(startDelay, startDelayEnabled);
@@ -630,7 +664,8 @@ internal sealed class TaskSettingsPageBuilder
             EnabledCard(_captureOverride, Strings.TaskSettingsWindow_Recording,
                 Check(Strings.ScreenRecorderBar_ShowBeforeRecording, () => capture.ScreenRecordShowBar, value => capture.ScreenRecordShowBar = value),
                 Row(Strings.TaskSettingsWindow_ScreenRecordingFPS, Number(() => capture.ScreenRecordFPS, value => capture.ScreenRecordFPS = (int)value, 1, 120)),
-                Row(Strings.TaskSettingsWindow_GIFFPS, Number(() => capture.GIFFPS, value => capture.GIFFPS = (int)value, 1, HelpersOptions.DevMode ? 60 : 30)),
+                Row(Strings.TaskSettingsWindow_GIFFPS, gifFps),
+                gifFormat, gifWebPOptions,
                 Check(Strings.TaskSettingsWindow_ShowCursorInRecording, () => capture.ScreenRecordShowCursor, value => capture.ScreenRecordShowCursor = value),
                 Check(Strings.TaskSettingsWindow_HighlightMouseWhileRecording, () => capture.ScreenRecordMouseHighlighter, value => capture.ScreenRecordMouseHighlighter = value),
                 Button(Strings.TaskSettingsWindow_MouseHighlighterOptions, () => _window.NavigateToPage("tools-mouse-highlighter")),

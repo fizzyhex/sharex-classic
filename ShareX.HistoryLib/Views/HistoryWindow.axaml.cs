@@ -1041,8 +1041,7 @@ public partial class HistoryWindow : Window
     private void OnTrimAnimatedGifClick(object? sender, RoutedEventArgs e)
     {
         HistoryItem[] items = GetSelectedItems();
-        if (items.Length == 1 && File.Exists(items[0].FilePath) &&
-            string.Equals(Path.GetExtension(items[0].FilePath), ".gif", StringComparison.OrdinalIgnoreCase))
+        if (items.Length == 1 && File.Exists(items[0].FilePath) && FileHelpers.IsAnimatedImageFile(items[0].FilePath))
             _services.TrimAnimatedGif?.Invoke(items[0].FilePath);
     }
     private void OnPinToScreenClick(object? sender, RoutedEventArgs e) => InvokeFileService(_services.PinToScreen, true);

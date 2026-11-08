@@ -6240,6 +6240,7 @@ namespace ShareX.Tools.Localization {
         public static string AnimatedGifTrimmer_Exporting => ResourceManager.GetString("AnimatedGifTrimmer_Exporting", resourceCulture);
         public static string AnimatedGifTrimmer_SourceOverwrite => ResourceManager.GetString("AnimatedGifTrimmer_SourceOverwrite", resourceCulture);
         public static string AnimatedGifTrimmer_OutputExtension => ResourceManager.GetString("AnimatedGifTrimmer_OutputExtension", resourceCulture);
+        public static string AnimatedGifTrimmer_OutputExtensionWebP => ResourceManager.GetString("AnimatedGifTrimmer_OutputExtensionWebP", resourceCulture);
         public static string AnimatedGifTrimmer_DependentFrame => ResourceManager.GetString("AnimatedGifTrimmer_DependentFrame", resourceCulture);
         public static string AnimatedGifTrimmer_UnsupportedGif => ResourceManager.GetString("AnimatedGifTrimmer_UnsupportedGif", resourceCulture);
         public static string VideoTrimmer_AllFiles => ResourceManager.GetString("VideoTrimmer_AllFiles", resourceCulture);
