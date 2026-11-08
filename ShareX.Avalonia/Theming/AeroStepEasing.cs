@@ -32,16 +32,27 @@ namespace ShareX.AvaloniaUI.Theming
     /// its slow ambient animations (the start screen banner and the default button pulse): the animation clock still
     /// ticks every frame, but the animated value, and so the window, only changes a few times a second. An unchanged
     /// value invalidates nothing, so nothing is drawn between steps.
+    /// With an <see cref="Inner"/> easing, time is stepped instead and the inner curve applied to it, so a moving
+    /// effect (such as the light that sweeps across a hot button) advances at a steady, low frame rate along that curve.
     /// </summary>
     public sealed class AeroStepEasing : Easing
     {
         /// <summary>The number of distinct values over the whole animation.</summary>
         public int Steps { get; set; } = 24;
 
+        /// <summary>The curve to follow at stepped times; without it, the sine curve's values are stepped.</summary>
+        public Easing? Inner { get; set; }
+
         public override double Ease(double progress)
         {
-            double eased = (1 - Math.Cos(Math.PI * progress)) / 2;
             int steps = Math.Max(1, Steps);
+
+            if (Inner != null)
+            {
+                return Inner.Ease(Math.Round(progress * steps) / steps);
+            }
+
+            double eased = (1 - Math.Cos(Math.PI * progress)) / 2;
             return Math.Round(eased * steps) / steps;
         }
     }
