@@ -11,31 +11,29 @@
     <Grid>
         <!-- Dropdown Button -->
         <Button x:Name="DropdownButton"
+                Classes="color-dropdown-button"
                 Click="OnDropdownButtonClick"
                 HorizontalContentAlignment="Stretch">
             <Grid ColumnDefinitions="Auto,*,Auto">
                 <!-- Color Preview -->
-                <Grid Grid.Column="0" 
-                      Width="24" 
-                      Height="24" 
-                      VerticalAlignment="Center" 
-                      Margin="0,0,6,0">
+                <Grid Grid.Column="0"
+                      Classes="color-swatch"
+                      VerticalAlignment="Center">
 
                     <!-- Checkered Background -->
-                    <Border CornerRadius="4" ClipToBounds="True">
+                    <Border Classes="color-swatch-layer" ClipToBounds="True">
                         <Border.Background>
                             <DynamicResource ResourceKey="ShareX.Brush.Checkered.Small"/>
                         </Border.Background>
                     </Border>
 
                     <!-- Color Overlay -->
-                    <Border Background="{Binding SelectedColor, ElementName=ColorPickerDropdownRoot}"
-                            CornerRadius="4"/>
+                    <Border Classes="color-swatch-layer"
+                            Background="{Binding SelectedColor, ElementName=ColorPickerDropdownRoot}"/>
 
                     <!-- Border Color: Hole in center showing checkered through -->
                     <Border IsVisible="{Binding ShowBorderHole, ElementName=ColorPickerDropdownRoot}"
-                            Margin="5"
-                            CornerRadius="2"
+                            Classes="color-swatch-hole"
                             ClipToBounds="True"
                             IsHitTestVisible="False">
                         <Border.Background>
@@ -74,13 +72,9 @@
                Placement="Bottom"
                IsLightDismissEnabled="True"
                VerticalOffset="4">
-            <Border Classes="popup-border popup-surface"
+            <Border Classes="popup-border popup-surface color-picker-popup"
                     Classes.open="{Binding #ColorPopup.IsOpen}"
-                    Background="{DynamicResource ShareX.Brush.Background.Panel}"
-                    CornerRadius="8"
-                    Padding="4"
-                    BorderBrush="{DynamicResource ShareX.Brush.Border}"
-                    BorderThickness="1">
+                    Background="{DynamicResource ShareX.Brush.Background.Panel}">
                 <controls:ColorPickerPanel SelectedColorValue="{Binding SelectedColorValue, ElementName=ColorPickerDropdownRoot, Mode=TwoWay}"
                                            SelectedHsvColor="{Binding SelectedHsvColor, ElementName=ColorPickerDropdownRoot, Mode=TwoWay}"
                                            HostPopup="{Binding #ColorPopup}"/>

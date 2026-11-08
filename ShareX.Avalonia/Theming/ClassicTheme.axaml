@@ -1,0 +1,1920 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="using:Avalonia.Controls.Converters"
+        xmlns:controls="using:ShareX.AvaloniaUI.Controls"
+        xmlns:cp="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.ColorPicker"
+        xmlns:cpp="clr-namespace:Avalonia.Controls.Primitives;assembly=Avalonia.Controls.ColorPicker">
+    <!--
+        Classic theme: recreates the Windows Forms controls used by ShareX 21 and earlier, as drawn by the
+        Windows 10/11 visual styles (uxtheme) and the ToolStrip professional renderer.
+
+        ThemeManager adds this file to the application styles and to every window's styles while the classic
+        theme is active. Window styles are applied after application styles, so being appended to them lets
+        these setters win over the per-window Fluent restyling (accent buttons, rounded cards, tall controls).
+
+        Template parts that ContentControl needs (PART_ContentPresenter) keep their names, so the Fluent
+        state selectors in ControlStyles.axaml still match them; the state styles below repeat those selectors
+        with the Windows Forms values. Every other part has a "Classic" name so Fluent selectors skip it.
+    -->
+
+    <Styles.Resources>
+        <x:Double x:Key="Classic.ScrollBarSize">17</x:Double>
+        <x:Double x:Key="Classic.ControlHeight">23</x:Double>
+        <x:Double x:Key="TreeViewItemIndent">19</x:Double>
+
+        <!-- Windows Forms layout is denser than the Fluent layout. These become the default spacing that
+             ThemeManager blends with CompactMode.axaml, so the spacing sliders keep working. -->
+        <x:Double x:Key="ShareX.Density.Nav.ButtonHeight">25</x:Double>
+        <Thickness x:Key="ShareX.Density.Nav.ButtonPadding">4,1</Thickness>
+        <x:Double x:Key="ShareX.Density.Menu.ItemHeight">22</x:Double>
+        <Thickness x:Key="ShareX.Density.Menu.Padding">1,2</Thickness>
+        <Thickness x:Key="ShareX.Density.Menu.ItemPadding">2,0</Thickness>
+        <Thickness x:Key="ShareX.Density.Menu.SeparatorMargin">0</Thickness>
+        <Thickness x:Key="MenuFlyoutPresenterThemePadding">1,2</Thickness>
+        <x:Double x:Key="ShareX.Density.Settings.CheckBoxMinHeight">21</x:Double>
+        <x:Double x:Key="ShareX.Density.Settings.ControlMinHeight">23</x:Double>
+        <Thickness x:Key="ShareX.Density.Settings.ControlPadding">4,1</Thickness>
+        <x:Double x:Key="ShareX.Density.Settings.NumberBoxHeight">23</x:Double>
+        <Thickness x:Key="ShareX.Density.Settings.ButtonPadding">8,1</Thickness>
+        <x:Double x:Key="ShareX.Density.Settings.NavItemMinHeight">20</x:Double>
+        <Thickness x:Key="ShareX.Density.Settings.NavItemMargin">0,1</Thickness>
+        <Thickness x:Key="ShareX.Density.Settings.SearchPadding">26,3,3,3</Thickness>
+
+        <conv:PlatformKeyGestureConverter x:Key="ClassicKeyGestureConverter"/>
+
+        <!-- Push button: Button, RepeatButton and ToggleButton. The content presenter is the button face. -->
+        <ControlTheme x:Key="ClassicButton" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Button.Text}"/>
+            <Setter Property="Background" Value="{DynamicResource Classic.Button.Face}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,1"/>
+            <Setter Property="MinHeight" Value="{StaticResource Classic.ControlHeight}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel>
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Background="{DynamicResource Classic.Button.Face}"
+                                          BorderBrush="{DynamicResource Classic.Button.Border}"
+                                          BorderThickness="1"
+                                          CornerRadius="0"
+                                          Padding="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          RecognizesAccessKey="True"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <!-- The focused or default button gets a second highlight line inside the border. -->
+                        <Border Name="ClassicDefaultRing"
+                                Margin="1"
+                                BorderBrush="{DynamicResource Classic.Button.FocusRing}"
+                                BorderThickness="1"
+                                IsHitTestVisible="False"
+                                IsVisible="False"/>
+                        <Rectangle Name="ClassicFocusCue"
+                                   Margin="3"
+                                   Stroke="{DynamicResource Classic.ControlText}"
+                                   StrokeThickness="1"
+                                   StrokeDashArray="1,1"
+                                   IsHitTestVisible="False"
+                                   IsVisible="False"/>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicRepeatButton" TargetType="RepeatButton" BasedOn="{StaticResource ClassicButton}"/>
+        <ControlTheme x:Key="ClassicToggleButton" TargetType="ToggleButton" BasedOn="{StaticResource ClassicButton}"/>
+
+        <!-- ToolStripButton: flat until hot. Used for icon, toolbar, caption and sidebar buttons. -->
+        <ControlTheme x:Key="ClassicToolStripButton" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.ControlText}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="3,1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Background="Transparent"
+                                      BorderBrush="Transparent"
+                                      BorderThickness="1"
+                                      CornerRadius="0"
+                                      Padding="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      RecognizesAccessKey="True"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicToolStripToggleButton" TargetType="ToggleButton" BasedOn="{StaticResource ClassicToolStripButton}"/>
+
+        <!-- CheckBox (BP_CHECKBOX): 13px box, 1px #333 border, thin check mark. -->
+        <ControlTheme x:Key="ClassicCheckBox" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.ControlText}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="4,0,0,0"/>
+            <Setter Property="MinHeight" Value="17"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid ColumnDefinitions="Auto,*" Background="Transparent">
+                        <Border Name="ClassicCheckBox"
+                                Width="13"
+                                Height="13"
+                                VerticalAlignment="Center"
+                                Background="{DynamicResource Classic.CheckBox.Background}"
+                                BorderBrush="{DynamicResource Classic.Glyph}"
+                                BorderThickness="1">
+                            <Panel>
+                                <Path Name="ClassicCheckMark"
+                                      Data="M 1.5,5.5 L 4,8 L 9.5,2.5"
+                                      Stroke="{DynamicResource Classic.Glyph}"
+                                      StrokeThickness="1.3"
+                                      IsVisible="False"/>
+                                <Rectangle Name="ClassicIndeterminateMark"
+                                           Width="7"
+                                           Height="7"
+                                           Fill="{DynamicResource Classic.Glyph}"
+                                           IsVisible="False"/>
+                            </Panel>
+                        </Border>
+                        <Panel Grid.Column="1">
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              RecognizesAccessKey="True"
+                                              IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            <Rectangle Name="ClassicFocusCue"
+                                       Margin="2,0,0,0"
+                                       Stroke="{DynamicResource Classic.ControlText}"
+                                       StrokeThickness="1"
+                                       StrokeDashArray="1,1"
+                                       IsHitTestVisible="False"
+                                       IsVisible="False"/>
+                        </Panel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover /template/ Border#ClassicCheckBox">
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Hot}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#ClassicCheckBox">
+                <Setter Property="Background" Value="{DynamicResource Classic.Button.Face.Pressed}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Pressed}"/>
+            </Style>
+            <Style Selector="^:checked /template/ Path#ClassicCheckMark">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="^:indeterminate /template/ Rectangle#ClassicIndeterminateMark">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="^:focus-visible /template/ Rectangle#ClassicFocusCue">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.GrayText}"/>
+                <Style Selector="^ /template/ Border#ClassicCheckBox">
+                    <Setter Property="BorderBrush" Value="{DynamicResource Classic.Glyph.Disabled}"/>
+                </Style>
+                <Style Selector="^ /template/ Path#ClassicCheckMark">
+                    <Setter Property="Stroke" Value="{DynamicResource Classic.Glyph.Disabled}"/>
+                </Style>
+                <Style Selector="^ /template/ Rectangle#ClassicIndeterminateMark">
+                    <Setter Property="Fill" Value="{DynamicResource Classic.Glyph.Disabled}"/>
+                </Style>
+            </Style>
+        </ControlTheme>
+
+        <!-- RadioButton (BP_RADIOBUTTON) -->
+        <ControlTheme x:Key="ClassicRadioButton" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.ControlText}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="4,0,0,0"/>
+            <Setter Property="MinHeight" Value="17"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid ColumnDefinitions="Auto,*" Background="Transparent">
+                        <Ellipse Name="ClassicRadioOuter"
+                                 Width="13"
+                                 Height="13"
+                                 VerticalAlignment="Center"
+                                 Fill="{DynamicResource Classic.CheckBox.Background}"
+                                 Stroke="{DynamicResource Classic.Glyph}"
+                                 StrokeThickness="1"/>
+                        <Ellipse Name="ClassicRadioDot"
+                                 Width="6"
+                                 Height="6"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Center"
+                                 Fill="{DynamicResource Classic.Glyph}"
+                                 IsVisible="False"/>
+                        <Panel Grid.Column="1">
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              RecognizesAccessKey="True"
+                                              IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            <Rectangle Name="ClassicFocusCue"
+                                       Margin="2,0,0,0"
+                                       Stroke="{DynamicResource Classic.ControlText}"
+                                       StrokeThickness="1"
+                                       StrokeDashArray="1,1"
+                                       IsHitTestVisible="False"
+                                       IsVisible="False"/>
+                        </Panel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover /template/ Ellipse#ClassicRadioOuter">
+                <Setter Property="Stroke" Value="{DynamicResource Classic.Button.Border.Hot}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Ellipse#ClassicRadioOuter">
+                <Setter Property="Fill" Value="{DynamicResource Classic.Button.Face.Pressed}"/>
+                <Setter Property="Stroke" Value="{DynamicResource Classic.Button.Border.Pressed}"/>
+            </Style>
+            <Style Selector="^:checked /template/ Ellipse#ClassicRadioDot">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="^:focus-visible /template/ Rectangle#ClassicFocusCue">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.GrayText}"/>
+                <Style Selector="^ /template/ Ellipse#ClassicRadioOuter">
+                    <Setter Property="Stroke" Value="{DynamicResource Classic.Glyph.Disabled}"/>
+                </Style>
+                <Style Selector="^ /template/ Ellipse#ClassicRadioDot">
+                    <Setter Property="Fill" Value="{DynamicResource Classic.Glyph.Disabled}"/>
+                </Style>
+            </Style>
+        </ControlTheme>
+
+        <!-- Windows Forms has no toggle switch; ShareX 21 used a check box for every on/off option. -->
+        <ControlTheme x:Key="ClassicToggleSwitch" TargetType="ToggleSwitch">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.ControlText}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="4,0,0,0"/>
+            <Setter Property="MinHeight" Value="17"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid ColumnDefinitions="Auto,*" Background="Transparent">
+                        <Border Name="ClassicCheckBox"
+                                Width="13"
+                                Height="13"
+                                VerticalAlignment="Center"
+                                Background="{DynamicResource Classic.CheckBox.Background}"
+                                BorderBrush="{DynamicResource Classic.Glyph}"
+                                BorderThickness="1">
+                            <Path Name="ClassicCheckMark"
+                                  Data="M 1.5,5.5 L 4,8 L 9.5,2.5"
+                                  Stroke="{DynamicResource Classic.Glyph}"
+                                  StrokeThickness="1.3"
+                                  IsVisible="False"/>
+                        </Border>
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Grid.Column="1"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          RecognizesAccessKey="True"
+                                          IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        <!-- ToggleSwitch requires the knob parts. They are empty and zero sized, so a click anywhere toggles the box. -->
+                        <Canvas Name="PART_SwitchKnob" Width="0" Height="0">
+                            <Grid Name="PART_MovingKnobs" Width="0" Height="0"/>
+                        </Canvas>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover /template/ Border#ClassicCheckBox">
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Hot}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#ClassicCheckBox">
+                <Setter Property="Background" Value="{DynamicResource Classic.Button.Face.Pressed}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Pressed}"/>
+            </Style>
+            <Style Selector="^:checked /template/ Path#ClassicCheckMark">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.GrayText}"/>
+                <Style Selector="^ /template/ Border#ClassicCheckBox">
+                    <Setter Property="BorderBrush" Value="{DynamicResource Classic.Glyph.Disabled}"/>
+                </Style>
+                <Style Selector="^ /template/ Path#ClassicCheckMark">
+                    <Setter Property="Stroke" Value="{DynamicResource Classic.Glyph.Disabled}"/>
+                </Style>
+            </Style>
+        </ControlTheme>
+
+        <!-- TextBox (EP_EDITBORDER_NOSCROLL): square, #7A7A7A border, blue when focused. -->
+        <ControlTheme x:Key="ClassicTextBox" TargetType="TextBox">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Edit.Text}"/>
+            <Setter Property="Background" Value="{DynamicResource Classic.Edit.Background}"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource Classic.Edit.Text}"/>
+            <Setter Property="SelectionBrush" Value="{DynamicResource Classic.Highlight}"/>
+            <Setter Property="SelectionForegroundBrush" Value="{DynamicResource Classic.HighlightText}"/>
+            <Setter Property="PlaceholderForeground" Value="{DynamicResource Classic.GrayText}"/>
+            <Setter Property="Padding" Value="2,1"/>
+            <Setter Property="MinHeight" Value="{StaticResource Classic.ControlHeight}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ClassicEditBorder"
+                            Background="{DynamicResource Classic.Edit.Background}"
+                            BorderBrush="{DynamicResource Classic.Edit.Border}"
+                            BorderThickness="1">
+                        <Grid ColumnDefinitions="Auto,*,Auto" Margin="{TemplateBinding Padding}">
+                            <ContentPresenter Content="{TemplateBinding InnerLeftContent}"/>
+                            <ScrollViewer Name="PART_ScrollViewer"
+                                          Grid.Column="1"
+                                          AllowAutoHide="False"
+                                          BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                                          HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                          IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                          VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <Panel VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                    <TextBlock Name="ClassicPlaceholder"
+                                               Foreground="{TemplateBinding PlaceholderForeground}"
+                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                               Text="{TemplateBinding PlaceholderText}"
+                                               TextAlignment="{TemplateBinding TextAlignment}"
+                                               TextWrapping="{TemplateBinding TextWrapping}">
+                                        <TextBlock.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding ElementName="PART_TextPresenter" Path="PreeditText" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Text" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+                                            </MultiBinding>
+                                        </TextBlock.IsVisible>
+                                    </TextBlock>
+                                    <TextPresenter Name="PART_TextPresenter"
+                                                   CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                                   CaretBrush="{TemplateBinding CaretBrush}"
+                                                   CaretIndex="{TemplateBinding CaretIndex}"
+                                                   LineHeight="{TemplateBinding LineHeight}"
+                                                   LetterSpacing="{TemplateBinding LetterSpacing}"
+                                                   PasswordChar="{TemplateBinding PasswordChar}"
+                                                   RevealPassword="{TemplateBinding RevealPassword}"
+                                                   SelectionBrush="{TemplateBinding SelectionBrush}"
+                                                   SelectionEnd="{TemplateBinding SelectionEnd}"
+                                                   SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                                   SelectionStart="{TemplateBinding SelectionStart}"
+                                                   Text="{TemplateBinding Text, Mode=TwoWay}"
+                                                   TextAlignment="{TemplateBinding TextAlignment}"
+                                                   TextWrapping="{TemplateBinding TextWrapping}"/>
+                                </Panel>
+                                <ScrollViewer.Styles>
+                                    <Style Selector="ScrollContentPresenter#PART_ContentPresenter">
+                                        <Setter Property="Cursor" Value="IBeam"/>
+                                    </Style>
+                                </ScrollViewer.Styles>
+                            </ScrollViewer>
+                            <ContentPresenter Grid.Column="2" Content="{TemplateBinding InnerRightContent}"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover /template/ Border#ClassicEditBorder">
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Edit.Border.Hot}"/>
+            </Style>
+            <Style Selector="^:focus-within /template/ Border#ClassicEditBorder">
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Edit.Border.Focus}"/>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.GrayText}"/>
+                <Style Selector="^ /template/ Border#ClassicEditBorder">
+                    <Setter Property="Background" Value="{DynamicResource Classic.Edit.Background.Disabled}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource Classic.Edit.Border.Disabled}"/>
+                </Style>
+            </Style>
+        </ControlTheme>
+
+        <!-- Text box hosted by another control (combo box, numeric up-down): the host draws the border. -->
+        <ControlTheme x:Key="ClassicInnerTextBox" TargetType="TextBox" BasedOn="{StaticResource ClassicTextBox}">
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Style Selector="^ /template/ Border#ClassicEditBorder">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+        </ControlTheme>
+
+        <!-- ComboBox (DropDownList): drawn like a push button, with the CP_DROPDOWNBUTTONRIGHT chevron. -->
+        <ControlTheme x:Key="ClassicComboBox" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Combo.Text}"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="MinHeight" Value="{StaticResource Classic.ControlHeight}"/>
+            <Setter Property="MaxDropDownHeight" Value="318"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="PlaceholderForeground" Value="{DynamicResource Classic.GrayText}"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ClassicComboFace"
+                            Background="{DynamicResource Classic.Combo.Face}"
+                            BorderBrush="{DynamicResource Classic.Combo.Border}"
+                            BorderThickness="1">
+                        <Grid ColumnDefinitions="*,17">
+                            <TextBlock Name="PlaceholderTextBlock"
+                                       Margin="{TemplateBinding Padding}"
+                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                       Foreground="{TemplateBinding PlaceholderForeground}"
+                                       Text="{TemplateBinding PlaceholderText}">
+                                <TextBlock.IsVisible>
+                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                        <Binding Path="SelectionBoxItem" RelativeSource="{RelativeSource TemplatedParent}" Converter="{x:Static ObjectConverters.IsNull}"/>
+                                        <Binding Path="!IsEditable" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                    </MultiBinding>
+                                </TextBlock.IsVisible>
+                            </TextBlock>
+                            <ContentControl Name="ClassicSelectionBox"
+                                            Margin="{TemplateBinding Padding}"
+                                            Foreground="{TemplateBinding Foreground}"
+                                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            Content="{TemplateBinding SelectionBoxItem}"
+                                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                            IsVisible="{TemplateBinding IsEditable, Converter={x:Static BoolConverters.Not}}"/>
+                            <TextBox Name="PART_EditableTextBox"
+                                     Classes="classic-inner"
+                                     Margin="{TemplateBinding Padding}"
+                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                     Text="{TemplateBinding Text, Mode=TwoWay}"
+                                     PlaceholderText="{TemplateBinding PlaceholderText}"
+                                     IsVisible="{TemplateBinding IsEditable}"/>
+                            <Border Name="ClassicDropDownButton"
+                                    Grid.Column="1"
+                                    Background="{DynamicResource Classic.Combo.Button}"
+                                    BorderBrush="{DynamicResource Classic.Combo.Button.Border}"
+                                    BorderThickness="1,0,0,0"
+                                    IsHitTestVisible="False">
+                                <Panel>
+                                    <Path Name="ClassicDropDownGlyph"
+                                          Width="7"
+                                          Height="4"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Data="M 0,0 L 3.5,3.5 L 7,0"
+                                          Stroke="{DynamicResource Classic.Combo.Glyph}"
+                                          StrokeThickness="1"
+                                          IsVisible="{DynamicResource Classic.Combo.Chevron}"/>
+                                    <Path Name="ClassicDropDownArrow"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Data="M 0,0 L 5,0 L 2.5,3 Z"
+                                          Fill="{DynamicResource Classic.Combo.Glyph}"
+                                          IsVisible="{DynamicResource Classic.Combo.Triangle}"/>
+                                </Panel>
+                            </Border>
+                            <Popup Name="PART_Popup"
+                                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                   IsLightDismissEnabled="True"
+                                   IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                                   PlacementTarget="{TemplateBinding}"
+                                   Placement="BottomEdgeAlignedLeft"
+                                   InheritsTransform="True">
+                                <Border Background="{DynamicResource Classic.DropDown.Background}"
+                                        BorderBrush="{DynamicResource Classic.DropDown.Border}"
+                                        BorderThickness="1">
+                                    <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                                  IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
+                                                  IsScrollChainingEnabled="False">
+                                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                                        ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover /template/ Border#ClassicComboFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.Combo.Face.Hot}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Combo.Border.Hot}"/>
+            </Style>
+            <Style Selector="^:dropdownopen /template/ Border#ClassicComboFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.Combo.Face.Pressed}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Combo.Border.Pressed}"/>
+            </Style>
+            <Style Selector="^:focus-visible /template/ Border#ClassicComboFace">
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Combo.Border.Hot}"/>
+            </Style>
+            <!-- An editable combo box is a text box with a drop-down button. -->
+            <Style Selector="^[IsEditable=True]">
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="KeyboardNavigation.TabNavigation" Value="Local"/>
+                <Style Selector="^ /template/ Border#ClassicComboFace">
+                    <Setter Property="Background" Value="{DynamicResource Classic.Edit.Background}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource Classic.Edit.Border}"/>
+                </Style>
+                <Style Selector="^:focus-within /template/ Border#ClassicComboFace">
+                    <Setter Property="BorderBrush" Value="{DynamicResource Classic.Edit.Border.Focus}"/>
+                </Style>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.Button.Text.Disabled}"/>
+                <Style Selector="^ /template/ Border#ClassicComboFace">
+                    <Setter Property="Background" Value="{DynamicResource Classic.Button.Face.Disabled}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Disabled}"/>
+                </Style>
+                <Style Selector="^ /template/ Path#ClassicDropDownGlyph">
+                    <Setter Property="Stroke" Value="{DynamicResource Classic.ScrollBar.Arrow.Disabled}"/>
+                </Style>
+                <Style Selector="^ /template/ Path#ClassicDropDownArrow">
+                    <Setter Property="Fill" Value="{DynamicResource Classic.ScrollBar.Arrow.Disabled}"/>
+                </Style>
+            </Style>
+        </ControlTheme>
+
+        <!-- A button that opens a drop-down (the color picker) is drawn as a combo box: same face, frame and arrow. -->
+        <ControlTheme x:Key="ClassicDropDownComboButton" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Combo.Text}"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="MinHeight" Value="{StaticResource Classic.ControlHeight}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ClassicComboFace"
+                            Background="{DynamicResource Classic.Combo.Face}"
+                            BorderBrush="{DynamicResource Classic.Combo.Border}"
+                            BorderThickness="1">
+                        <Grid ColumnDefinitions="*,17">
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Padding="{TemplateBinding Padding}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                            <Border Name="ClassicDropDownButton"
+                                    Grid.Column="1"
+                                    Background="{DynamicResource Classic.Combo.Button}"
+                                    BorderBrush="{DynamicResource Classic.Combo.Button.Border}"
+                                    BorderThickness="1,0,0,0">
+                                <Panel>
+                                    <Path Width="7"
+                                          Height="4"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Data="M 0,0 L 3.5,3.5 L 7,0"
+                                          Stroke="{DynamicResource Classic.Combo.Glyph}"
+                                          StrokeThickness="1"
+                                          IsVisible="{DynamicResource Classic.Combo.Chevron}"/>
+                                    <Path HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Data="M 0,0 L 5,0 L 2.5,3 Z"
+                                          Fill="{DynamicResource Classic.Combo.Glyph}"
+                                          IsVisible="{DynamicResource Classic.Combo.Triangle}"/>
+                                </Panel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover /template/ Border#ClassicComboFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.Combo.Face.Hot}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Combo.Border.Hot}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#ClassicComboFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.Combo.Face.Pressed}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Combo.Border.Pressed}"/>
+            </Style>
+            <Style Selector="^:focus-visible /template/ Border#ClassicComboFace">
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Combo.Border.Hot}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#ClassicComboFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.Button.Face.Disabled}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Disabled}"/>
+            </Style>
+        </ControlTheme>
+
+        <!-- Drop-down and list box items: the hot or selected item is filled with SystemColors.Highlight. -->
+        <ControlTheme x:Key="ClassicComboBoxItem" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.List.Text}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="3,1"/>
+            <Setter Property="MinHeight" Value="17"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      CornerRadius="0"
+                                      Padding="{TemplateBinding Padding}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicListBoxItem" TargetType="ListBoxItem">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.List.Text}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="3,1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      CornerRadius="0"
+                                      Padding="{TemplateBinding Padding}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicListBox" TargetType="ListBox">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.List.Text}"/>
+            <Setter Property="Background" Value="{DynamicResource Classic.List.Background}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Classic.List.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ClassicListBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{DynamicResource Classic.List.Border}"
+                            BorderThickness="1">
+                        <ScrollViewer Name="PART_ScrollViewer"
+                                      AllowAutoHide="False"
+                                      BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                                      HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                      IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                      IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
+                                      VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                      VerticalSnapPointsType="{TemplateBinding (ScrollViewer.VerticalSnapPointsType)}"
+                                      HorizontalSnapPointsType="{TemplateBinding (ScrollViewer.HorizontalSnapPointsType)}">
+                            <ItemsPresenter Name="PART_ItemsPresenter"
+                                            Margin="{TemplateBinding Padding}"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <!-- TreeView of the ShareX 21 settings windows (TabToTreeView): borderless, FullRowSelect, ShowLines and
+             ShowPlusMinus off, ItemHeight 25, Microsoft Sans Serif 12pt, selection filled with SystemColors.Highlight. -->
+        <ControlTheme x:Key="ClassicTreeView" TargetType="TreeView">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.ControlText}"/>
+            <Setter Property="Background" Value="{DynamicResource Classic.Tree.Background}"/>
+            <Setter Property="FontFamily" Value="Microsoft Sans Serif"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{DynamicResource Classic.Tree.Background}">
+                        <ScrollViewer AllowAutoHide="False"
+                                      BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                                      HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                      IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                      IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
+                                      VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+                            <ItemsPresenter Name="PART_ItemsPresenter"
+                                            Margin="{TemplateBinding Padding}"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicTreeViewItem" TargetType="TreeViewItem">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.ControlText}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="3,0"/>
+            <Setter Property="MinHeight" Value="25"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <StackPanel>
+                        <Border Name="ClassicTreeRow"
+                                Background="Transparent"
+                                MinHeight="{TemplateBinding MinHeight}"
+                                Focusable="True"
+                                TemplatedControl.IsTemplateFocusTarget="True">
+                            <Grid Name="PART_Header" ColumnDefinitions="Auto,*">
+                                <Grid.Margin>
+                                    <MultiBinding Converter="{x:Static conv:TreeViewItemIndentConverter.Instance}">
+                                        <Binding Path="Level" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                        <DynamicResource ResourceKey="TreeViewItemIndent"/>
+                                    </MultiBinding>
+                                </Grid.Margin>
+                                <!-- ShowPlusMinus is off; the toggle part stays so keyboard expand/collapse works. -->
+                                <ToggleButton Name="PART_ExpandCollapseChevron"
+                                              Width="0"
+                                              Focusable="False"
+                                              IsVisible="False"
+                                              IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"/>
+                                <ContentPresenter Name="PART_HeaderPresenter"
+                                                  Grid.Column="1"
+                                                  VerticalAlignment="Center"
+                                                  Background="Transparent"
+                                                  Padding="{TemplateBinding Padding}"
+                                                  Content="{TemplateBinding Header}"
+                                                  ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                  Focusable="False"/>
+                            </Grid>
+                        </Border>
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        IsVisible="{TemplateBinding IsExpanded}"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:selected /template/ Border#ClassicTreeRow">
+                <Setter Property="Background" Value="{DynamicResource Classic.Tree.Selected}"/>
+            </Style>
+        </ControlTheme>
+
+        <!-- ScrollBar (SBP_*): always visible, 17px, arrow buttons at both ends. -->
+        <ControlTheme x:Key="ClassicScrollBarArrow" TargetType="RepeatButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ClassicArrowFace" Background="Transparent">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <!-- The arrow glyphs in the scroll bar template fill with this Foreground. -->
+            <Setter Property="Foreground" Value="{DynamicResource Classic.ScrollBar.Arrow}"/>
+            <Style Selector="^:pointerover">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.ScrollBar.Arrow.Hot}"/>
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#ClassicArrowFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.ScrollBar.Button.Hot}"/>
+            </Style>
+            <Style Selector="^:pressed">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.HighlightText}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#ClassicArrowFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.ScrollBar.Button.Pressed}"/>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.ScrollBar.Arrow.Disabled}"/>
+            </Style>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicScrollBarTrack" TargetType="RepeatButton">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="Transparent"/>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicScrollBarThumb" TargetType="Thumb">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ClassicThumbFace" Background="{DynamicResource Classic.ScrollBar.Thumb}"/>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover /template/ Border#ClassicThumbFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.ScrollBar.Thumb.Hot}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#ClassicThumbFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.ScrollBar.Thumb.Pressed}"/>
+            </Style>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicScrollBar" TargetType="ScrollBar">
+            <Setter Property="Cursor" Value="Arrow"/>
+            <Setter Property="AllowAutoHide" Value="False"/>
+            <Style Selector="^:vertical">
+                <Setter Property="Width" Value="{StaticResource Classic.ScrollBarSize}"/>
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Border Background="{DynamicResource Classic.ScrollBar.Track}">
+                            <Grid RowDefinitions="17,*,17">
+                                <RepeatButton Name="PART_LineUpButton" Theme="{StaticResource ClassicScrollBarArrow}">
+                                    <Path Data="M 0,4 L 3.5,0 L 7,4 Z" Fill="{Binding $parent[RepeatButton].Foreground}"/>
+                                </RepeatButton>
+                                <Track Grid.Row="1"
+                                       IsDirectionReversed="True"
+                                       Maximum="{TemplateBinding Maximum}"
+                                       Minimum="{TemplateBinding Minimum}"
+                                       Orientation="{TemplateBinding Orientation}"
+                                       ViewportSize="{TemplateBinding ViewportSize}"
+                                       DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                       Value="{TemplateBinding Value, Mode=TwoWay}">
+                                    <Track.DecreaseButton>
+                                        <RepeatButton Name="PART_PageUpButton" Theme="{StaticResource ClassicScrollBarTrack}"/>
+                                    </Track.DecreaseButton>
+                                    <Track.IncreaseButton>
+                                        <RepeatButton Name="PART_PageDownButton" Theme="{StaticResource ClassicScrollBarTrack}"/>
+                                    </Track.IncreaseButton>
+                                    <Thumb Name="ClassicThumb" MinHeight="17" Margin="1,0" Theme="{StaticResource ClassicScrollBarThumb}"/>
+                                </Track>
+                                <RepeatButton Name="PART_LineDownButton" Grid.Row="2" Theme="{StaticResource ClassicScrollBarArrow}">
+                                    <Path Data="M 0,0 L 7,0 L 3.5,4 Z" Fill="{Binding $parent[RepeatButton].Foreground}"/>
+                                </RepeatButton>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+            <Style Selector="^:horizontal">
+                <Setter Property="Height" Value="{StaticResource Classic.ScrollBarSize}"/>
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Border Background="{DynamicResource Classic.ScrollBar.Track}">
+                            <Grid ColumnDefinitions="17,*,17">
+                                <RepeatButton Name="PART_LineUpButton" Theme="{StaticResource ClassicScrollBarArrow}">
+                                    <Path Data="M 4,0 L 0,3.5 L 4,7 Z" Fill="{Binding $parent[RepeatButton].Foreground}"/>
+                                </RepeatButton>
+                                <Track Grid.Column="1"
+                                       Maximum="{TemplateBinding Maximum}"
+                                       Minimum="{TemplateBinding Minimum}"
+                                       Orientation="{TemplateBinding Orientation}"
+                                       ViewportSize="{TemplateBinding ViewportSize}"
+                                       DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                       Value="{TemplateBinding Value, Mode=TwoWay}">
+                                    <Track.DecreaseButton>
+                                        <RepeatButton Name="PART_PageUpButton" Theme="{StaticResource ClassicScrollBarTrack}"/>
+                                    </Track.DecreaseButton>
+                                    <Track.IncreaseButton>
+                                        <RepeatButton Name="PART_PageDownButton" Theme="{StaticResource ClassicScrollBarTrack}"/>
+                                    </Track.IncreaseButton>
+                                    <Thumb Name="ClassicThumb" MinWidth="17" Margin="0,1" Theme="{StaticResource ClassicScrollBarThumb}"/>
+                                </Track>
+                                <RepeatButton Name="PART_LineDownButton" Grid.Column="2" Theme="{StaticResource ClassicScrollBarArrow}">
+                                    <Path Data="M 0,0 L 4,3.5 L 0,7 Z" Fill="{Binding $parent[RepeatButton].Foreground}"/>
+                                </RepeatButton>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+        </ControlTheme>
+
+        <!-- Scroll bars sit beside the content instead of overlaying it. -->
+        <ControlTheme x:Key="ClassicScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="AllowAutoHide" Value="False"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+                        <ScrollContentPresenter Name="PART_ContentPresenter"
+                                                Padding="{TemplateBinding Padding}"
+                                                HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
+                                                VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}"
+                                                HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
+                                                VerticalSnapPointsAlignment="{TemplateBinding VerticalSnapPointsAlignment}"
+                                                Background="{TemplateBinding Background}"
+                                                ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
+                            <ScrollContentPresenter.GestureRecognizers>
+                                <ScrollGestureRecognizer CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
+                                                         CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
+                                                         IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}"
+                                                         Offset="{Binding Offset, ElementName=PART_ContentPresenter}"
+                                                         Viewport="{Binding Viewport, ElementName=PART_ContentPresenter}"
+                                                         Extent="{Binding Extent, ElementName=PART_ContentPresenter}"/>
+                            </ScrollContentPresenter.GestureRecognizers>
+                        </ScrollContentPresenter>
+                        <ScrollBar Name="PART_HorizontalScrollBar" Grid.Row="1" Orientation="Horizontal"/>
+                        <ScrollBar Name="PART_VerticalScrollBar" Grid.Column="1" Orientation="Vertical"/>
+                        <Panel Name="ClassicScrollCorner" Grid.Row="1" Grid.Column="1" Background="{DynamicResource Classic.Control}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <!-- ProgressBar (PP_BAR / PP_FILL): the green Windows progress fill. -->
+        <ControlTheme x:Key="ClassicProgressBar" TargetType="ProgressBar">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Progress.Fill}"/>
+            <Setter Property="Background" Value="{DynamicResource Classic.Progress.Track}"/>
+            <Setter Property="MinHeight" Value="4"/>
+            <Setter Property="MinWidth" Value="4"/>
+            <Setter Property="Template">
+                <ControlTemplate TargetType="ProgressBar">
+                    <Grid>
+                        <Border Name="ClassicProgressTrack"
+                                Background="{DynamicResource Classic.Progress.Track}"
+                                BorderBrush="{DynamicResource Classic.Progress.Border}"
+                                BorderThickness="1"
+                                ClipToBounds="True">
+                            <Panel>
+                                <Border Name="PART_Indicator"
+                                        Background="{DynamicResource Classic.Progress.Fill}"
+                                        IsVisible="{Binding !IsIndeterminate, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                <Border Name="PART_IndeterminateIndicator"
+                                        Background="{DynamicResource Classic.Progress.Fill}"
+                                        IsVisible="{Binding IsIndeterminate, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            </Panel>
+                        </Border>
+                        <LayoutTransformControl Name="PART_LayoutTransformControl"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                IsVisible="{Binding ShowProgressText, RelativeSource={RelativeSource TemplatedParent}}">
+                            <TextBlock Foreground="{DynamicResource Classic.Progress.Text}"
+                                       Text="{Binding Percentage, RelativeSource={RelativeSource TemplatedParent}, StringFormat={}{0:0}%}"/>
+                        </LayoutTransformControl>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:horizontal /template/ Border#PART_Indicator">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
+            </Style>
+            <Style Selector="^:vertical /template/ Border#PART_Indicator">
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalAlignment" Value="Bottom"/>
+            </Style>
+            <Style Selector="^:vertical /template/ LayoutTransformControl#PART_LayoutTransformControl">
+                <Setter Property="LayoutTransform">
+                    <Setter.Value>
+                        <RotateTransform Angle="90"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <!-- Marquee style: a short block sweeps across the track. -->
+            <Style Selector="^:horizontal:indeterminate /template/ Border#PART_IndeterminateIndicator">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="Width" Value="{Binding TemplateSettings.ContainerWidth, RelativeSource={RelativeSource TemplatedParent}}"/>
+                <Style.Animations>
+                    <Animation Easing="LinearEasing" IterationCount="Infinite" Duration="0:0:2">
+                        <KeyFrame Cue="0%">
+                            <Setter Property="TranslateTransform.X" Value="{Binding $parent[ProgressBar].TemplateSettings.IndeterminateStartingOffset}"/>
+                        </KeyFrame>
+                        <KeyFrame Cue="100%">
+                            <Setter Property="TranslateTransform.X" Value="{Binding $parent[ProgressBar].TemplateSettings.IndeterminateEndingOffset}"/>
+                        </KeyFrame>
+                    </Animation>
+                </Style.Animations>
+            </Style>
+            <Style Selector="^:vertical:indeterminate /template/ Border#PART_IndeterminateIndicator">
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="Height" Value="{Binding TemplateSettings.ContainerWidth, RelativeSource={RelativeSource TemplatedParent}}"/>
+                <Style.Animations>
+                    <Animation Easing="LinearEasing" IterationCount="Infinite" Duration="0:0:2">
+                        <KeyFrame Cue="0%">
+                            <Setter Property="TranslateTransform.Y" Value="{Binding $parent[ProgressBar].TemplateSettings.IndeterminateStartingOffset}"/>
+                        </KeyFrame>
+                        <KeyFrame Cue="100%">
+                            <Setter Property="TranslateTransform.Y" Value="{Binding $parent[ProgressBar].TemplateSettings.IndeterminateEndingOffset}"/>
+                        </KeyFrame>
+                    </Animation>
+                </Style.Animations>
+            </Style>
+        </ControlTheme>
+
+        <!-- TrackBar (TKP_*): thin sunken channel, blue pointed thumb, tick marks below. -->
+        <ControlTheme x:Key="ClassicSliderTrack" TargetType="RepeatButton">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="Transparent"/>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <!-- Track bar thumb pointing at the tick marks (TKP_THUMBBOTTOM / TKP_THUMBRIGHT). -->
+        <ControlTheme x:Key="ClassicTrackBarThumbDown" TargetType="Thumb">
+            <Setter Property="Width" Value="11"/>
+            <Setter Property="Height" Value="19"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Path Name="ClassicThumbShape"
+                          Data="M 0,0 L 10,0 L 10,13 L 5,18 L 0,13 Z"
+                          Fill="{DynamicResource Classic.TrackBar.Thumb}"/>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover /template/ Path#ClassicThumbShape">
+                <Setter Property="Fill" Value="{DynamicResource Classic.TrackBar.Thumb.Hot}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Path#ClassicThumbShape, ^:disabled /template/ Path#ClassicThumbShape">
+                <Setter Property="Fill" Value="{DynamicResource Classic.TrackBar.Thumb.Pressed}"/>
+            </Style>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicTrackBarThumbRight" TargetType="Thumb" BasedOn="{StaticResource ClassicTrackBarThumbDown}">
+            <Setter Property="Width" Value="19"/>
+            <Setter Property="Height" Value="11"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Path Name="ClassicThumbShape"
+                          Data="M 0,0 L 13,0 L 18,5 L 13,10 L 0,10 Z"
+                          Fill="{DynamicResource Classic.TrackBar.Thumb}"/>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicSlider" TargetType="Slider">
+            <Style Selector="^:horizontal">
+                <Setter Property="MinWidth" Value="40"/>
+                <Setter Property="MinHeight" Value="26"/>
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Grid Name="ClassicTrackBar" RowDefinitions="*,Auto">
+                            <Border Name="ClassicChannel"
+                                    Height="4"
+                                    Margin="5,0"
+                                    VerticalAlignment="Center"
+                                    Background="{DynamicResource Classic.TrackBar.Track}"
+                                    BorderBrush="{DynamicResource Classic.TrackBar.Track.Border}"
+                                    BorderThickness="1"/>
+                            <Track Name="PART_Track"
+                                   IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                   Orientation="Horizontal"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value, Mode=TwoWay}">
+                                <Track.DecreaseButton>
+                                    <RepeatButton Name="PART_DecreaseButton" Theme="{StaticResource ClassicSliderTrack}"/>
+                                </Track.DecreaseButton>
+                                <Track.IncreaseButton>
+                                    <RepeatButton Name="PART_IncreaseButton" Theme="{StaticResource ClassicSliderTrack}"/>
+                                </Track.IncreaseButton>
+                                <Thumb Name="ClassicSliderThumb" Theme="{StaticResource ClassicTrackBarThumbDown}"/>
+                            </Track>
+                            <TickBar Name="ClassicTicks"
+                                     Grid.Row="1"
+                                     Height="4"
+                                     Margin="5,1,5,0"
+                                     Fill="{DynamicResource Classic.TrackBar.Tick}"
+                                     Placement="Bottom"
+                                     Minimum="{TemplateBinding Minimum}"
+                                     Maximum="{TemplateBinding Maximum}"
+                                     TickFrequency="{TemplateBinding TickFrequency}"
+                                     Ticks="{TemplateBinding Ticks}"
+                                     IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                     Orientation="Horizontal"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+            <Style Selector="^:vertical">
+                <Setter Property="MinWidth" Value="26"/>
+                <Setter Property="MinHeight" Value="40"/>
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Grid Name="ClassicTrackBar" ColumnDefinitions="*,Auto">
+                            <Border Name="ClassicChannel"
+                                    Width="4"
+                                    Margin="0,5"
+                                    HorizontalAlignment="Center"
+                                    Background="{DynamicResource Classic.TrackBar.Track}"
+                                    BorderBrush="{DynamicResource Classic.TrackBar.Track.Border}"
+                                    BorderThickness="1"/>
+                            <Track Name="PART_Track"
+                                   IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                   Orientation="Vertical"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value, Mode=TwoWay}">
+                                <Track.DecreaseButton>
+                                    <RepeatButton Name="PART_DecreaseButton" Theme="{StaticResource ClassicSliderTrack}"/>
+                                </Track.DecreaseButton>
+                                <Track.IncreaseButton>
+                                    <RepeatButton Name="PART_IncreaseButton" Theme="{StaticResource ClassicSliderTrack}"/>
+                                </Track.IncreaseButton>
+                                <Thumb Name="ClassicSliderThumb" Theme="{StaticResource ClassicTrackBarThumbRight}"/>
+                            </Track>
+                            <TickBar Name="ClassicTicks"
+                                     Grid.Column="1"
+                                     Width="4"
+                                     Margin="1,5,0,5"
+                                     Fill="{DynamicResource Classic.TrackBar.Tick}"
+                                     Placement="Right"
+                                     Minimum="{TemplateBinding Minimum}"
+                                     Maximum="{TemplateBinding Maximum}"
+                                     TickFrequency="{TemplateBinding TickFrequency}"
+                                     Ticks="{TemplateBinding Ticks}"
+                                     IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                     Orientation="Vertical"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+        </ControlTheme>
+
+        <!-- NumericUpDown: a text box with the UpDown control (SPNP_UP / SPNP_DOWN) docked on the right. -->
+        <ControlTheme x:Key="ClassicSpinButton" TargetType="RepeatButton">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ClassicSpinFace"
+                            Background="{DynamicResource Classic.Spin.Face}"
+                            BorderBrush="Transparent"
+                            BorderThickness="1">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <!-- The arrow glyphs in the spinner template fill with this Foreground. -->
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Spin.Glyph}"/>
+            <Style Selector="^:pointerover /template/ Border#ClassicSpinFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.Spin.Face.Hot}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Spin.Border.Hot}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#ClassicSpinFace">
+                <Setter Property="Background" Value="{DynamicResource Classic.Spin.Face.Pressed}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Spin.Border.Pressed}"/>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.Glyph.Disabled}"/>
+            </Style>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicButtonSpinner" TargetType="ButtonSpinner">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DataValidationErrors>
+                        <Border Name="ClassicEditBorder"
+                                Background="{DynamicResource Classic.Edit.Background}"
+                                BorderBrush="{DynamicResource Classic.Edit.Border}"
+                                BorderThickness="1">
+                            <DockPanel>
+                                <UniformGrid Name="PART_SpinnerPanel"
+                                             Width="17"
+                                             TabIndex="2"
+                                             DockPanel.Dock="Right"
+                                             IsVisible="{TemplateBinding ShowButtonSpinner}"
+                                             Rows="2">
+                                    <RepeatButton Name="PART_IncreaseButton"
+                                                  IsTabStop="{TemplateBinding IsTabStop}"
+                                                  Theme="{StaticResource ClassicSpinButton}">
+                                        <Path Data="M 0,3 L 3,0 L 6,3 Z" Fill="{Binding $parent[RepeatButton].Foreground}"/>
+                                    </RepeatButton>
+                                    <RepeatButton Name="PART_DecreaseButton"
+                                                  IsTabStop="{TemplateBinding IsTabStop}"
+                                                  Theme="{StaticResource ClassicSpinButton}">
+                                        <Path Data="M 0,0 L 6,0 L 3,3 Z" Fill="{Binding $parent[RepeatButton].Foreground}"/>
+                                    </RepeatButton>
+                                </UniformGrid>
+                                <ContentPresenter Name="PART_ContentPresenter"
+                                                  TabIndex="1"
+                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                            </DockPanel>
+                        </Border>
+                    </DataValidationErrors>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:left /template/ UniformGrid#PART_SpinnerPanel">
+                <Setter Property="DockPanel.Dock" Value="Left"/>
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#ClassicEditBorder">
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Edit.Border.Hot}"/>
+            </Style>
+            <Style Selector="^:focus-within /template/ Border#ClassicEditBorder">
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Edit.Border.Focus}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#ClassicEditBorder">
+                <Setter Property="Background" Value="{DynamicResource Classic.Edit.Background.Disabled}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Edit.Border.Disabled}"/>
+            </Style>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicNumericUpDown" TargetType="NumericUpDown">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Edit.Text}"/>
+            <Setter Property="Padding" Value="2,0"/>
+            <Setter Property="MinHeight" Value="{StaticResource Classic.ControlHeight}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DataValidationErrors>
+                        <ButtonSpinner Name="PART_Spinner"
+                                       HorizontalContentAlignment="Stretch"
+                                       VerticalContentAlignment="Stretch"
+                                       IsTabStop="False"
+                                       MinWidth="0"
+                                       AllowSpin="{TemplateBinding AllowSpin}"
+                                       ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}"
+                                       ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
+                                       Theme="{StaticResource ClassicButtonSpinner}">
+                            <TextBox Name="PART_TextBox"
+                                     Classes="classic-inner"
+                                     MinWidth="20"
+                                     Padding="{TemplateBinding Padding}"
+                                     VerticalAlignment="Center"
+                                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                     HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                     AcceptsReturn="False"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}"
+                                     Text="{TemplateBinding Text}"
+                                     TextAlignment="{TemplateBinding TextAlignment}"
+                                     TextWrapping="NoWrap"
+                                     PlaceholderText="{TemplateBinding PlaceholderText}"
+                                     InnerLeftContent="{Binding InnerLeftContent, RelativeSource={RelativeSource TemplatedParent}}"
+                                     InnerRightContent="{Binding InnerRightContent, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        </ButtonSpinner>
+                    </DataValidationErrors>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <!-- ContextMenuStrip / ToolStripDropDownMenu with the professional renderer. -->
+        <ControlTheme x:Key="ClassicMenuScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="IsScrollChainingEnabled" Value="False"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ScrollContentPresenter Name="PART_ContentPresenter" Margin="{TemplateBinding Padding}"/>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicContextMenu" TargetType="ContextMenu">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Menu.Text}"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="TextBlock.FontWeight" Value="Normal"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{DynamicResource Classic.Menu.Background}"
+                            BorderBrush="{DynamicResource Classic.Menu.Border}"
+                            BorderThickness="1"
+                            Padding="1,2">
+                        <Panel>
+                            <Border Width="25" HorizontalAlignment="Left" Background="{DynamicResource Classic.Menu.ImageMargin}"/>
+                            <ScrollViewer Theme="{StaticResource ClassicMenuScrollViewer}">
+                                <ItemsPresenter Name="PART_ItemsPresenter"
+                                                Grid.IsSharedSizeScope="True"
+                                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                                KeyboardNavigation.TabNavigation="Continue"/>
+                            </ScrollViewer>
+                        </Panel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicMenuFlyoutPresenter" TargetType="MenuFlyoutPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Menu.Text}"/>
+            <Setter Property="TextBlock.FontWeight" Value="Normal"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{DynamicResource Classic.Menu.Background}"
+                            BorderBrush="{DynamicResource Classic.Menu.Border}"
+                            BorderThickness="1"
+                            Padding="1,2">
+                        <Panel>
+                            <Border Width="25" HorizontalAlignment="Left" Background="{DynamicResource Classic.Menu.ImageMargin}"/>
+                            <ScrollViewer Theme="{StaticResource ClassicMenuScrollViewer}"
+                                          VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                                <ItemsPresenter Name="PART_ItemsPresenter"
+                                                Grid.IsSharedSizeScope="True"
+                                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                                KeyboardNavigation.TabNavigation="Continue"/>
+                            </ScrollViewer>
+                        </Panel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="ClassicMenuItem" TargetType="MenuItem">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.Menu.Text}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="2,0"/>
+            <Setter Property="MinHeight" Value="22"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ClassicMenuRow"
+                            Margin="1,0"
+                            MinHeight="{TemplateBinding MinHeight}"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="22"/>
+                                <ColumnDefinition Width="6"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGT"/>
+                                <ColumnDefinition Width="17"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Name="ClassicCheckBackground"
+                                    Width="20"
+                                    Height="20"
+                                    Background="{DynamicResource Classic.Menu.Checked}"
+                                    BorderBrush="{DynamicResource Classic.Menu.Selected.Border}"
+                                    BorderThickness="1"
+                                    IsVisible="False"/>
+                            <ContentControl Name="PART_ToggleIconPresenter"
+                                            Width="16"
+                                            Height="16"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            IsVisible="False"/>
+                            <ContentControl Name="PART_IconPresenter"
+                                            Width="16"
+                                            Height="16"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Content="{TemplateBinding Icon}"/>
+                            <ContentPresenter Name="PART_HeaderPresenter"
+                                              Grid.Column="2"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding Header}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              RecognizesAccessKey="True"/>
+                            <TextBlock Name="PART_InputGestureText"
+                                       Grid.Column="3"
+                                       Margin="24,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Text="{TemplateBinding InputGesture, Converter={StaticResource ClassicKeyGestureConverter}}"/>
+                            <Path Name="ClassicSubmenuArrow"
+                                  Grid.Column="4"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Data="M 0,0 L 4,3.5 L 0,7 Z"
+                                  Fill="{DynamicResource Classic.Menu.Text}"/>
+                            <Popup Name="PART_Popup"
+                                   IsLightDismissEnabled="False"
+                                   IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}"
+                                   Placement="RightEdgeAlignedTop"
+                                   HorizontalOffset="-2"
+                                   VerticalOffset="-3">
+                                <Border Background="{DynamicResource Classic.Menu.Background}"
+                                        BorderBrush="{DynamicResource Classic.Menu.Border}"
+                                        BorderThickness="1"
+                                        Padding="1,2">
+                                    <Panel>
+                                        <Border Width="25" HorizontalAlignment="Left" Background="{DynamicResource Classic.Menu.ImageMargin}"/>
+                                        <ScrollViewer Theme="{StaticResource ClassicMenuScrollViewer}">
+                                            <ItemsPresenter Name="PART_ItemsPresenter"
+                                                            Grid.IsSharedSizeScope="True"
+                                                            ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                                        </ScrollViewer>
+                                    </Panel>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:separator">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Separator/>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+            <Style Selector="^:selected /template/ Border#ClassicMenuRow">
+                <Setter Property="Background" Value="{DynamicResource Classic.Menu.Selected}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Menu.Selected.Border}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#ClassicMenuRow, ^:open /template/ Border#ClassicMenuRow">
+                <Setter Property="Background" Value="{DynamicResource Classic.Menu.Selected}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Classic.Menu.Selected.Border}"/>
+            </Style>
+            <Style Selector="^:empty /template/ Path#ClassicSubmenuArrow">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource Classic.GrayText}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#ClassicMenuRow">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+            </Style>
+            <Style Selector="^:toggle /template/ ContentControl#PART_ToggleIconPresenter, ^:radio /template/ ContentControl#PART_ToggleIconPresenter">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="^:toggle /template/ ContentControl#PART_IconPresenter, ^:radio /template/ ContentControl#PART_IconPresenter">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style Selector="^:checked /template/ Border#ClassicCheckBackground">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="^:checked:toggle /template/ ContentControl#PART_ToggleIconPresenter">
+                <Setter Property="Content">
+                    <Template>
+                        <Path Data="M 3,8 L 6,11 L 13,4"
+                              Stroke="{DynamicResource Classic.Menu.Text}"
+                              StrokeThickness="1.5"/>
+                    </Template>
+                </Setter>
+            </Style>
+            <Style Selector="^:checked:radio /template/ ContentControl#PART_ToggleIconPresenter">
+                <Setter Property="Content">
+                    <Template>
+                        <Ellipse Width="6" Height="6" Fill="{DynamicResource Classic.Menu.Text}"/>
+                    </Template>
+                </Setter>
+            </Style>
+        </ControlTheme>
+
+        <!-- ToolStripSeparator: an etched line that starts after the image margin. -->
+        <ControlTheme x:Key="ClassicSeparator" TargetType="Separator">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Height" Value="2"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <StackPanel>
+                        <Rectangle Height="1" Fill="{DynamicResource Classic.Menu.Separator.Dark}"/>
+                        <Rectangle Height="1" Fill="{DynamicResource Classic.Menu.Separator.Light}"/>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <!-- ToolTip (TTP_STANDARD) -->
+        <ControlTheme x:Key="ClassicToolTip" TargetType="ToolTip">
+            <Setter Property="Foreground" Value="{DynamicResource Classic.ToolTip.Text}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Padding" Value="5,2,5,3"/>
+            <Setter Property="MaxWidth" Value="420"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Padding="{TemplateBinding Padding}"
+                                      Background="{DynamicResource Classic.ToolTip.Background}"
+                                      BorderBrush="{DynamicResource Classic.ToolTip.Border}"
+                                      BorderThickness="1"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <!-- LinkLabel: always underlined, red while pressed. -->
+        <ControlTheme x:Key="ClassicHyperlinkButton" TargetType="HyperlinkButton">
+            <Setter Property="Foreground" Value="{DynamicResource ShareX.Brush.Link}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Background="Transparent"
+                                      Padding="{TemplateBinding Padding}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      RecognizesAccessKey="True"/>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pressed">
+                <Setter Property="Foreground" Value="#FF0000"/>
+            </Style>
+        </ControlTheme>
+    </Styles.Resources>
+
+    <!-- Base typography: 9pt Segoe UI, regular weight, ControlText on the Control background. -->
+    <Style Selector=":is(Window)">
+        <Setter Property="FontFamily" Value="{DynamicResource ShareX.FontFamily.Default}"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="TextBlock">
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="FontSize" Value="{DynamicResource ShareX.FontSize.Default}"/>
+    </Style>
+    <Style Selector="AccessText">
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+    <!-- Windows Forms shows focus with the control itself (blue edit border, dotted focus cue), not an adorner. -->
+    <Style Selector=":is(Control)">
+        <Setter Property="FocusAdorner" Value="{x:Null}"/>
+    </Style>
+
+    <!-- Control themes -->
+    <Style Selector="Button">
+        <Setter Property="Theme" Value="{StaticResource ClassicButton}"/>
+        <Setter Property="Height" Value="NaN"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Padding" Value="8,1"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="RenderTransform" Value="none"/>
+    </Style>
+    <Style Selector="RepeatButton">
+        <Setter Property="Theme" Value="{StaticResource ClassicRepeatButton}"/>
+    </Style>
+    <Style Selector="ToggleButton">
+        <Setter Property="Theme" Value="{StaticResource ClassicToggleButton}"/>
+    </Style>
+    <Style Selector="Button.nav-button, Button.picker-button, Button.toolbar-button, Button.transparent-button,
+                     Button.caption-button, Button.player-button, Button.tool-grid-button, Button.tool-grid-edit-button,
+                     Button.effect-item, Button.icon-button">
+        <Setter Property="Theme" Value="{StaticResource ClassicToolStripButton}"/>
+    </Style>
+    <Style Selector="ToggleButton.side-panel-toggle-row, ToggleButton.tool-grid-visibility-button">
+        <Setter Property="Theme" Value="{StaticResource ClassicToolStripToggleButton}"/>
+    </Style>
+    <Style Selector="CheckBox">
+        <Setter Property="Theme" Value="{StaticResource ClassicCheckBox}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+    <Style Selector="RadioButton">
+        <Setter Property="Theme" Value="{StaticResource ClassicRadioButton}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+    <Style Selector="ToggleSwitch">
+        <Setter Property="Theme" Value="{StaticResource ClassicToggleSwitch}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+    <Style Selector="TextBox">
+        <Setter Property="Theme" Value="{StaticResource ClassicTextBox}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="TextBox.classic-inner">
+        <Setter Property="Theme" Value="{StaticResource ClassicInnerTextBox}"/>
+    </Style>
+    <Style Selector="ComboBox">
+        <Setter Property="Theme" Value="{StaticResource ClassicComboBox}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="ComboBoxItem">
+        <Setter Property="Theme" Value="{StaticResource ClassicComboBoxItem}"/>
+    </Style>
+    <Style Selector="ListBox">
+        <Setter Property="Theme" Value="{StaticResource ClassicListBox}"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="ListBoxItem">
+        <Setter Property="Theme" Value="{StaticResource ClassicListBoxItem}"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <!--
+        The color view's palette is a list box of swatches. Its item theme comes from ItemContainerTheme, which the
+        list box only applies to containers without a theme, so the type style above would turn every swatch into a
+        list row. Give the swatches their own theme back.
+    -->
+    <Style Selector="cp|ColorView ListBoxItem">
+        <Setter Property="Theme" Value="{DynamicResource ColorViewPaletteListBoxItemTheme}"/>
+    </Style>
+    <!-- The color button's swatch is shorter so it clears the top and bottom of the 23 px button. -->
+    <Style Selector="Grid.color-swatch">
+        <Setter Property="Height" Value="15"/>
+    </Style>
+    <!-- The rest of the color view is squared off; its tab strip brush and radius come from the theme dictionaries. -->
+    <Style Selector="cp|ColorView, cpp|ColorPreviewer">
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="TreeView">
+        <Setter Property="Theme" Value="{StaticResource ClassicTreeView}"/>
+    </Style>
+    <Style Selector="TreeViewItem">
+        <Setter Property="Theme" Value="{StaticResource ClassicTreeViewItem}"/>
+    </Style>
+    <Style Selector="ScrollViewer">
+        <Setter Property="Theme" Value="{StaticResource ClassicScrollViewer}"/>
+    </Style>
+    <Style Selector="ScrollBar">
+        <Setter Property="Theme" Value="{StaticResource ClassicScrollBar}"/>
+    </Style>
+    <Style Selector="ProgressBar">
+        <Setter Property="Theme" Value="{StaticResource ClassicProgressBar}"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="Slider">
+        <Setter Property="Theme" Value="{StaticResource ClassicSlider}"/>
+    </Style>
+    <Style Selector="ButtonSpinner">
+        <Setter Property="Theme" Value="{StaticResource ClassicButtonSpinner}"/>
+    </Style>
+    <Style Selector="NumericUpDown">
+        <Setter Property="Theme" Value="{StaticResource ClassicNumericUpDown}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="ContextMenu">
+        <Setter Property="Theme" Value="{StaticResource ClassicContextMenu}"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="MenuFlyoutPresenter">
+        <Setter Property="Theme" Value="{StaticResource ClassicMenuFlyoutPresenter}"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="MenuItem">
+        <Setter Property="Theme" Value="{StaticResource ClassicMenuItem}"/>
+        <Setter Property="FontSize" Value="{DynamicResource Classic.Menu.FontSize}"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="Separator">
+        <Setter Property="Theme" Value="{StaticResource ClassicSeparator}"/>
+    </Style>
+    <Style Selector="ToolTip">
+        <Setter Property="Theme" Value="{StaticResource ClassicToolTip}"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="HyperlinkButton">
+        <Setter Property="Theme" Value="{StaticResource ClassicHyperlinkButton}"/>
+    </Style>
+    <Style Selector="HyperlinkButton TextBlock, HyperlinkButton /template/ TextBlock, HyperlinkButton /template/ AccessText">
+        <Setter Property="TextDecorations" Value="Underline"/>
+    </Style>
+
+    <!--
+        Push button states. ControlStyles.axaml and the window styles paint PART_ContentPresenter under the same
+        conditions, so these repeat its selectors to win by coming later.
+    -->
+    <Style Selector="Button /template/ ContentPresenter#PART_ContentPresenter, ToggleButton /template/ ContentPresenter#PART_ContentPresenter, RepeatButton /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Opacity" Value="1"/>
+    </Style>
+    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                     ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                     RepeatButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Classic.Button.Face.Hot}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Hot}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter,
+                     ToggleButton:pressed /template/ ContentPresenter#PART_ContentPresenter,
+                     RepeatButton:pressed /template/ ContentPresenter#PART_ContentPresenter,
+                     ToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.active /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.active:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.active:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Classic.Button.Face.Pressed}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Pressed}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Button:disabled /template/ ContentPresenter#PART_ContentPresenter,
+                     ToggleButton:disabled /template/ ContentPresenter#PART_ContentPresenter,
+                     RepeatButton:disabled /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Classic.Button.Face.Disabled}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Disabled}"/>
+        <Setter Property="Opacity" Value="1"/>
+    </Style>
+    <Style Selector="Button:disabled, ToggleButton:disabled, RepeatButton:disabled">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Button.Text.Disabled}"/>
+    </Style>
+    <Style Selector="Button:disabled TextBlock, ToggleButton:disabled TextBlock">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Button.Text.Disabled}"/>
+    </Style>
+    <Style Selector="Button:focus /template/ Border#ClassicDefaultRing, Button[IsDefault=True] /template/ Border#ClassicDefaultRing, Button.primary /template/ Border#ClassicDefaultRing">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="Button:focus /template/ ContentPresenter#PART_ContentPresenter, Button[IsDefault=True] /template/ ContentPresenter#PART_ContentPresenter, Button.primary /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border.Focus}"/>
+    </Style>
+    <Style Selector="Button:focus-visible /template/ Rectangle#ClassicFocusCue, ToggleButton:focus-visible /template/ Rectangle#ClassicFocusCue">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+
+    <!-- Accent and state colored buttons (primary, active, task mode) keep plain ControlText. -->
+    <Style Selector="Button.primary, Button.active, Button.task-mode-button, Button.danger, Button.success">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Button.Text}"/>
+    </Style>
+    <Style Selector="Button.primary TextBlock, Button.active TextBlock, Button.task-mode-button TextBlock,
+                     Button.active /template/ ContentPresenter#PART_ContentPresenter TextBlock,
+                     Button.primary controls|IconPresenter, Button.active controls|IconPresenter,
+                     Button.active /template/ ContentPresenter#PART_ContentPresenter controls|IconPresenter">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Button.Text}"/>
+    </Style>
+    <Style Selector="Button.task-mode-button.danger /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.task-mode-button.success /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Classic.Button.Face}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.Button.Border}"/>
+    </Style>
+    <Style Selector="Button.task-mode-button.danger > TextBlock, Button.task-mode-button.success > TextBlock">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Button.Text}"/>
+    </Style>
+
+    <!-- ToolStripButton states (repeat the flat-button selectors used by ControlStyles and the windows). -->
+    <Style Selector="Button.nav-button, Button.picker-button, Button.toolbar-button, Button.transparent-button,
+                     Button.caption-button, Button.player-button, Button.tool-grid-button, Button.tool-grid-edit-button,
+                     Button.effect-item, Button.icon-button,
+                     ToggleButton.side-panel-toggle-row, ToggleButton.tool-grid-visibility-button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="0"/>
+        </Style>
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource Classic.Menu.Selected}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Classic.Menu.Selected.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource Classic.Menu.Pressed}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Classic.Menu.Selected.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="^.active /template/ ContentPresenter#PART_ContentPresenter, ^:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource Classic.Menu.Checked}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Classic.Menu.Selected.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="^.active:pointerover /template/ ContentPresenter#PART_ContentPresenter, ^:checked:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource Classic.Menu.Selected}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Opacity" Value="0.5"/>
+        </Style>
+        <Style Selector="^.active, ^.active TextBlock, ^.active controls|IconPresenter">
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.ControlText}"/>
+        </Style>
+    </Style>
+
+    <!-- Caption buttons keep the red close button hover, as in the Windows title bar. -->
+    <Style Selector="Button.caption-close:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Classic.CaptionClose.Hot}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.CaptionClose.Hot}"/>
+    </Style>
+
+    <!-- Drop-down and list box items -->
+    <Style Selector="ComboBoxItem, ListBoxItem">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.List.Text}"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="0"/>
+        </Style>
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter,
+                         ^:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                         ^:selected:pressed /template/ ContentPresenter#PART_ContentPresenter,
+                         ^:selected:focus /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource Classic.Highlight}"/>
+        </Style>
+        <Style Selector="^:selected, ^:selected TextBlock, ^:selected controls|IconPresenter">
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.HighlightText}"/>
+        </Style>
+        <Style Selector="^:disabled, ^:disabled TextBlock">
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.GrayText}"/>
+        </Style>
+    </Style>
+    <!-- In an open drop-down list the hot item follows the mouse, like the Windows list box. -->
+    <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Classic.Highlight}"/>
+    </Style>
+    <Style Selector="ComboBoxItem:pointerover, ComboBoxItem:pointerover TextBlock">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.HighlightText}"/>
+    </Style>
+    <!-- Palette swatches show their selection with their own outline. -->
+    <Style Selector="cp|ColorView ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- Text inputs: the inner text box of a NumericUpDown is borderless (ControlStyles restyles it). -->
+    <Style Selector="NumericUpDown /template/ TextBox, NumericUpDown /template/ TextBox:pointerover, NumericUpDown /template/ TextBox:focus">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Edit.Text}"/>
+    </Style>
+    <Style Selector="TextBox /template/ TextPresenter, TextBox:pointerover /template/ TextPresenter, TextBox:focus /template/ TextPresenter">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Edit.Text}"/>
+    </Style>
+    <Style Selector="TextBox:disabled /template/ TextPresenter">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.GrayText}"/>
+    </Style>
+
+    <!-- Menus: ContextMenuStrip metrics (22px items, 9pt text, image margin on the left). -->
+    <Style Selector="ContextMenu MenuItem, MenuFlyoutPresenter MenuItem, MenuItem.compact-menu-item">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Menu.Text}"/>
+        <Setter Property="FontSize" Value="{DynamicResource Classic.Menu.FontSize}"/>
+        <Setter Property="Padding" Value="2,0"/>
+        <Setter Property="Height" Value="NaN"/>
+        <Setter Property="MinHeight" Value="22"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="ContextMenu MenuItem:pointerover, MenuFlyoutPresenter MenuItem:pointerover, MenuItem.compact-menu-item:pointerover,
+                     ContextMenu MenuItem:pointerover TextBlock, MenuFlyoutPresenter MenuItem:pointerover TextBlock,
+                     MenuItem.compact-menu-item:pointerover TextBlock,
+                     ContextMenu MenuItem:pointerover /template/ TextBlock">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Menu.Text}"/>
+    </Style>
+    <Style Selector="MenuItem:disabled TextBlock">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.GrayText}"/>
+    </Style>
+    <Style Selector="ContextMenu Separator, MenuFlyoutPresenter Separator, Separator.compact-menu-separator">
+        <Setter Property="Margin" Value="28,3,1,3"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- Settings tree rows (SettingsNavigation): Microsoft Sans Serif 12pt, highlight text on the selected row. -->
+    <Style Selector="TreeView TextBlock">
+        <Setter Property="FontFamily" Value="Microsoft Sans Serif"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+    <Style Selector="TreeViewItem:selected /template/ ContentPresenter#PART_HeaderPresenter TextBlock">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.Tree.Selected.Text}"/>
+    </Style>
+
+    <!-- Group boxes: the setting cards become BP_GROUPBOX frames with the caption on the top edge. -->
+    <Style Selector="Border.section-card">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.GroupBox.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Padding" Value="9,6,9,8"/>
+        <Setter Property="Margin" Value="0,8,0,4"/>
+    </Style>
+    <Style Selector="Border.section-card TextBlock.section-title">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Margin" Value="-3,-14,0,0"/>
+        <Setter Property="Padding" Value="2,0"/>
+        <Setter Property="Background" Value="{DynamicResource Classic.Control}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource Classic.ControlText}"/>
+    </Style>
+    <Style Selector="Border.card, Border.setting-card, Border.panel-card, Border.content-card, Border.info-card,
+                     Border.choice-card, Border.metric-card, Border.converter-panel, Border.comparer-panel,
+                     Border.remover-panel, Border.tool-panel, Border.thumbnail-card, Border.message-group">
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.GroupBox.Border}"/>
+    </Style>
+    <Style Selector="Border.popup-border, Border.popup-surface, Border.floating-panel, Border.color-picker-popup, Border.app-toast">
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.Menu.Border}"/>
+    </Style>
+    <Style Selector="Border.capsule, Border.tool-grid-badge">
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="FlyoutPresenter, FlyoutPresenter.tool-grid-flyout, FlyoutPresenter.gradient-options-flyout">
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Background" Value="{DynamicResource Classic.Menu.Background}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Classic.Menu.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <!--
+        Color picker drop-down: drawn like the combo boxes beside it. The arrow strip replaces the button's own
+        chevron, and the generic push-button states above must not paint its content area.
+    -->
+    <Style Selector="Button.color-dropdown-button">
+        <Setter Property="Theme" Value="{StaticResource ClassicDropDownComboButton}"/>
+    </Style>
+    <Style Selector="Button.color-dropdown-button controls|IconPresenter.dropdown-chevron">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="Button.color-dropdown-button /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.color-dropdown-button:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.color-dropdown-button:pressed /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.color-dropdown-button:disabled /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+</Styles>

@@ -4,13 +4,13 @@
     
     <FontFamily x:Key="ShareX.FontFamily.Default">Segoe UI, avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
     <FontFamily x:Key="ShareX.FontFamily.Monospace">Cascadia Mono, Consolas, Courier New, Monospace</FontFamily>
-    <x:Double x:Key="ShareX.FontSize.Default">13</x:Double>
     <x:Double x:Key="ShareX.Value.Accent.Foreground.DarkSwitchRatio">1.75</x:Double>
 
     <ResourceDictionary.ThemeDictionaries>
 
         <!-- ShareX Dark theme -->
         <ResourceDictionary x:Key="{x:Static helpers:ThemeManager.ShareXDark}">
+            <x:Double x:Key="ShareX.FontSize.Default">13</x:Double>
             <Color x:Key="ShareX.Color.Accent.Start">#3E83F2</Color>
             <Color x:Key="ShareX.Color.Accent.End">#3975D5</Color>
             <Color x:Key="ShareX.Color.Accent.Foreground">#D8DADB</Color>
@@ -115,6 +115,7 @@
 
         <!-- ShareX Light -->
         <ResourceDictionary x:Key="{x:Static helpers:ThemeManager.ShareXLight}">
+            <x:Double x:Key="ShareX.FontSize.Default">13</x:Double>
             <Color x:Key="ShareX.Color.Accent.Start">#3E83F2</Color>
             <Color x:Key="ShareX.Color.Accent.End">#3975D5</Color>
             <Color x:Key="ShareX.Color.Accent.Foreground">#D8DADB</Color>
@@ -215,6 +216,413 @@
                     </DrawingGroup>
                 </DrawingBrush.Drawing>
             </DrawingBrush>
+        </ResourceDictionary>
+
+
+        <!-- ShareX Classic Light: Windows Forms system colors (SystemColors on Windows 10/11 with visual styles).
+             Control #F0F0F0, Window #FFFFFF, ControlText #000000, GrayText #6D6D6D, Highlight #0078D7. -->
+        <ResourceDictionary x:Key="{x:Static helpers:ThemeManager.ShareXClassicLight}">
+            <!-- 9pt Segoe UI, the Windows Forms default font. -->
+            <x:Double x:Key="ShareX.FontSize.Default">12</x:Double>
+            <Color x:Key="ShareX.Color.Accent.Start">#0078D7</Color>
+            <Color x:Key="ShareX.Color.Accent.End">#0078D7</Color>
+            <Color x:Key="ShareX.Color.Accent.Foreground">#FFFFFF</Color>
+            <Color x:Key="ShareX.Color.Link">#0066CC</Color>
+
+            <Color x:Key="ShareX.Color.Text">#000000</Color>
+            <Color x:Key="ShareX.Color.Text.Secondary">#000000</Color>
+            <Color x:Key="ShareX.Color.Status.Success">#008000</Color>
+            <Color x:Key="ShareX.Color.Status.Error">#C80000</Color>
+
+            <Color x:Key="ShareX.Color.Background.Main">#F0F0F0</Color>
+            <Color x:Key="ShareX.Color.Background.Panel">#F0F0F0</Color>
+            <Color x:Key="ShareX.Color.Background.Popup">#FFFFFF</Color>
+            <Color x:Key="ShareX.Color.Background.Menu">#F8F8F8</Color>
+            <Color x:Key="ShareX.Color.Background.Toolbar">#F0F0F0</Color>
+
+            <Color x:Key="ShareX.Color.Border">#ADADAD</Color>
+            <Color x:Key="ShareX.Color.Control.Background">#E1E1E1</Color>
+            <Color x:Key="ShareX.Color.Control.Background.Hover">#E5F1FB</Color>
+            <Color x:Key="ShareX.Color.Control.Border">#ADADAD</Color>
+            <Color x:Key="ShareX.Color.Separator">#A0A0A0</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Cancel.Background">#DC2626</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Cancel.Border">#EF4444</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Continue.Background">#10B981</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Continue.Border">#13DD9A</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Foreground">#FFFFFF</Color>
+
+            <SolidColorBrush x:Key="ShareX.Brush.Accent" Color="{StaticResource ShareX.Color.Accent.Start}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Accent.Start" Color="{StaticResource ShareX.Color.Accent.Start}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Accent.Foreground" Color="{StaticResource ShareX.Color.Accent.Foreground}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Link" Color="{StaticResource ShareX.Color.Link}" />
+
+            <SolidColorBrush x:Key="ShareX.Brush.Text" Color="{StaticResource ShareX.Color.Text}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Text.Secondary" Color="{StaticResource ShareX.Color.Text.Secondary}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Status.Success" Color="{StaticResource ShareX.Color.Status.Success}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Status.Error" Color="{StaticResource ShareX.Color.Status.Error}" />
+
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Main" Color="{StaticResource ShareX.Color.Background.Main}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Panel" Color="{StaticResource ShareX.Color.Background.Panel}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Popup" Color="{StaticResource ShareX.Color.Background.Popup}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Menu" Color="{StaticResource ShareX.Color.Background.Menu}" />
+            <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="{StaticResource ShareX.Color.Background.Menu}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Toolbar" Color="{StaticResource ShareX.Color.Background.Toolbar}" />
+
+            <SolidColorBrush x:Key="ShareX.Brush.Border" Color="{StaticResource ShareX.Color.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Background" Color="{StaticResource ShareX.Color.Control.Background}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Background.Hover" Color="{StaticResource ShareX.Color.Control.Background.Hover}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Border" Color="{StaticResource ShareX.Color.Control.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Background.Disabled" Color="#CCCCCC" />
+            <SolidColorBrush x:Key="ShareX.Brush.Separator" Color="{StaticResource ShareX.Color.Separator}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Cancel.Background" Color="{StaticResource ShareX.Color.TaskMode.Cancel.Background}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Cancel.Border" Color="{StaticResource ShareX.Color.TaskMode.Cancel.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Continue.Background" Color="{StaticResource ShareX.Color.TaskMode.Continue.Background}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Continue.Border" Color="{StaticResource ShareX.Color.TaskMode.Continue.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Foreground" Color="{StaticResource ShareX.Color.TaskMode.Foreground}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Overlay.Soft" Color="#30000000" />
+            <SolidColorBrush x:Key="ShareX.Brush.Overlay.Modal" Color="#80000000" />
+
+            <DrawingBrush x:Key="ShareX.Brush.Checkered" TileMode="Tile" SourceRect="0,0,30,30" DestinationRect="0,0,30,30">
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#FFFFFF">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,30,30" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="#EBEBEB">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0,15,15" />
+                                    <RectangleGeometry Rect="15,15,15,15" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+
+            <DrawingBrush x:Key="ShareX.Brush.Checkered.Small" TileMode="Tile" SourceRect="0,0,8,8" DestinationRect="0,0,8,8">
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#FFFFFF">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,8,8" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="#EBEBEB">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0,4,4" />
+                                    <RectangleGeometry Rect="4,4,4,4" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+
+            <!-- Brushes of the classic control templates (ClassicTheme.axaml). -->
+            <SolidColorBrush x:Key="Classic.Highlight" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.HighlightText" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.Glyph" Color="#333333" />
+            <SolidColorBrush x:Key="Classic.Glyph.Disabled" Color="#CCCCCC" />
+            <SolidColorBrush x:Key="Classic.CheckBox.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Track" Color="#F0F0F0" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Thumb" Color="#CDCDCD" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Thumb.Hot" Color="#A6A6A6" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Thumb.Pressed" Color="#606060" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Arrow" Color="#606060" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Arrow.Hot" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Arrow.Disabled" Color="#BFBFBF" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Button.Hot" Color="#DADADA" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Button.Pressed" Color="#606060" />
+            <SolidColorBrush x:Key="Classic.Spin.Face" Color="#F0F0F0" />
+            <SolidColorBrush x:Key="Classic.Spin.Glyph" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.Spin.Face.Hot" Color="#E5F1FB" />
+            <SolidColorBrush x:Key="Classic.Spin.Border.Hot" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Spin.Face.Pressed" Color="#CCE4F7" />
+            <SolidColorBrush x:Key="Classic.Spin.Border.Pressed" Color="#005499" />
+            <SolidColorBrush x:Key="Classic.Progress.Track" Color="#E6E6E6" />
+            <SolidColorBrush x:Key="Classic.Progress.Border" Color="#BCBCBC" />
+            <SolidColorBrush x:Key="Classic.Progress.Fill" Color="#06B025" />
+            <SolidColorBrush x:Key="Classic.Progress.Text" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Track" Color="#E7EAEA" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Track.Border" Color="#D6D6D6" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Thumb" Color="#007AD9" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Thumb.Hot" Color="#171717" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Thumb.Pressed" Color="#CCCCCC" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Tick" Color="#C4C4C4" />
+            <SolidColorBrush x:Key="Classic.GroupBox.Border" Color="#DCDCDC" />
+            <SolidColorBrush x:Key="Classic.ToolTip.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.ToolTip.Border" Color="#767676" />
+            <SolidColorBrush x:Key="Classic.ToolTip.Text" Color="#575757" />
+            <SolidColorBrush x:Key="Classic.Tree.Selected" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Tree.Selected.Text" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.CaptionClose.Hot" Color="#E81123" />
+            <SolidColorBrush x:Key="Classic.Control" Color="#F0F0F0" />
+            <SolidColorBrush x:Key="Classic.Window" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.ControlText" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.GrayText" Color="#6D6D6D" />
+            <SolidColorBrush x:Key="Classic.Button.Face" Color="#E1E1E1" />
+            <SolidColorBrush x:Key="Classic.Button.Border" Color="#ADADAD" />
+            <SolidColorBrush x:Key="Classic.Button.Text" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.Button.Face.Hot" Color="#E5F1FB" />
+            <SolidColorBrush x:Key="Classic.Button.Border.Hot" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Button.Face.Pressed" Color="#CCE4F7" />
+            <SolidColorBrush x:Key="Classic.Button.Border.Pressed" Color="#005499" />
+            <SolidColorBrush x:Key="Classic.Button.Face.Disabled" Color="#CCCCCC" />
+            <SolidColorBrush x:Key="Classic.Button.Border.Disabled" Color="#BFBFBF" />
+            <SolidColorBrush x:Key="Classic.Button.Text.Disabled" Color="#838383" />
+            <SolidColorBrush x:Key="Classic.Button.Border.Focus" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Button.FocusRing" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Edit.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.Edit.Background.Disabled" Color="#F0F0F0" />
+            <SolidColorBrush x:Key="Classic.Edit.Text" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.Edit.Border" Color="#7A7A7A" />
+            <SolidColorBrush x:Key="Classic.Edit.Border.Hot" Color="#171717" />
+            <SolidColorBrush x:Key="Classic.Edit.Border.Focus" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Edit.Border.Disabled" Color="#CCCCCC" />
+            <SolidColorBrush x:Key="Classic.Combo.Face" Color="#E1E1E1" />
+            <SolidColorBrush x:Key="Classic.Combo.Border" Color="#ADADAD" />
+            <SolidColorBrush x:Key="Classic.Combo.Face.Hot" Color="#E5F1FB" />
+            <SolidColorBrush x:Key="Classic.Combo.Border.Hot" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Combo.Face.Pressed" Color="#CCE4F7" />
+            <SolidColorBrush x:Key="Classic.Combo.Border.Pressed" Color="#005499" />
+            <SolidColorBrush x:Key="Classic.Combo.Text" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.Combo.Button" Color="Transparent" />
+            <SolidColorBrush x:Key="Classic.Combo.Button.Border" Color="Transparent" />
+            <SolidColorBrush x:Key="Classic.Combo.Glyph" Color="#606060" />
+            <SolidColorBrush x:Key="Classic.List.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.List.Text" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.List.Border" Color="#828790" />
+            <SolidColorBrush x:Key="Classic.DropDown.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.DropDown.Border" Color="#646464" />
+            <SolidColorBrush x:Key="Classic.Tree.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.Menu.Background" Color="#F8F8F8" />
+            <SolidColorBrush x:Key="Classic.Menu.Border" Color="#808080" />
+            <SolidColorBrush x:Key="Classic.Menu.Text" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.Menu.Selected" Color="#B3D7F3" />
+            <SolidColorBrush x:Key="Classic.Menu.Selected.Border" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Menu.Pressed" Color="#80BCEB" />
+            <SolidColorBrush x:Key="Classic.Menu.Checked" Color="#CCE4F7" />
+            <SolidColorBrush x:Key="Classic.Menu.Separator.Dark" Color="#BDBDBD" />
+            <SolidColorBrush x:Key="Classic.Menu.Separator.Light" Color="#FFFFFF" />
+            <LinearGradientBrush x:Key="Classic.Menu.ImageMargin" StartPoint="0%,0%" EndPoint="100%,0%">
+                <GradientStop Color="#FCFCFC" Offset="0" />
+                <GradientStop Color="#F8F8F8" Offset="0.5" />
+                <GradientStop Color="#F1F1F1" Offset="1" />
+            </LinearGradientBrush>
+            <!-- Tab strip of the color view (Avalonia.Controls.ColorPicker), flat like a button face. -->
+            <SolidColorBrush x:Key="ColorViewTabBackgroundBrush" Color="#E1E1E1" />
+            <CornerRadius x:Key="ColorViewTabBackgroundCornerRadius">0</CornerRadius>
+            <!-- Height of the start screen drop-downs, which the accent color picker matches. -->
+            <x:Double x:Key="Classic.OptionControl.Height">38</x:Double>
+            <!-- Menus use the system menu font (9pt); the themed combo box shows a chevron. -->
+            <x:Double x:Key="Classic.Menu.FontSize">12</x:Double>
+            <x:Boolean x:Key="Classic.Combo.Chevron">True</x:Boolean>
+            <x:Boolean x:Key="Classic.Combo.Triangle">False</x:Boolean>
+        </ResourceDictionary>
+
+        <!-- ShareX Classic Dark: ShareXTheme.DarkTheme from ShareX 21 (Background #272727, LightBackground #2E2E2E,
+             DarkBackground #222222, Text #E7E9EA, Border #1F1F1F, Link #A6D4FF). -->
+        <ResourceDictionary x:Key="{x:Static helpers:ThemeManager.ShareXClassicDark}">
+            <!-- 9pt Segoe UI, the ShareX 21 form font. -->
+            <x:Double x:Key="ShareX.FontSize.Default">12</x:Double>
+            <Color x:Key="ShareX.Color.Accent.Start">#0078D7</Color>
+            <Color x:Key="ShareX.Color.Accent.End">#0078D7</Color>
+            <Color x:Key="ShareX.Color.Accent.Foreground">#FFFFFF</Color>
+            <Color x:Key="ShareX.Color.Link">#A6D4FF</Color>
+
+            <Color x:Key="ShareX.Color.Text">#E7E9EA</Color>
+            <Color x:Key="ShareX.Color.Text.Secondary">#E7E9EA</Color>
+            <Color x:Key="ShareX.Color.Status.Success">#79B58A</Color>
+            <Color x:Key="ShareX.Color.Status.Error">#D07C7C</Color>
+
+            <Color x:Key="ShareX.Color.Background.Main">#272727</Color>
+            <Color x:Key="ShareX.Color.Background.Panel">#272727</Color>
+            <Color x:Key="ShareX.Color.Background.Popup">#2E2E2E</Color>
+            <Color x:Key="ShareX.Color.Background.Menu">#272727</Color>
+            <Color x:Key="ShareX.Color.Background.Toolbar">#272727</Color>
+
+            <Color x:Key="ShareX.Color.Border">#1F1F1F</Color>
+            <Color x:Key="ShareX.Color.Control.Background">#2E2E2E</Color>
+            <Color x:Key="ShareX.Color.Control.Background.Hover">#383838</Color>
+            <Color x:Key="ShareX.Color.Control.Border">#1F1F1F</Color>
+            <Color x:Key="ShareX.Color.Separator">#1F1F1F</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Cancel.Background">#DC2626</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Cancel.Border">#EF4444</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Continue.Background">#10B981</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Continue.Border">#13DD9A</Color>
+            <Color x:Key="ShareX.Color.TaskMode.Foreground">#FFFFFF</Color>
+
+            <SolidColorBrush x:Key="ShareX.Brush.Accent" Color="{StaticResource ShareX.Color.Accent.Start}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Accent.Start" Color="{StaticResource ShareX.Color.Accent.Start}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Accent.Foreground" Color="{StaticResource ShareX.Color.Accent.Foreground}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Link" Color="{StaticResource ShareX.Color.Link}" />
+
+            <SolidColorBrush x:Key="ShareX.Brush.Text" Color="{StaticResource ShareX.Color.Text}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Text.Secondary" Color="{StaticResource ShareX.Color.Text.Secondary}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Status.Success" Color="{StaticResource ShareX.Color.Status.Success}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Status.Error" Color="{StaticResource ShareX.Color.Status.Error}" />
+
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Main" Color="{StaticResource ShareX.Color.Background.Main}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Panel" Color="{StaticResource ShareX.Color.Background.Panel}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Popup" Color="{StaticResource ShareX.Color.Background.Popup}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Menu" Color="{StaticResource ShareX.Color.Background.Menu}" />
+            <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="{StaticResource ShareX.Color.Background.Menu}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Background.Toolbar" Color="{StaticResource ShareX.Color.Background.Toolbar}" />
+
+            <SolidColorBrush x:Key="ShareX.Brush.Border" Color="{StaticResource ShareX.Color.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Background" Color="{StaticResource ShareX.Color.Control.Background}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Background.Hover" Color="{StaticResource ShareX.Color.Control.Background.Hover}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Border" Color="{StaticResource ShareX.Color.Control.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Control.Background.Disabled" Color="#383838" />
+            <SolidColorBrush x:Key="ShareX.Brush.Separator" Color="{StaticResource ShareX.Color.Separator}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Cancel.Background" Color="{StaticResource ShareX.Color.TaskMode.Cancel.Background}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Cancel.Border" Color="{StaticResource ShareX.Color.TaskMode.Cancel.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Continue.Background" Color="{StaticResource ShareX.Color.TaskMode.Continue.Background}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Continue.Border" Color="{StaticResource ShareX.Color.TaskMode.Continue.Border}" />
+            <SolidColorBrush x:Key="ShareX.Brush.TaskMode.Foreground" Color="{StaticResource ShareX.Color.TaskMode.Foreground}" />
+            <SolidColorBrush x:Key="ShareX.Brush.Overlay.Soft" Color="#30000000" />
+            <SolidColorBrush x:Key="ShareX.Brush.Overlay.Modal" Color="#80000000" />
+
+            <DrawingBrush x:Key="ShareX.Brush.Checkered" TileMode="Tile" SourceRect="0,0,30,30" DestinationRect="0,0,30,30">
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#272727">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,30,30" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="#2E2E2E">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0,15,15" />
+                                    <RectangleGeometry Rect="15,15,15,15" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+
+            <DrawingBrush x:Key="ShareX.Brush.Checkered.Small" TileMode="Tile" SourceRect="0,0,8,8" DestinationRect="0,0,8,8">
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#272727">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,8,8" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="#2E2E2E">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0,4,4" />
+                                    <RectangleGeometry Rect="4,4,4,4" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+
+            <!-- Brushes of the classic control templates (ClassicTheme.axaml). -->
+            <SolidColorBrush x:Key="Classic.Highlight" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.HighlightText" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.Glyph" Color="#333333" />
+            <SolidColorBrush x:Key="Classic.Glyph.Disabled" Color="#CCCCCC" />
+            <SolidColorBrush x:Key="Classic.CheckBox.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Track" Color="#222222" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Thumb" Color="#4D4D4D" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Thumb.Hot" Color="#686868" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Thumb.Pressed" Color="#9E9E9E" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Arrow" Color="#9E9E9E" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Arrow.Hot" Color="#E7E9EA" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Arrow.Disabled" Color="#3F3F3F" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Button.Hot" Color="#383838" />
+            <SolidColorBrush x:Key="Classic.ScrollBar.Button.Pressed" Color="#9E9E9E" />
+            <SolidColorBrush x:Key="Classic.Spin.Face" Color="#F0F0F0" />
+            <SolidColorBrush x:Key="Classic.Spin.Glyph" Color="#000000" />
+            <SolidColorBrush x:Key="Classic.Spin.Face.Hot" Color="#E5F1FB" />
+            <SolidColorBrush x:Key="Classic.Spin.Border.Hot" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Spin.Face.Pressed" Color="#CCE4F7" />
+            <SolidColorBrush x:Key="Classic.Spin.Border.Pressed" Color="#005499" />
+            <SolidColorBrush x:Key="Classic.Progress.Track" Color="#222222" />
+            <SolidColorBrush x:Key="Classic.Progress.Border" Color="#3F3F3F" />
+            <SolidColorBrush x:Key="Classic.Progress.Fill" Color="#06B025" />
+            <SolidColorBrush x:Key="Classic.Progress.Text" Color="#E7E9EA" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Track" Color="#222222" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Track.Border" Color="#3F3F3F" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Thumb" Color="#007AD9" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Thumb.Hot" Color="#E7E9EA" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Thumb.Pressed" Color="#9E9E9E" />
+            <SolidColorBrush x:Key="Classic.TrackBar.Tick" Color="#5A5A5A" />
+            <SolidColorBrush x:Key="Classic.GroupBox.Border" Color="#3A3A3A" />
+            <SolidColorBrush x:Key="Classic.ToolTip.Background" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.ToolTip.Border" Color="#767676" />
+            <SolidColorBrush x:Key="Classic.ToolTip.Text" Color="#575757" />
+            <SolidColorBrush x:Key="Classic.Tree.Selected" Color="#0078D7" />
+            <SolidColorBrush x:Key="Classic.Tree.Selected.Text" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Classic.CaptionClose.Hot" Color="#E81123" />
+            <SolidColorBrush x:Key="Classic.Control" Color="#272727" />
+            <SolidColorBrush x:Key="Classic.Window" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.ControlText" Color="#E7E9EA" />
+            <SolidColorBrush x:Key="Classic.GrayText" Color="#8C8C8C" />
+            <SolidColorBrush x:Key="Classic.Button.Face" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.Button.Border" Color="#1F1F1F" />
+            <SolidColorBrush x:Key="Classic.Button.Text" Color="#E7E9EA" />
+            <SolidColorBrush x:Key="Classic.Button.Face.Hot" Color="#383838" />
+            <SolidColorBrush x:Key="Classic.Button.Border.Hot" Color="#1F1F1F" />
+            <SolidColorBrush x:Key="Classic.Button.Face.Pressed" Color="#222222" />
+            <SolidColorBrush x:Key="Classic.Button.Border.Pressed" Color="#1F1F1F" />
+            <SolidColorBrush x:Key="Classic.Button.Face.Disabled" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.Button.Border.Disabled" Color="#1F1F1F" />
+            <SolidColorBrush x:Key="Classic.Button.Text.Disabled" Color="#6D6D6D" />
+            <SolidColorBrush x:Key="Classic.Button.Border.Focus" Color="#1F1F1F" />
+            <SolidColorBrush x:Key="Classic.Button.FocusRing" Color="Transparent" />
+            <SolidColorBrush x:Key="Classic.Edit.Background" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.Edit.Background.Disabled" Color="#272727" />
+            <SolidColorBrush x:Key="Classic.Edit.Text" Color="#E7E9EA" />
+            <SolidColorBrush x:Key="Classic.Edit.Border" Color="#646464" />
+            <SolidColorBrush x:Key="Classic.Edit.Border.Hot" Color="#646464" />
+            <SolidColorBrush x:Key="Classic.Edit.Border.Focus" Color="#646464" />
+            <SolidColorBrush x:Key="Classic.Edit.Border.Disabled" Color="#3F3F3F" />
+            <SolidColorBrush x:Key="Classic.Combo.Face" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.Combo.Border" Color="#505050" />
+            <SolidColorBrush x:Key="Classic.Combo.Face.Hot" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.Combo.Border.Hot" Color="#646464" />
+            <SolidColorBrush x:Key="Classic.Combo.Face.Pressed" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.Combo.Border.Pressed" Color="#646464" />
+            <SolidColorBrush x:Key="Classic.Combo.Text" Color="#E7E9EA" />
+            <SolidColorBrush x:Key="Classic.Combo.Button" Color="#383838" />
+            <SolidColorBrush x:Key="Classic.Combo.Button.Border" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.Combo.Glyph" Color="#C8C8C8" />
+            <SolidColorBrush x:Key="Classic.List.Background" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.List.Text" Color="#E7E9EA" />
+            <SolidColorBrush x:Key="Classic.List.Border" Color="#828790" />
+            <SolidColorBrush x:Key="Classic.DropDown.Background" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.DropDown.Border" Color="#646464" />
+            <SolidColorBrush x:Key="Classic.Tree.Background" Color="#222222" />
+            <SolidColorBrush x:Key="Classic.Menu.Background" Color="#272727" />
+            <SolidColorBrush x:Key="Classic.Menu.Border" Color="#3F3F3F" />
+            <SolidColorBrush x:Key="Classic.Menu.Text" Color="#E7E9EA" />
+            <SolidColorBrush x:Key="Classic.Menu.Selected" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.Menu.Selected.Border" Color="#3F3F3F" />
+            <SolidColorBrush x:Key="Classic.Menu.Pressed" Color="#2E2E2E" />
+            <SolidColorBrush x:Key="Classic.Menu.Checked" Color="#333333" />
+            <SolidColorBrush x:Key="Classic.Menu.Separator.Dark" Color="#1F1F1F" />
+            <SolidColorBrush x:Key="Classic.Menu.Separator.Light" Color="#2C2C2C" />
+            <SolidColorBrush x:Key="Classic.Menu.ImageMargin" Color="#272727" />
+            <!-- Tab strip of the color view (Avalonia.Controls.ColorPicker), flat like a button face. -->
+            <SolidColorBrush x:Key="ColorViewTabBackgroundBrush" Color="#2E2E2E" />
+            <CornerRadius x:Key="ColorViewTabBackgroundCornerRadius">0</CornerRadius>
+            <!-- Height of the start screen drop-downs, which the accent color picker matches. -->
+            <x:Double x:Key="Classic.OptionControl.Height">38</x:Double>
+            <!-- ShareXTheme.MenuFont (Segoe UI 9.75pt); the flat combo box draws a filled arrow. -->
+            <x:Double x:Key="Classic.Menu.FontSize">13</x:Double>
+            <x:Boolean x:Key="Classic.Combo.Chevron">False</x:Boolean>
+            <x:Boolean x:Key="Classic.Combo.Triangle">True</x:Boolean>
         </ResourceDictionary>
 
     </ResourceDictionary.ThemeDictionaries>

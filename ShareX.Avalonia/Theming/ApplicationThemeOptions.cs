@@ -48,6 +48,37 @@ public sealed class ApplicationThemeOptions : INotifyPropertyChanged
         set => SetField(ref _theme, value);
     }
 
+    /// <summary>
+    /// Selects a theme from the user interface. Moving to or from a classic theme also switches the icon pack,
+    /// because the classic themes recreate ShareX 21, which only had the legacy icons. The default accent color
+    /// becomes white, which the classic themes draw untinted, and white becomes the default again on the way back;
+    /// any other accent color is the user's choice and is kept.
+    /// </summary>
+    public void SelectTheme(string theme)
+    {
+        bool wasClassic = ThemeManager.IsClassicThemeName(Theme);
+        bool isClassic = ThemeManager.IsClassicThemeName(theme);
+
+        if (wasClassic != isClassic)
+        {
+            if (isClassic && AccentColor == Color.Parse(DefaultAccentColorHex))
+            {
+                AccentColor = Colors.White;
+            }
+            else if (!isClassic && ThemeManager.IsClassicNeutralAccent(AccentColor))
+            {
+                AccentColorHex = DefaultAccentColorHex;
+            }
+        }
+
+        Theme = theme;
+
+        if (wasClassic != isClassic)
+        {
+            IconPack = isClassic ? IconPack.Legacy : IconPack.Modern;
+        }
+    }
+
     public bool UseSystemTheme
     {
         get => _useSystemTheme;
