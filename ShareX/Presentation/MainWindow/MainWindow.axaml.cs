@@ -69,6 +69,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private readonly UploadInfoManager _uploadInfoManager = new();
     private ContextMenu? _activeContextMenu;
     private Flyout? _activeGridMenu;
+    // The control the open menu belongs to, and the last one whose menu closed: pressing a navigation button while its
+    // menu is open closes the menu (light dismiss), and the click that follows must not open it again.
+    private Control? _activeMenuOwner;
+    private Control? _closedMenuOwner;
+    private long _closedMenuTimestamp;
+    private long _navigationPressTimestamp;
     private Window? _trayMenuAnchor;
     private PointerPressedEventArgs? _thumbnailDragTrigger;
     private Task<IStorageFile?>? _thumbnailDragFileTask;
@@ -594,6 +600,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 Tag = current
             };
             button.Click += OnNavigationClick;
+            button.AddHandler(PointerPressedEvent, (_, _) => _navigationPressTimestamp = System.Diagnostics.Stopwatch.GetTimestamp(),
+                RoutingStrategies.Tunnel, handledEventsToo: true);
             NavigationPanel.Children.Add(button);
             index++;
         }
@@ -671,6 +679,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return;
         }
 
+        if (ClosedMenuByThisPress(button))
+        {
+            return;
+        }
+
         if (section.CreateCategories != null)
         {
             Flyout flyout = BuildGridMenu(section.CreateCategories());
@@ -681,6 +694,26 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ContextMenu menu = BuildContextMenu(section.CreateChildren());
             TryOpenContextMenu(menu, button, PlacementMode.RightEdgeAlignedTop);
         }
+    }
+
+    private bool ClosedMenuByThisPress(Button button)
+    {
+        // The light dismiss can run just before or just after the button sees the press, so a menu of this button that
+        // closed within a moment of the press was closed by it.
+        if (!ReferenceEquals(_closedMenuOwner, button))
+        {
+            return false;
+        }
+
+        _closedMenuOwner = null;
+        long window = System.Diagnostics.Stopwatch.Frequency / 4;
+        return Math.Abs(_closedMenuTimestamp - _navigationPressTimestamp) <= window;
+    }
+
+    private void OnMenuClosed(Control? owner)
+    {
+        _closedMenuOwner = owner;
+        _closedMenuTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
     }
 
     private Flyout BuildGridMenu(IEnumerable<MainMenuCategory> categories)
@@ -979,6 +1012,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         _activeContextMenu = menu;
+        _activeMenuOwner = placementTarget;
         menu.Placement = placement;
         menu.Closed += OnActiveContextMenuClosed;
 
@@ -1003,11 +1037,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         _activeGridMenu = flyout;
+        _activeMenuOwner = placementTarget;
         flyout.Closed += (_, _) =>
         {
             if (ReferenceEquals(_activeGridMenu, flyout))
             {
                 _activeGridMenu = null;
+                OnMenuClosed(placementTarget);
             }
         };
 
@@ -1032,6 +1068,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (ReferenceEquals(_activeContextMenu, menu))
             {
                 _activeContextMenu = null;
+                OnMenuClosed(_activeMenuOwner);
             }
         }
     }
