@@ -27,6 +27,7 @@
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Documents;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -118,6 +119,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         InitializeComponent();
         RequestedThemeVariant = ThemeManager.GetCurrentTheme();
+        ApplyWindowChrome();
         Title = ApplicationInfo.Title;
         UpdateTitleBarIcon();
         TaskListColumns.Load(ApplicationState.Settings.TaskListViewColumnWidths);
@@ -190,11 +192,51 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         Title = title;
     }
 
+    private void ApplyWindowChrome()
+    {
+        // The classic themes use the standard Windows title bar, like the Windows Forms main window did.
+        bool classic = ThemeManager.IsClassicTheme;
+
+        if (TitleBar.IsVisible != classic)
+        {
+            return;
+        }
+
+        // Changing the window frame raises this window above the window the theme was changed from (usually
+        // Application settings), which keeps the focus but ends up behind, so bring that window back on top.
+        Window? activeWindow = IsVisible && !IsActive &&
+            Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+            ? desktop.Windows.FirstOrDefault(x => x.IsActive)
+            : null;
+
+        ExtendClientAreaToDecorationsHint = !classic;
+        WindowDecorations = classic ? Avalonia.Controls.WindowDecorations.Full : Avalonia.Controls.WindowDecorations.BorderOnly;
+        TitleBar.IsVisible = !classic;
+
+        // The frame change raises the window after this returns, so restore the order once it has been applied.
+        // Activate alone does nothing for a window that is still active; toggling Topmost raises it.
+        if (activeWindow != null)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (!activeWindow.Topmost)
+                {
+                    activeWindow.Topmost = true;
+                    activeWindow.Topmost = false;
+                }
+
+                activeWindow.Activate();
+            }, DispatcherPriority.Background);
+        }
+    }
+
     private void OnThemeToggleClick(object? sender, RoutedEventArgs e)
     {
-        string theme = ThemeManager.IsDarkTheme ? "Light" : "Dark";
+        string theme = ThemeManager.IsClassicTheme
+            ? ThemeManager.IsDarkTheme ? "ClassicLight" : "ClassicDark"
+            : ThemeManager.IsDarkTheme ? "Light" : "Dark";
         ApplicationThemeOptions options = ApplicationState.Settings.ThemeOptions;
-        options.Theme = theme;
+        options.SelectTheme(theme);
         options.UseSystemTheme = false;
         SettingManager.SaveApplicationConfigAsync();
     }
@@ -1328,6 +1370,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         Dispatcher.UIThread.Post(() =>
         {
             RequestedThemeVariant = theme;
+            ApplyWindowChrome();
             OnPropertyChanged(nameof(IsDarkTheme));
             OnPropertyChanged(nameof(ThemeToggleText));
         });

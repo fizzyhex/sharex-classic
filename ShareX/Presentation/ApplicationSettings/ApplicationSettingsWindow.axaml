@@ -328,6 +328,10 @@
                             <Border Classes="section-card" controls:SettingsSearch.IsPanel="True">
                                 <StackPanel Spacing="6">
                                     <TextBlock Classes="section-title" Text="{x:Static res:Strings.ApplicationSettingsWindow_AccentColor}"/>
+                                    <TextBlock Text="{x:Static res:Strings.ApplicationSettingsWindow_ClassicAccentColorNote}"
+                                               TextWrapping="Wrap"
+                                               FontWeight="Normal"
+                                               IsVisible="{Binding IsClassicThemeSelected}"/>
                                     <CheckBox Classes="setting"
                                               Content="{x:Static res:Strings.ApplicationSettingsWindow_FollowSystemAccentColor}"
                                               IsChecked="{Binding UseSystemAccentColor, Mode=TwoWay}"/>

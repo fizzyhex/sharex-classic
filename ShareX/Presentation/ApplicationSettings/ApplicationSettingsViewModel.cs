@@ -104,7 +104,9 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
     public IReadOnlyList<EnumOption<string>> ThemeOptions { get; } =
     [
         new("Dark", Strings.ApplicationSettingsWindow_Dark),
-        new("Light", Strings.ApplicationSettingsWindow_Light)
+        new("Light", Strings.ApplicationSettingsWindow_Light),
+        new("ClassicLight", Strings.ApplicationSettingsWindow_ClassicLight),
+        new("ClassicDark", Strings.ApplicationSettingsWindow_ClassicDark)
     ];
     public IReadOnlyList<EnumOption<IconPack>> IconPackOptions { get; } =
     [
@@ -253,6 +255,7 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
             if (SetSetting(Settings.ThemeOptions.UseSystemTheme, value, x => Settings.ThemeOptions.UseSystemTheme = x))
             {
                 OnPropertyChanged(nameof(CanEditTheme));
+                OnThemeSelectionChanged();
             }
         }
     }
@@ -361,6 +364,15 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
         OnPropertyChanged(nameof(UseSystemTheme));
         OnPropertyChanged(nameof(CanEditTheme));
         OnPropertyChanged(nameof(SelectedTheme));
+        OnThemeSelectionChanged();
+    }
+
+    // The classic themes use the accent color as the highlight and tint the interface with it, unless it is white.
+    public bool IsClassicThemeSelected => !UseSystemTheme && ThemeManager.IsClassicThemeName(Settings.ThemeOptions.Theme);
+
+    private void OnThemeSelectionChanged()
+    {
+        OnPropertyChanged(nameof(IsClassicThemeSelected));
     }
 
     public EnumOption<string>? SelectedTheme
@@ -370,7 +382,12 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
         {
             if (value != null)
             {
-                SetSetting(Settings.ThemeOptions.Theme, value.Value, x => Settings.ThemeOptions.Theme = x);
+                if (SetSetting(Settings.ThemeOptions.Theme, value.Value, x => Settings.ThemeOptions.SelectTheme(x)))
+                {
+                    OnThemeSelectionChanged();
+                    OnPropertyChanged(nameof(SelectedIconPack));
+                    OnPropertyChanged(nameof(AccentColor));
+                }
             }
         }
     }
@@ -1032,6 +1049,11 @@ public sealed class ApplicationSettingsViewModel : INotifyPropertyChanged, IDisp
 
     private static string NormalizeTheme(string? theme)
     {
+        if (ThemeManager.IsClassicThemeName(theme))
+        {
+            return theme!.Contains("Dark", StringComparison.OrdinalIgnoreCase) ? "ClassicDark" : "ClassicLight";
+        }
+
         return !string.IsNullOrWhiteSpace(theme) &&
             theme.Contains("Light", StringComparison.OrdinalIgnoreCase)
             ? "Light"

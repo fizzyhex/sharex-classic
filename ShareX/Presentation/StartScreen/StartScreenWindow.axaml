@@ -66,6 +66,10 @@
             <Setter Property="Padding" Value="9,5"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
+        <!-- The classic themes draw the accent color picker as a drop-down, so it matches the drop-downs above it. -->
+        <Style Selector="imageEditorControls|ColorPickerDropdown.option-control">
+            <Setter Property="MinHeight" Value="{DynamicResource Classic.OptionControl.Height}"/>
+        </Style>
         <Style Selector="Button.primary">
             <Setter Property="Background" Value="{DynamicResource ShareX.Brush.Accent}"/>
             <Setter Property="Foreground" Value="{DynamicResource ShareX.Brush.Accent.Foreground}"/>
@@ -280,6 +284,7 @@
                                     <TextBlock Classes="setting-title" Text="{Binding AccentColorLabel}"/>
                                 </StackPanel>
                                 <imageEditorControls:ColorPickerDropdown Grid.Column="2"
+                                                                                Classes="option-control"
                                                                                 Width="72"
                                                                                 IsEnabled="{Binding CanEditAccentColor}"
                                                                                 SelectedColorValue="{Binding AccentColor, Mode=TwoWay}"

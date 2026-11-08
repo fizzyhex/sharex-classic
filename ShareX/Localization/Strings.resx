@@ -566,6 +566,15 @@
   <data name="ApplicationSettingsWindow_Light" xml:space="preserve">
     <value>Light</value>
   </data>
+  <data name="ApplicationSettingsWindow_ClassicLight" xml:space="preserve">
+    <value>Classic Light</value>
+  </data>
+  <data name="ApplicationSettingsWindow_ClassicDark" xml:space="preserve">
+    <value>Classic Dark</value>
+  </data>
+  <data name="ApplicationSettingsWindow_ClassicAccentColorNote" xml:space="preserve">
+    <value>The classic themes highlight with the accent color and tint the interface with it. Choose white for the standard Windows colors.</value>
+  </data>
   <data name="ApplicationSettingsWindow_ListView" xml:space="preserve">
     <value>List view</value>
   </data>

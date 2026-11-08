@@ -70,7 +70,9 @@ public sealed class StartScreenViewModel : INotifyPropertyChanged, IDisposable
     public IReadOnlyList<StartScreenThemeOption> ThemeOptions { get; } =
     [
         new("Dark", Strings.ApplicationSettingsWindow_Dark),
-        new("Light", Strings.ApplicationSettingsWindow_Light)
+        new("Light", Strings.ApplicationSettingsWindow_Light),
+        new("ClassicLight", Strings.ApplicationSettingsWindow_ClassicLight),
+        new("ClassicDark", Strings.ApplicationSettingsWindow_ClassicDark)
     ];
 
     public StartScreenViewModel()
@@ -122,8 +124,10 @@ public sealed class StartScreenViewModel : INotifyPropertyChanged, IDisposable
         {
             if (value != null && !string.Equals(Settings.ThemeOptions.Theme, value.Value, StringComparison.Ordinal))
             {
-                Settings.ThemeOptions.Theme = value.Value;
+                Settings.ThemeOptions.SelectTheme(value.Value);
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedIconPack));
+                OnPropertyChanged(nameof(AccentColor));
             }
         }
     }
@@ -263,7 +267,9 @@ public sealed class StartScreenViewModel : INotifyPropertyChanged, IDisposable
     }
 
     private static string NormalizeTheme(string? theme) =>
-        string.Equals(theme, "Light", StringComparison.OrdinalIgnoreCase) ? "Light" : "Dark";
+        string.Equals(theme, "Light", StringComparison.OrdinalIgnoreCase) ? "Light" :
+        string.Equals(theme, "ClassicLight", StringComparison.OrdinalIgnoreCase) ? "ClassicLight" :
+        string.Equals(theme, "ClassicDark", StringComparison.OrdinalIgnoreCase) ? "ClassicDark" : "Dark";
 
     private static string RemoveTrailingColon(string text) => text.TrimEnd().TrimEnd(':', '：').TrimEnd();
 

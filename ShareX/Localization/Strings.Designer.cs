@@ -2157,6 +2157,21 @@ namespace ShareX.Localization {
                 return ResourceManager.GetString("ApplicationSettingsWindow_Light", resourceCulture);
             }
         }
+        public static string ApplicationSettingsWindow_ClassicLight {
+            get {
+                return ResourceManager.GetString("ApplicationSettingsWindow_ClassicLight", resourceCulture);
+            }
+        }
+        public static string ApplicationSettingsWindow_ClassicDark {
+            get {
+                return ResourceManager.GetString("ApplicationSettingsWindow_ClassicDark", resourceCulture);
+            }
+        }
+        public static string ApplicationSettingsWindow_ClassicAccentColorNote {
+            get {
+                return ResourceManager.GetString("ApplicationSettingsWindow_ClassicAccentColorNote", resourceCulture);
+            }
+        }
         public static string ApplicationSettingsWindow_AdvancedApplication {
             get {
                 return ResourceManager.GetString("ApplicationSettingsWindow_AdvancedApplication", resourceCulture);
