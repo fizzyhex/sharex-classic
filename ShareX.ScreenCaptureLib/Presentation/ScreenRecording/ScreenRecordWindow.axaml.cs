@@ -85,7 +85,6 @@ public partial class ScreenRecordWindow : Window, IDisposable
     private int _lastIconStatus = -1;
     private int _restartRequested;
     private bool _configuringGeometry;
-    private bool _activateWindow = true;
     private bool _showRecordingTimer = true;
     private bool _showRecordingButtonLabels = true;
 
@@ -105,16 +104,6 @@ public partial class ScreenRecordWindow : Window, IDisposable
     public bool IsCountdown { get; private set; }
     public Stopwatch Timer { get; } = new();
     public ManualResetEvent RecordResetEvent { get; } = new(false);
-
-    public bool ActivateWindow
-    {
-        get => _activateWindow;
-        set
-        {
-            _activateWindow = value;
-            ShowActivated = value;
-        }
-    }
 
     public float Duration { get; set; }
     public bool AskConfirmationOnAbort { get; set; }
@@ -606,11 +595,6 @@ public partial class ScreenRecordWindow : Window, IDisposable
         ApplyToolWindowStyle();
         ApplyNativeWindowRegion();
         Dispatcher.UIThread.Post(ApplyNativeWindowRegion, DispatcherPriority.Loaded);
-
-        if (ActivateWindow)
-        {
-            Activate();
-        }
     }
 
     private void OnPositionChanged(object? sender, PixelPointEventArgs e)
@@ -694,7 +678,8 @@ public partial class ScreenRecordWindow : Window, IDisposable
         }
 
         WindowInfo info = new(handle);
-        info.ExStyle |= WindowStyles.WS_EX_TOOLWINDOW;
+        // The controls are mouse-only; never take focus from the app being recorded, even when clicked.
+        info.ExStyle |= WindowStyles.WS_EX_TOOLWINDOW | WindowStyles.WS_EX_NOACTIVATE;
         if (ExcludeFromCapture && !NativeMethods.SetWindowDisplayAffinity(handle, 0x11)) // WDA_EXCLUDEFROMCAPTURE
         {
             DebugHelper.WriteLine("Could not exclude the recording controls from capture. Win32 error: {0}", Marshal.GetLastWin32Error());

@@ -15,7 +15,7 @@
         Height="180"
         CanResize="False"
         ShowInTaskbar="False"
-        ShowActivated="True"
+        ShowActivated="False"
         Topmost="True"
         WindowDecorations="None"
         TransparencyLevelHint="Transparent"

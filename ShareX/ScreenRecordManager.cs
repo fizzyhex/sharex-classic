@@ -98,6 +98,8 @@ namespace ShareX
 
         private static async Task StartRecording(ScreenRecordOutput outputType, TaskSettings taskSettings, ScreenRecordStartMethod startMethod = ScreenRecordStartMethod.Region)
         {
+            // Region selection and the recorder bar take focus; hand it back once recording controls are up.
+            IntPtr previousForegroundWindow = NativeMethods.GetForegroundWindow();
             bool useNative = taskSettings.CaptureSettings.ScreenRecordUseNative;
             bool isGif = outputType == ScreenRecordOutput.GIF;
             // GIF recordings may be saved as animated WebP; everything else still treats them as GIF.
@@ -235,7 +237,6 @@ namespace ShareX
 
             recordForm = new ScreenRecordWindow(captureRectangle)
             {
-                ActivateWindow = startMethod == ScreenRecordStartMethod.Region,
                 Duration = duration,
                 AskConfirmationOnAbort = taskSettings.CaptureSettings.ScreenRecordAskConfirmationOnAbort,
                 ShowRecordingTimer = taskSettings.CaptureSettings.ScreenRecordShowTimer,
@@ -252,6 +253,7 @@ namespace ShareX
 
             recordForm.StopRequested += StopRecording;
             recordForm.Show();
+            RestoreForegroundWindow(previousForegroundWindow);
 
             _ = Task.Run(async () =>
             {
@@ -476,6 +478,15 @@ namespace ShareX
                     IsRecording = false;
                 }
             });
+        }
+
+        private static void RestoreForegroundWindow(IntPtr handle)
+        {
+            if (handle == IntPtr.Zero || !NativeMethods.IsWindowVisible(handle)) return;
+            NativeMethods.GetWindowThreadProcessId(handle, out uint processId);
+            // Do not raise ShareX's own windows over the area being recorded.
+            if (processId == (uint)Environment.ProcessId) return;
+            NativeMethods.SetForegroundWindow(handle);
         }
 
         private static async Task<bool> RecordNativeAsync(string path, IntPtr captureWindow, TaskSettings settings, bool replaceExisting, bool isGif)
