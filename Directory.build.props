@@ -3,7 +3,8 @@
     <Company>ShareX Team</Company>
     <Product>ShareX</Product>
     <Copyright>Copyright (c) 2007-2026 ShareX Team</Copyright>
-    <Version>22.4.0</Version>
+    <!-- ShareX Classic: the revision is the classic update number, matching the v22.4.0-classic.N release tag -->
+    <Version>22.4.0.4</Version>
     <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendPlatformToOutputPath>false</AppendPlatformToOutputPath>
