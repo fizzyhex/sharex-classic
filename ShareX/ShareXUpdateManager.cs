@@ -31,26 +31,39 @@ namespace ShareX
     {
         public UpdateChannel UpdateChannel { get; set; }
 
+        // ShareX Classic updates from its own releases so upstream setups don't replace it
         public override GitHubUpdateChecker CreateUpdateChecker()
         {
-            if (UpdateChannel == UpdateChannel.Dev)
+            return new ClassicUpdateChecker()
             {
-                return new GitHubUpdateChecker("ShareX", "DevBuilds")
-                {
-                    IsDev = true,
-                    IsPortable = StartupOptions.Portable,
-                    IgnoreRevision = true
-                };
-            }
-            else
+                IsPortable = StartupOptions.Portable,
+                IncludePreRelease = UpdateChannel != UpdateChannel.Release
+            };
+        }
+    }
+
+    internal class ClassicUpdateChecker : GitHubUpdateChecker
+    {
+        private const string TagSuffix = "-classic.";
+
+        public ClassicUpdateChecker() : base("fizzyhex", "sharex-classic")
+        {
+        }
+
+        // Tags look like "v22.4.0-classic.3", which maps to version 22.4.0.3
+        protected override bool UpdateReleaseInfo(GitHubRelease release, bool isPortable, bool isBrowserDownloadURL)
+        {
+            if (release?.tag_name != null)
             {
-                return new GitHubUpdateChecker("ShareX", "ShareX")
+                int index = release.tag_name.IndexOf(TagSuffix);
+
+                if (index > 0)
                 {
-                    IsPortable = StartupOptions.Portable,
-                    IncludePreRelease = UpdateChannel == UpdateChannel.PreRelease,
-                    IgnoreRevision = true
-                };
+                    release.tag_name = $"{release.tag_name.Substring(0, index)}.{release.tag_name.Substring(index + TagSuffix.Length)}";
+                }
             }
+
+            return base.UpdateReleaseInfo(release, isPortable, isBrowserDownloadURL);
         }
     }
 }
