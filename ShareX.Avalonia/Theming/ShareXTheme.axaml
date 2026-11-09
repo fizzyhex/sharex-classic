@@ -1388,7 +1388,6 @@
                 <GradientStop Color="#600F4C9C" Offset="1" />
             </LinearGradientBrush>
             <SolidColorBrush x:Key="Aero.Art.Leaf.Edge" Color="#A0FFFFFF" />
-            <SolidColorBrush x:Key="Aero.Art.Vine" Color="#C8FFFFFF" />
             <RadialGradientBrush x:Key="Aero.Art.Backdrop.Petal" Center="50%,50%" GradientOrigin="50%,50%" RadiusX="50%" RadiusY="50%">
                 <GradientStop Color="#1070B8F0" Offset="0" />
                 <GradientStop Color="#4C70B8F0" Offset="1" />
@@ -2182,7 +2181,6 @@
                 <GradientStop Color="#600A2440" Offset="1" />
             </LinearGradientBrush>
             <SolidColorBrush x:Key="Aero.Art.Leaf.Edge" Color="#9070D0FF" />
-            <SolidColorBrush x:Key="Aero.Art.Vine" Color="#A070D4FF" />
             <RadialGradientBrush x:Key="Aero.Art.Backdrop.Petal" Center="50%,50%" GradientOrigin="50%,50%" RadiusX="50%" RadiusY="50%">
                 <GradientStop Color="#0840B0F0" Offset="0" />
                 <GradientStop Color="#4840B8F8" Offset="1" />
